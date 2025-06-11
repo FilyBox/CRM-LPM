@@ -83,7 +83,7 @@ export function ProjectStatusCard({
 }: ProjectStatusCardProps) {
   const { isExpanded, toggleExpand, animatedHeight } = useExpandable();
   const contentRef = useRef<HTMLDivElement>(null);
-  console.log('WebSiteUpdates', WebSiteUpdates);
+
   useEffect(() => {
     if (contentRef.current) {
       animatedHeight.set(isExpanded ? contentRef.current.scrollHeight : 0);

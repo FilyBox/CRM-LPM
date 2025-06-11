@@ -5,8 +5,6 @@ import { useLingui } from '@lingui/react';
 import type * as DialogPrimitive from '@radix-ui/react-dialog';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ListFilter, Loader2 } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router';
-import { z } from 'zod';
 
 import { trpc } from '@documenso/trpc/react';
 import type { Config, Result } from '@documenso/ui/lib/types';
@@ -24,45 +22,25 @@ import {
 import { ScrollArea } from '@documenso/ui/primitives/scroll-area';
 import { useToast } from '@documenso/ui/primitives/use-toast';
 
-import { useOptionalCurrentTeam } from '~/providers/team';
-
 import { QueryViewer } from '../general/advance-filters/query-viewer';
 import { Results } from '../general/advance-filters/results';
 import { Search } from '../general/advance-filters/search';
 import { SuggestedQueries } from '../general/advance-filters/suggested-queries';
 
-const ZCreateFolderFormSchema = z.object({
-  name: z.string().min(1, { message: 'Folder name is required' }),
-});
-
-type TCreateFolderFormSchema = z.infer<typeof ZCreateFolderFormSchema>;
-
-export type CreateFolderDialogProps = {
+export type AdvancedFiltersDialogProps = {
   trigger?: React.ReactNode;
   tableToConsult: string;
 } & Omit<DialogPrimitive.DialogProps, 'children'>;
-
-type SearchProps = {
-  status?: 'NO_ESPECIFICADO' | 'VIGENTE' | 'FINALIZADO' | undefined;
-  query?: string | undefined;
-  page?: number | undefined;
-  perPage?: number | undefined;
-  period?: '7d' | '14d' | '30d' | undefined;
-};
 
 export const AdvancedFilterDialog = ({
   trigger,
   tableToConsult,
   ...props
-}: CreateFolderDialogProps) => {
+}: AdvancedFiltersDialogProps) => {
   const aiQuery = trpc.document.aiConnection.useMutation();
 
   const { _ } = useLingui();
   const { toast } = useToast();
-  const { folderId } = useParams();
-
-  const navigate = useNavigate();
-  const team = useOptionalCurrentTeam();
   const [inputValue, setInputValue] = useState('');
 
   const [submitted, setSubmitted] = useState(false);
@@ -147,7 +125,7 @@ export const AdvancedFilterDialog = ({
   };
 
   return (
-    <Drawer>
+    <Drawer modal={true}>
       <DrawerTrigger asChild>
         {trigger ?? (
           <Button variant="outline" className="flex w-full items-center space-x-2 sm:w-fit">
@@ -156,7 +134,7 @@ export const AdvancedFilterDialog = ({
           </Button>
         )}
       </DrawerTrigger>
-      <DrawerContent className="h-[90vh] !max-h-screen">
+      <DrawerContent className="h-[90vh] !max-h-screen w-full">
         <DrawerHeader>
           <DrawerTitle>Advanced Filters</DrawerTitle>
           <DrawerDescription>
@@ -165,12 +143,12 @@ export const AdvancedFilterDialog = ({
         </DrawerHeader>
         <ScrollArea className="h-[90vh] w-full">
           <motion.div
-            className="bg-card sm:border-border flex flex-grow flex-col rounded-xl sm:border"
+            className="bg-card sm:border-border flex w-full flex-col rounded-xl sm:border"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
           >
-            <div className="flex flex-grow flex-col p-6 sm:p-8">
+            <div className="flex w-full max-w-[100vw] flex-col p-6 sm:p-8">
               {/* <Header handleClear={handleClear} /> */}
               <Search
                 handleClear={handleClear}
@@ -179,8 +157,8 @@ export const AdvancedFilterDialog = ({
                 setInputValue={setInputValue}
                 submitted={submitted}
               />
-              <div id="main-container" className="flex flex-grow flex-col sm:min-h-[420px]">
-                <div className="h-full flex-grow">
+              <div id="main-container" className="mx-auto flex w-full flex-col sm:min-h-[420px]">
+                <div className="h-full w-full">
                   <AnimatePresence mode="wait">
                     {!submitted ? (
                       <SuggestedQueries

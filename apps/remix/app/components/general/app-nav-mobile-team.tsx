@@ -27,7 +27,7 @@ export const AppNavMobileTeam = ({ isMenuOpen, onMenuOpenChange }: AppNavMobileP
 
   const menuNavigationLinks = [
     // {
-    //   href: '/chatspace',
+    //   href: '${rootHref}/chatspace',
     //   text: msg`Chats`,
     // },
     {
@@ -39,39 +39,39 @@ export const AppNavMobileTeam = ({ isMenuOpen, onMenuOpenChange }: AppNavMobileP
       text: msg`Templates`,
     },
     {
-      href: `/music`,
+      href: `${rootHref}/music`,
       text: msg`Virgin`,
     },
     {
-      href: `/tuStreams`,
+      href: `${rootHref}/tuStreams`,
       text: msg`TuStreams`,
     },
     {
-      href: '/releases',
+      href: `${rootHref}/releases`,
       text: msg`Releases`,
     },
     {
-      href: '/distribution',
+      href: `${rootHref}/distribution`,
       text: msg`Distribution`,
     },
     {
-      href: '/isrc',
+      href: `${rootHref}/isrc`,
       text: msg`ISRC`,
     },
     {
-      href: '/contracts',
+      href: `${rootHref}/contracts`,
       text: msg`Contracts`,
     },
     {
-      href: '/chatspace',
+      href: `${rootHref}/chatspace`,
       text: msg`Chat`,
     },
     {
-      href: '/settings/teams',
+      href: `${rootHref}/settings/teams`,
       text: msg`Teams`,
     },
     {
-      href: '/settings/profile',
+      href: `${rootHref}/settings/profile`,
       text: msg`Settings`,
     },
   ];

@@ -68,7 +68,7 @@ export const Results = ({
           </TabsTrigger>
         </TabsList>
         <TabsContent value="table" className="flex flex-grow">
-          <div className="relative w-full overflow-x-scroll sm:min-h-[10px]">
+          <div className="relative w-full sm:min-h-[10px]">
             <Table className="divide-border min-w-full divide-y">
               <TableHeader className="bg-secondary sticky top-0 shadow-sm">
                 <TableRow>
