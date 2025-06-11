@@ -1,0 +1,9 @@
+-- AlterTable
+ALTER TABLE "lpm" ADD COLUMN     "teamId" INTEGER,
+ADD COLUMN     "userId" INTEGER;
+
+-- AddForeignKey
+ALTER TABLE "lpm" ADD CONSTRAINT "lpm_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "lpm" ADD CONSTRAINT "lpm_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE SET NULL ON UPDATE CASCADE;
