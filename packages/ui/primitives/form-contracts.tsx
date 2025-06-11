@@ -61,12 +61,10 @@ const parseDate = (dateString: string | null | undefined) => {
   if (!dateString) return undefined;
 
   try {
-    // First try parsing as DD/MM/YYYY format
     let date;
     if (dateString.includes('/')) {
       date = parse(dateString, 'dd/MM/yyyy', new Date());
     } else {
-      // Fallback to ISO format if it's already in YYYY-MM-DD
       date = new Date(dateString + 'T00:00:00');
     }
 
@@ -75,18 +73,6 @@ const parseDate = (dateString: string | null | undefined) => {
     console.error('Date parsing error:', error);
     return undefined;
   }
-};
-
-// Helper to format date for form display
-const formatDateForDisplay = (dateString: string | null | undefined) => {
-  if (!dateString) return '';
-  const date = parseDate(dateString);
-  return date ? format(date, 'dd/MM/yyyy') : '';
-};
-
-// Helper to format date for API
-const formatDateForApi = (date: Date | null | undefined) => {
-  return date ? format(date, 'yyyy-MM-dd') : '';
 };
 
 export default function ContractForm({
@@ -166,11 +152,10 @@ export default function ContractForm({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)} className="">
           <Card className="border-border dark:bg-background relative p-6">
-            <div className="h-20">
+            <div className="h-min-20 h-fit">
               <h1 className="text-xl font-semibold md:text-2xl">Información del Contrato</h1>
               <p className="text-muted-foreground mt-2 text-xs md:text-sm">
-                Complete la información detallada del contrato. Esta información es esencial para la
-                gestión de contratos.
+                Esta información es esencial para la gestión de contratos.
               </p>
             </div>
 

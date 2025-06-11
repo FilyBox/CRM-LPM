@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Monitor, MoonStar, Sun } from 'lucide-react';
+import { MoonStar, Sun } from 'lucide-react';
 import { Theme, useTheme } from 'remix-themes';
 
 import { useIsMounted } from '@documenso/lib/client-only/hooks/use-is-mounted';
@@ -9,7 +9,7 @@ export const ThemeSwitcher = () => {
   const isMounted = useIsMounted();
 
   return (
-    <div className="bg-muted flex items-center gap-x-1 rounded-full p-1">
+    <div className="bg-muted flex items-center justify-center gap-x-1 rounded-full p-1">
       <button
         className="text-muted-foreground relative z-10 flex h-8 w-8 items-center justify-center rounded-full"
         onClick={() => setTheme(Theme.LIGHT)}
@@ -37,7 +37,7 @@ export const ThemeSwitcher = () => {
         <MoonStar className="h-5 w-5" />
       </button>
 
-      <button
+      {/* <button
         className="text-muted-foreground relative z-10 flex h-8 w-8 items-center justify-center rounded-full"
         onClick={() => setTheme(null)}
       >
@@ -48,7 +48,7 @@ export const ThemeSwitcher = () => {
           />
         )}
         <Monitor className="h-5 w-5" />
-      </button>
+      </button> */}
     </div>
   );
 };

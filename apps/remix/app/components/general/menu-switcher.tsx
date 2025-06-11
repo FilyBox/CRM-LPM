@@ -121,7 +121,7 @@ export const MenuSwitcher = ({ user, teams: initialTeamsData }: MenuSwitcherProp
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
-        className={cn('z-[60] ml-6 w-full md:ml-0', teams ? 'min-w-[20rem]' : 'min-w-[12rem]')}
+        className={cn('z-[60] ml-6 w-full md:ml-0', teams ? 'min-w-[10rem]' : 'min-w-[10rem]')}
         align="end"
         forceMount
       >
@@ -252,20 +252,6 @@ export const MenuSwitcher = ({ user, teams: initialTeamsData }: MenuSwitcherProp
             </Link>
           </DropdownMenuItem>
         )}
-
-        {isUserAdmin && (
-          <DropdownMenuItem className="text-muted-foreground px-4 py-2" asChild>
-            <Link to="/distribution">
-              <Trans>Distribution Statement</Trans>
-            </Link>
-          </DropdownMenuItem>
-        )}
-
-        <DropdownMenuItem className="text-muted-foreground px-4 py-2" asChild>
-          <Link to="/chatspace">
-            <Trans>Chat documents</Trans>
-          </Link>
-        </DropdownMenuItem>
 
         <DropdownMenuItem className="text-muted-foreground px-4 py-2" asChild>
           <Link to="/settings/profile">

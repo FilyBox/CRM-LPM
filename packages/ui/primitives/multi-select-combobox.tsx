@@ -105,14 +105,14 @@ export function MultiSelectCombobox<T = OptionValue>({
 
   return (
     <Popover modal={true} open={open && !loading} onOpenChange={setOpen}>
-      <div className="relative w-full">
+      <div className="relative w-full sm:w-48">
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             role="combobox"
             disabled={loading}
             aria-expanded={open}
-            className={cn('w-full', className)}
+            className={cn('w-full sm:w-48', className)}
             data-testid={testId}
           >
             <AnimatePresence>

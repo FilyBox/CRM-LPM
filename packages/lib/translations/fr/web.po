@@ -1587,10 +1587,6 @@ msgstr "Graphiques"
 msgid "Chat"
 msgstr ""
 
-#: apps/remix/app/components/general/menu-switcher.tsx
-msgid "Chat documents"
-msgstr ""
-
 #: packages/ui/primitives/document-flow/types.ts
 msgid "Checkbox"
 msgstr "Case à cocher"
@@ -2432,7 +2428,6 @@ msgid "Distribution Method"
 msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/distribution._index.tsx
-#: apps/remix/app/components/general/menu-switcher.tsx
 msgid "Distribution Statement"
 msgstr ""
 
@@ -7032,10 +7027,6 @@ msgstr ""
 #: apps/remix/app/components/general/document/document-drop-zone-wrapper.tsx
 #: apps/remix/app/components/general/document/chatspace-drop-zone-wrapper.tsx
 msgid "Uploading document..."
-msgstr ""
-
-#: apps/remix/app/components/dialogs/artist-create-dialog.tsx
-msgid "URL"
 msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/templates.f.$folderId.$id._index.tsx

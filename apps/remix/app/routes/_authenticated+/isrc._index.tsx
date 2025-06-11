@@ -19,7 +19,7 @@ import MyForm from '@documenso/ui/primitives/form-custom-isrc';
 import { Input } from '@documenso/ui/primitives/input';
 import { useToast } from '@documenso/ui/primitives/use-toast';
 
-import { AdvancedFilterDialog } from '~/components/dialogs/advanced-filte-dialog';
+import { AdvancedFilterDialog } from '~/components/dialogs/advanced-filter-drawer';
 import { DocumentSearch } from '~/components/general/document/document-search';
 import { GeneralTableEmptyState } from '~/components/tables/general-table-empty-state';
 import { IsrcTable } from '~/components/tables/isrc-table';
@@ -264,7 +264,7 @@ export default function IsrcPage() {
 
   return (
     <div className="mx-auto flex max-w-screen-xl flex-col gap-y-8 px-4 md:px-8">
-      <div className="mt-12 flex flex-wrap items-center justify-between gap-x-4 gap-y-8">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-8">
         <div className="flex flex-row items-center">
           {team && (
             <Avatar className="dark:border-border mr-3 h-12 w-12 border-2 border-solid border-white">
@@ -287,13 +287,17 @@ export default function IsrcPage() {
               {isSubmitting ? 'Procesando...' : 'Cargar CSV'}
             </Button>
           </div>
-          <Button onClick={openCreateDialog}>Add Item</Button>
-          <TableArtistFilter artistData={artistData} isLoading={artistDataloading} />
-          <AdvancedFilterDialog tableToConsult="Isrc" />
 
-          <div className="flex w-48 flex-wrap items-center justify-between gap-x-2 gap-y-4">
+          <TableArtistFilter artistData={artistData} isLoading={artistDataloading} />
+
+          <div className="flex w-full flex-wrap items-center justify-between gap-x-2 gap-y-4 sm:w-48">
             <DocumentSearch initialValue={findDocumentSearchParams.query} />
           </div>
+          <AdvancedFilterDialog tableToConsult="Isrc" />
+
+          <Button className="w-full sm:w-fit" onClick={openCreateDialog}>
+            Add Item
+          </Button>
         </div>
       </div>
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

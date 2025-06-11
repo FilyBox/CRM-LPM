@@ -18,7 +18,7 @@ import MyForm from '@documenso/ui/primitives/form-custom';
 import { Input } from '@documenso/ui/primitives/input';
 import { useToast } from '@documenso/ui/primitives/use-toast';
 
-import { AdvancedFilterDialog } from '~/components/dialogs/advanced-filte-dialog';
+import { AdvancedFilterDialog } from '~/components/dialogs/advanced-filter-drawer';
 import { ArtistCreateDialog } from '~/components/dialogs/artist-create-dialog';
 import { DocumentSearch } from '~/components/general/document/document-search';
 import { GeneralTableEmptyState } from '~/components/tables/general-table-empty-state';
@@ -455,7 +455,7 @@ export default function TablePage() {
   };
   return (
     <div className="mx-auto flex max-w-screen-xl flex-col gap-y-8 px-4 md:px-8">
-      <div className="mt-12 flex flex-wrap items-center justify-between gap-x-4 gap-y-8">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-8">
         <div className="flex flex-row items-center">
           {team && (
             <Avatar className="dark:border-border mr-3 h-12 w-12 border-2 border-solid border-white">
@@ -483,9 +483,12 @@ export default function TablePage() {
             </div>
             <TableArtistFilter artistData={artistData} isLoading={artistDataloading} />
 
-            <Button onClick={openCreateDialog}>Add Item</Button>
             <AdvancedFilterDialog tableToConsult="Virgin" />
             <ArtistCreateDialog />
+
+            <Button className="w-full sm:w-fit" onClick={openCreateDialog}>
+              Add Item
+            </Button>
           </div>
         </div>
       </div>

@@ -104,13 +104,7 @@ export const AppNavMobileTeam = ({ isMenuOpen, onMenuOpenChange }: AppNavMobileP
         </div>
 
         <div className="mt-auto flex w-full flex-col space-y-4 self-end">
-          <div className="w-fit">
-            <ThemeSwitcher />
-          </div>
-
-          <p className="text-muted-foreground text-sm">
-            © {new Date().getFullYear()} Documenso, Inc. <br /> All rights reserved.
-          </p>
+          <ThemeSwitcher />
         </div>
       </SheetContent>
     </Sheet>

@@ -18,6 +18,7 @@ import { Avatar, AvatarFallback } from './avatar';
 import { Button } from './button';
 import { Calendar } from './calendar-year-picker';
 import { Card, CardContent } from './card';
+import { DialogClose } from './dialog';
 import {
   Form,
   FormControl,
@@ -32,17 +33,16 @@ import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { ScrollArea } from './scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select';
 import { Separator } from './separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './tabs';
 import { Textarea } from './textarea';
 
 const formSchema = z.object({
-  productId: z.string(),
-  productType: z.string(),
-  productTitle: z.string(),
+  productId: z.string().optional(),
+  productType: z.string().optional(),
+  productTitle: z.string().optional(),
   productVersion: z.string().optional(),
-  productDisplayArtist: z.string(),
+  productDisplayArtist: z.string().optional(),
   parentLabel: z.string().optional(),
-  label: z.string(),
+  label: z.string().optional(),
   artists: z
     .array(
       z.object({
@@ -52,60 +52,60 @@ const formSchema = z.object({
     )
     .optional(),
   originalReleaseDate: z.date().optional(),
-  releaseDate: z.date(),
-  upc: z.string(),
-  catalog: z.string(),
+  releaseDate: z.date().optional(),
+  upc: z.string().optional(),
+  catalog: z.string().optional(),
   productPriceTier: z.string().optional(),
   productGenre: z.array(z.string()).default([]),
-  submissionStatus: z.string(),
-  productCLine: z.string(),
-  productPLine: z.string(),
+  submissionStatus: z.string().optional(),
+  productCLine: z.string().optional(),
+  productPLine: z.string().optional(),
   preOrderDate: z.date().optional(),
   exclusives: z.string().optional(),
-  explicitLyrics: z.string(),
+  explicitLyrics: z.string().optional(),
   productPlayLink: z.string().optional(),
   linerNotes: z.string().optional(),
-  primaryMetadataLanguage: z.string(),
+  primaryMetadataLanguage: z.string().optional(),
   compilation: z.string().optional(),
   pdfBooklet: z.string().optional(),
   timedReleaseDate: z.date().optional(),
   timedReleaseMusicServices: z.date().optional(),
-  lastProcessDate: z.date(),
-  importDate: z.date(),
-  createdBy: z.string(),
-  lastModified: z.date(),
-  submittedAt: z.date(),
+  lastProcessDate: z.date().optional(),
+  importDate: z.date().optional(),
+  createdBy: z.string().optional(),
+  lastModified: z.date().optional(),
+  submittedAt: z.date().optional(),
   submittedBy: z.string().optional(),
   vevoChannel: z.string().optional(),
-  trackType: z.string(),
-  trackId: z.string(),
+  trackType: z.string().optional(),
+  trackId: z.string().optional(),
   trackVolume: z.boolean().optional(),
-  trackNumber: z.string(),
-  trackName: z.string(),
+  trackNumber: z.string().optional(),
+  trackName: z.string().optional(),
   trackVersion: z.string().optional(),
-  trackDisplayArtist: z.string(),
-  isrc: z.string(),
+  trackDisplayArtist: z.string().optional(),
+  isrc: z.string().optional(),
   trackPriceTier: z.string().optional(),
-  trackGenre: z.string(),
-  audioLanguage: z.string(),
-  trackCLine: z.string(),
-  trackPLine: z.string(),
-  writersComposers: z.string(),
-  publishersCollectionSocieties: z.string(),
-  withholdMechanicals: z.string(),
+  trackGenre: z.string().optional(),
+  audioLanguage: z.string().optional(),
+  trackCLine: z.string().optional(),
+  trackPLine: z.string().optional(),
+  writersComposers: z.string().optional(),
+  publishersCollectionSocieties: z.string().optional(),
+  withholdMechanicals: z.string().optional(),
   preOrderType: z.string().optional(),
   instantGratificationDate: z.date().optional(),
-  duration: z.string(),
-  sampleStartTime: z.string(),
-  explicitLyricsTrack: z.string(),
-  albumOnly: z.string(),
+  duration: z.string().optional(),
+  sampleStartTime: z.string().optional(),
+  explicitLyricsTrack: z.string().optional(),
+  albumOnly: z.string().optional(),
   lyrics: z.string().optional(),
   additionalContributorsPerforming: z.string().optional(),
   additionalContributorsNonPerforming: z.string().optional(),
   producers: z.string().optional(),
-  continuousMix: z.string(),
-  continuouslyMixedIndividualSong: z.string(),
-  trackPlayLink: z.string(),
+  continuousMix: z.string().optional(),
+  continuouslyMixedIndividualSong: z.string().optional(),
+  trackPlayLink: z.string().optional(),
 });
 
 type artistData = {
@@ -124,14 +124,11 @@ interface MyFormProps {
   artistData?: artistData;
 }
 
-// Tipo para los pasos del formulario
 type FormStep = 'PRODUCT_INFO' | 'TRACK_INFO';
 
 export default function MyForm({ onSubmit, initialData, artistData }: MyFormProps) {
   const { toast } = useToast();
 
-  console.log('Initial data:', initialData);
-  console.log('Artist data:', artistData);
   const [step, setStep] = useState<FormStep>('PRODUCT_INFO');
   const [isLoading, setIsLoading] = useState(false);
   const [selectedArtists, setSelectedArtists] = React.useState<artistData>([]);
@@ -243,50 +240,53 @@ export default function MyForm({ onSubmit, initialData, artistData }: MyFormProp
     console.log('Form errors use effect:', form.formState.errors);
   }, [form.formState.errors]);
   // Función para validar los campos del paso 1 y avanzar al paso 2
-  const onNextClick = async () => {
-    const productFields = [
-      'productId',
-      'productType',
-      'productTitle',
-      'productDisplayArtist',
-      'label',
-      'originalReleaseDate',
-      'releaseDate',
-      'upc',
-      'catalog',
-      'productGenre',
-      'submissionStatus',
-      'productCLine',
-      'productPLine',
-      'preOrderDate',
-      'exclusives',
-      'explicitLyrics',
-      'productPlayLink',
-      'linerNotes',
-      'primaryMetadataLanguage',
-      'compilation',
-      'pdfBooklet',
-      'timedReleaseDate',
-      'timedReleaseMusicServices',
-      'lastProcessDate',
-      'importDate',
-      'createdBy',
-      'lastModified',
-      'submittedAt',
-      'submittedBy',
-      'vevoChannel',
-    ];
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    const isValid = await form.trigger(productFields as any);
+  const onNextClick = () => {
+    setStep('TRACK_INFO');
 
-    if (isValid) {
-      setStep('TRACK_INFO');
-    } else {
-      toast({
-        variant: 'destructive',
-        description: 'Por favor completa todos los campos requeridos.',
-      });
-    }
+    // const productFields = [
+    //   'productId',
+    //   'productType',
+    //   'productTitle',
+    //   'productDisplayArtist',
+    //   'label',
+    //   'originalReleaseDate',
+    //   'releaseDate',
+    //   'upc',
+    //   'catalog',
+    //   'productGenre',
+    //   'submissionStatus',
+    //   'productCLine',
+    //   'productPLine',
+    //   'preOrderDate',
+    //   'exclusives',
+    //   'explicitLyrics',
+    //   'productPlayLink',
+    //   'linerNotes',
+    //   'primaryMetadataLanguage',
+    //   'compilation',
+    //   'pdfBooklet',
+    //   'timedReleaseDate',
+    //   'timedReleaseMusicServices',
+    //   'lastProcessDate',
+    //   'importDate',
+    //   'createdBy',
+    //   'lastModified',
+    //   'submittedAt',
+    //   'submittedBy',
+    //   'vevoChannel',
+    // ];
+
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    // const isValid = await form.trigger(productFields as any);
+
+    // if (isValid) {
+    //   setStep('TRACK_INFO');
+    // } else {
+    //   toast({
+    //     variant: 'destructive',
+    //     description: 'Por favor completa todos los campos requeridos.',
+    //   });
+    // }
   };
 
   // Opciones para selects
@@ -344,22 +344,22 @@ export default function MyForm({ onSubmit, initialData, artistData }: MyFormProp
         <form onSubmit={form.handleSubmit(handleSubmit)} className="">
           <Card className="border-border dark:bg-background relative p-6">
             {step === 'PRODUCT_INFO' && (
-              <div className="h-20">
+              <div className="h-fit min-h-20">
                 <h1 className="text-xl font-semibold md:text-2xl">
                   Información del Producto Musical
                 </h1>
                 <p className="text-muted-foreground mt-2 text-xs md:text-sm">
-                  Complete la información básica del producto o álbum musical. Todos los campos
+                  Completa la información básica del producto o álbum musical. Todos los campos
                   marcados son obligatorios.
                 </p>
               </div>
             )}
 
             {step === 'TRACK_INFO' && (
-              <div className="h-20">
+              <div className="h-fit min-h-20">
                 <h1 className="text-xl font-semibold md:text-2xl">Información de la Pista</h1>
                 <p className="text-muted-foreground mt-2 text-xs md:text-sm">
-                  Complete la información detallada de la pista o canción. Esta información es
+                  Completa la información detallada de la pista o canción. Esta información es
                   esencial para la distribución musical.
                 </p>
               </div>
@@ -518,7 +518,7 @@ export default function MyForm({ onSubmit, initialData, artistData }: MyFormProp
                                     <Button
                                       variant={'outline'}
                                       className={cn(
-                                        'w-[240px] pl-3 text-left font-normal',
+                                        'w-full pl-3 text-left font-normal',
                                         !field.value && 'text-muted-foreground',
                                       )}
                                     >
@@ -604,7 +604,7 @@ export default function MyForm({ onSubmit, initialData, artistData }: MyFormProp
                                     <Button
                                       variant={'outline'}
                                       className={cn(
-                                        'w-[240px] pl-3 text-left font-normal',
+                                        'w-full pl-3 text-left font-normal',
                                         !field.value && 'text-muted-foreground',
                                       )}
                                     >
@@ -667,7 +667,7 @@ export default function MyForm({ onSubmit, initialData, artistData }: MyFormProp
                                     <Button
                                       variant={'outline'}
                                       className={cn(
-                                        'w-[240px] pl-3 text-left font-normal',
+                                        'w-full pl-3 text-left font-normal',
                                         !field.value && 'text-muted-foreground',
                                       )}
                                     >
@@ -1125,7 +1125,7 @@ export default function MyForm({ onSubmit, initialData, artistData }: MyFormProp
                                   <Button
                                     variant={'outline'}
                                     className={cn(
-                                      'w-[240px] pl-3 text-left font-normal',
+                                      'w-full pl-3 text-left font-normal',
                                       !field.value && 'text-muted-foreground',
                                     )}
                                   >
@@ -1190,7 +1190,7 @@ export default function MyForm({ onSubmit, initialData, artistData }: MyFormProp
                                   <Button
                                     variant={'outline'}
                                     className={cn(
-                                      'w-[240px] pl-3 text-left font-normal',
+                                      'w-full pl-3 text-left font-normal',
                                       !field.value && 'text-muted-foreground',
                                     )}
                                   >
@@ -1303,7 +1303,7 @@ export default function MyForm({ onSubmit, initialData, artistData }: MyFormProp
                                     <Button
                                       variant={'outline'}
                                       className={cn(
-                                        'w-[240px] pl-3 text-left font-normal',
+                                        'w-full pl-3 text-left font-normal',
                                         !field.value && 'text-muted-foreground',
                                       )}
                                     >
@@ -1368,7 +1368,7 @@ export default function MyForm({ onSubmit, initialData, artistData }: MyFormProp
                                     <Button
                                       variant={'outline'}
                                       className={cn(
-                                        'w-[240px] pl-3 text-left font-normal',
+                                        'w-full pl-3 text-left font-normal',
                                         !field.value && 'text-muted-foreground',
                                       )}
                                     >
@@ -1495,7 +1495,7 @@ export default function MyForm({ onSubmit, initialData, artistData }: MyFormProp
                                     <Button
                                       variant={'outline'}
                                       className={cn(
-                                        'w-[240px] pl-3 text-left font-normal',
+                                        'w-full pl-3 text-left font-normal',
                                         !field.value && 'text-muted-foreground',
                                       )}
                                     >
@@ -1560,7 +1560,7 @@ export default function MyForm({ onSubmit, initialData, artistData }: MyFormProp
                                     <Button
                                       variant={'outline'}
                                       className={cn(
-                                        'w-[240px] pl-3 text-left font-normal',
+                                        'w-full pl-3 text-left font-normal',
                                         !field.value && 'text-muted-foreground',
                                       )}
                                     >
@@ -2167,18 +2167,21 @@ export default function MyForm({ onSubmit, initialData, artistData }: MyFormProp
                   </fieldset>
                 </CardContent>
               )}
+            </ScrollArea>
 
+            {/* Botones de navegación */}
+            <section className="flex flex-col gap-5">
               {/* Indicador de Progreso */}
-              <div className="mt-6 px-6">
+              <div className="mt-6">
                 {step === 'PRODUCT_INFO' && (
                   <p className="text-muted-foreground text-sm">
-                    <span className="font-medium">Información del Producto</span> 1/2
+                    <span className="font-medium">1/2</span>
                   </p>
                 )}
 
                 {step === 'TRACK_INFO' && (
                   <p className="text-muted-foreground text-sm">
-                    <span className="font-medium">Información de la Pista</span> 2/2
+                    <span className="font-medium">2/2</span>
                   </p>
                 )}
 
@@ -2193,21 +2196,33 @@ export default function MyForm({ onSubmit, initialData, artistData }: MyFormProp
                   />
                 </div>
               </div>
-            </ScrollArea>
-
-            {/* Botones de navegación */}
-            <div className="mt-6 flex items-center gap-x-4 px-6">
+            </section>
+            <div className="mt-6 flex items-center gap-x-4">
               {/* Botón para volver al paso anterior */}
-              <Button
-                type="button"
-                size="lg"
-                variant="secondary"
-                className="flex-1"
-                disabled={step === 'PRODUCT_INFO' || isLoading}
-                onClick={() => setStep('PRODUCT_INFO')}
-              >
-                Volver
-              </Button>
+              {step !== 'PRODUCT_INFO' ? (
+                <Button
+                  type="button"
+                  size="lg"
+                  variant="secondary"
+                  className="flex-1"
+                  disabled={isLoading}
+                  onClick={() => setStep('PRODUCT_INFO')}
+                >
+                  Volver
+                </Button>
+              ) : (
+                <DialogClose asChild>
+                  <Button
+                    type="button"
+                    size="lg"
+                    variant="secondary"
+                    className="flex-1"
+                    disabled={isLoading}
+                  >
+                    Cancelar
+                  </Button>
+                </DialogClose>
+              )}
 
               {/* Botón para avanzar o enviar */}
               {step === 'PRODUCT_INFO' && (

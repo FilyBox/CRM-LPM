@@ -21,7 +21,7 @@ import DistributionForm from '@documenso/ui/primitives/form-distribution';
 import { Input } from '@documenso/ui/primitives/input';
 import { useToast } from '@documenso/ui/primitives/use-toast';
 
-import { AdvancedFilterDialog } from '~/components/dialogs/advanced-filte-dialog';
+import { AdvancedFilterDialog } from '~/components/dialogs/advanced-filter-drawer';
 import { DocumentSearch } from '~/components/general/document/document-search';
 import { PeriodSelector } from '~/components/general/period-selector';
 import { DistributionTable } from '~/components/tables/distribution-table';
@@ -417,7 +417,7 @@ export default function DistributionPage() {
     <div className="mx-auto max-w-screen-xl gap-y-8 px-4 md:px-8">
       {/* <CardsChat /> */}
 
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-8">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-8 pt-1">
         <div className="flex flex-row items-center">
           {team && (
             <Avatar className="dark:border-border mr-3 h-12 w-12 border-2 border-solid border-white">
@@ -434,7 +434,7 @@ export default function DistributionPage() {
         </div>
 
         <div className="-m-1 flex flex-wrap gap-x-4 gap-y-6 overflow-hidden p-1">
-          <div className="flex items-center gap-x-2">
+          <div className="flex w-full items-center justify-between gap-x-2 sm:w-80">
             <Input type="file" accept=".csv" onChange={handleFileChange} className="max-w-sm" />
             <Button onClick={handleCsvUpload} disabled={!csvFile || isSubmitting}>
               {isSubmitting ? 'Procesando...' : 'Cargar CSV'}
@@ -445,11 +445,13 @@ export default function DistributionPage() {
           <TablePlatformFilter platformData={platformData} isLoading={platformLoading} />
 
           <PeriodSelector />
-          <div className="flex w-48 flex-wrap items-center justify-between gap-x-2">
+          <div className="flex w-full flex-wrap items-center justify-between gap-x-2 sm:w-48">
             <DocumentSearch initialValue={findDocumentSearchParams.query} />
           </div>
           <AdvancedFilterDialog tableToConsult="Distribution" />
-          <Button onClick={openCreateDialog}>Add Item</Button>
+          <Button className="w-full sm:w-fit" onClick={openCreateDialog}>
+            Add Item
+          </Button>
         </div>
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

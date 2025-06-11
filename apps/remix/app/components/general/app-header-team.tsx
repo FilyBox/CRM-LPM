@@ -1,15 +1,14 @@
 import { type HTMLAttributes, useEffect, useState } from 'react';
 
 import { MenuIcon, SearchIcon } from 'lucide-react';
-import { Link, useLocation, useParams } from 'react-router';
+import { useLocation } from 'react-router';
 
 import type { SessionUser } from '@documenso/auth/server/lib/session/session';
 import type { TGetTeamsResponse } from '@documenso/lib/server-only/team/get-teams';
-import { getRootHref } from '@documenso/lib/utils/params';
+// import { getRootHref } from '@documenso/lib/utils/params';
 import { cn } from '@documenso/ui/lib/utils';
 
-import { BrandingLogo } from '~/components/general/branding-logo';
-
+// import { BrandingLogo } from '~/components/general/branding-logo';
 import { AppCommandMenu } from './app-command-menu';
 import { AppNavDesktopTeams } from './app-nav-desktop-team';
 import { AppNavMobileTeam } from './app-nav-mobile-team';
@@ -21,7 +20,6 @@ export type HeaderProps = HTMLAttributes<HTMLDivElement> & {
 };
 
 export const HeaderTeams = ({ className, user, teams, ...props }: HeaderProps) => {
-  const params = useParams();
   const { pathname } = useLocation();
 
   const [isCommandMenuOpen, setIsCommandMenuOpen] = useState(false);

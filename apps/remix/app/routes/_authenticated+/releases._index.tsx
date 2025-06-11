@@ -34,7 +34,7 @@ import { Input } from '@documenso/ui/primitives/input';
 import { Tabs, TabsList, TabsTrigger } from '@documenso/ui/primitives/tabs';
 import { useToast } from '@documenso/ui/primitives/use-toast';
 
-import { AdvancedFilterDialog } from '~/components/dialogs/advanced-filte-dialog';
+import { AdvancedFilterDialog } from '~/components/dialogs/advanced-filter-drawer';
 import { DocumentSearch } from '~/components/general/document/document-search';
 import { PeriodSelector } from '~/components/general/period-selector';
 import { ReleaseType } from '~/components/general/task/release-type';
@@ -278,10 +278,8 @@ export default function TasksPage() {
       const csvData = await parseCsvFile(csvFile);
 
       const validatedData = csvData.map((item) => {
-        console.log('CSV Item:', item);
         const parsedDate = parseSpanishDate(item['Fecha'] || '');
-        console.log("item['Fecha']:", item['Fecha']);
-        console.log('Parsed Date:', parsedDate);
+
         const formattedDate = formatDate(parsedDate);
 
         // Validate typeOfRelease to ensure it's one of the allowed values

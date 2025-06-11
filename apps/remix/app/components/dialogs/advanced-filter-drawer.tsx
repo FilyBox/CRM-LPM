@@ -68,7 +68,6 @@ export const AdvancedFilterDialog = ({
       });
 
       // const query = await generateQuery(question);
-      console.log('Generated query:', query);
       if (query === undefined) {
         toast({
           description: _(msg`An error occurred. Please try again.`),
