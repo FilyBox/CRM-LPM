@@ -17,6 +17,7 @@ import { Progress as ProgressBar } from './progress';
 interface ProjectStatusCardProps {
   title: string;
   fileName?: string;
+  isrc?: string;
   progress?: number;
   onNavigate?: () => void;
   status?: (string | undefined)[];
@@ -62,6 +63,7 @@ export function ProjectStatusCard({
   tasks,
   onNavigate,
   status,
+  isrc,
   endDate,
   assets,
   canvas,
@@ -91,11 +93,8 @@ export function ProjectStatusCard({
   }, [isExpanded, animatedHeight]);
 
   return (
-    <Card
-      className="text-foreground w-full max-w-md cursor-pointer transition-all duration-300 hover:shadow-lg"
-      onClick={toggleExpand}
-    >
-      <CardHeader className="space-y-1">
+    <Card className="text-foreground w-full cursor-pointer transition-all duration-300 hover:shadow-lg">
+      <CardHeader onClick={toggleExpand} className="space-y-1">
         <div className="flex w-full items-start justify-between">
           <div className="space-y-2">
             <div className="flex gap-2">
@@ -144,7 +143,7 @@ export function ProjectStatusCard({
         </div>
       </CardHeader>
 
-      <CardContent>
+      <CardContent onClick={toggleExpand}>
         <div className="space-y-4">
           {progress && (
             <div className="space-y-2">
@@ -196,34 +195,20 @@ export function ProjectStatusCard({
                         </a>
                       )}
                     </div>
-
-                    <div className="space-y-2">
-                      <h4 className="flex items-center text-sm font-medium">
-                        <Users className="mr-2 h-4 w-4" />
-                        Artistas
-                      </h4>
-                      <div className="flex flex-col gap-2">
-                        {contributors.map((contributor, index) => (
+                    {contributors.map((contributor, index) => (
+                      <div className="space-y-2">
+                        <h4 className="flex items-center text-sm font-medium">
+                          <Users className="mr-2 h-4 w-4" />
+                          Artistas
+                        </h4>
+                        <div className="flex flex-col gap-2">
                           <div key={index} className="flex items-center">
                             <User className="text-accent-foreground mr-2 h-4 w-4" />
                             <p>{contributor.name}</p>
                           </div>
-                          // <TooltipProvider key={index}>
-                          //   <Tooltip>
-                          //     <TooltipTrigger asChild>
-                          //       <Avatar className="border-2 border-white">
-                          //         <AvatarImage src={contributor.image} alt={contributor.name} />
-                          //         <AvatarFallback>{contributor.name[0]}</AvatarFallback>
-                          //       </Avatar>
-                          //     </TooltipTrigger>
-                          //     <TooltipContent>
-                          //       <p>{contributor.name}</p>
-                          //     </TooltipContent>
-                          //   </Tooltip>
-                          // </TooltipProvider>
-                        ))}
+                        </div>
                       </div>
-                    </div>
+                    ))}
 
                     {/* Deliverables/Assets Section */}
                     {(assets ||
@@ -425,6 +410,12 @@ export function ProjectStatusCard({
               <div className="flex items-center">
                 <CalendarIcon className="mr-2 h-4 w-4" />
                 <span>Sin especificar</span>
+              </div>
+            )}
+
+            {isrc && (
+              <div className="flex items-center">
+                #<span>{isrc}</span>
               </div>
             )}
             {endDate && (

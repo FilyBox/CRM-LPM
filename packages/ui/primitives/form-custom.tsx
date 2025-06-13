@@ -239,7 +239,7 @@ export default function MyForm({ onSubmit, initialData, artistData }: MyFormProp
   useEffect(() => {
     console.log('Form errors use effect:', form.formState.errors);
   }, [form.formState.errors]);
-  // Función para validar los campos del paso 1 y avanzar al paso 2
+
   const onNextClick = () => {
     setStep('TRACK_INFO');
 
@@ -289,7 +289,6 @@ export default function MyForm({ onSubmit, initialData, artistData }: MyFormProp
     // }
   };
 
-  // Opciones para selects
   const yesNoOptions = [
     { label: 'Sí', value: 'Yes' },
     { label: 'No', value: 'No' },

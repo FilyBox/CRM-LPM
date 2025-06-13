@@ -62,6 +62,14 @@ export function meta() {
   return appMetaTags('TuStreams');
 }
 
+const sortColumns = z
+  .enum(['id', 'date', 'artist', 'title', 'UPC', 'createdAt', 'type', 'total', 'teamId', 'userId'])
+  .optional();
+export const TypeSearchParams = z.record(
+  z.string(),
+  z.union([z.string(), z.array(z.string()), z.undefined()]),
+);
+
 const ZSearchParamsSchema = ZFindTuStreamsInternalRequestSchema.pick({
   type: true,
   period: true,
@@ -73,6 +81,43 @@ const ZSearchParamsSchema = ZFindTuStreamsInternalRequestSchema.pick({
 });
 export default function TuStreamsPage() {
   const [searchParams] = useSearchParams();
+  const sort = useMemo(
+    () => TypeSearchParams.safeParse(Object.fromEntries(searchParams.entries())).data || {},
+    [searchParams],
+  );
+
+  const columnOrder = useMemo(() => {
+    if (sort.sort) {
+      try {
+        const parsedSort = JSON.parse(sort.sort as string);
+        if (Array.isArray(parsedSort) && parsedSort.length > 0) {
+          const { id } = parsedSort[0];
+          const isValidColumn = sortColumns.safeParse(id);
+          return isValidColumn.success ? id : undefined;
+        }
+      } catch (error) {
+        console.error('Error parsing sort parameter:', error);
+        return 'date';
+      }
+    }
+    return 'date';
+  }, [sort]);
+
+  const columnDirection = useMemo(() => {
+    if (sort.sort) {
+      try {
+        const parsedSort = JSON.parse(sort.sort as string);
+        if (Array.isArray(parsedSort) && parsedSort.length > 0) {
+          const { desc } = parsedSort[0];
+          return desc ? 'desc' : 'asc';
+        }
+      } catch (error) {
+        console.error('Error parsing sort parameter:', error);
+        return 'asc';
+      }
+    }
+    return 'asc';
+  }, [sort]);
 
   const findDocumentSearchParams = useMemo(() => {
     const searchParamsObject = Object.fromEntries(searchParams.entries());
@@ -105,6 +150,8 @@ export default function TuStreamsPage() {
     page: findDocumentSearchParams.page,
     perPage: findDocumentSearchParams.perPage,
     artistIds: findDocumentSearchParams.artistIds,
+    orderByColumn: columnOrder,
+    orderByDirection: columnDirection,
   });
 
   const { data: artistData, isLoading: artistDataloading } =

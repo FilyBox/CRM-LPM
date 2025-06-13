@@ -202,19 +202,6 @@ export default function FormReleases({ onSubmit, initialData }: MyFormProps) {
                   {/* Basic Information */}
                   <div className="grid grid-cols-12 gap-4">
                     <div className="col-span-12 md:col-span-6">
-                      {/* <FormField
-                        control={form.control}
-                        name="date"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Date</FormLabel>
-                            <FormControl>
-                              <Input type="date" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      /> */}
 
                       <FormField
                         control={form.control}

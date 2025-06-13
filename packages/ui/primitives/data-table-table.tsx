@@ -90,6 +90,7 @@ export function DataTable<TData>({
   children,
   ...props
 }: DataTableProps<TData>) {
+  // console.log('data', data);
   const dateColumnIds = [
     'releaseDate',
     'originalReleaseDate',
@@ -126,6 +127,9 @@ export function DataTable<TData>({
     date?: Date;
 
     releasesArtists?: enhancedArtists[];
+    isrcArtists?: enhancedArtists[];
+    lpmArtists?: enhancedArtists[];
+    tuStreamsArtists?: enhancedAssignees[];
     lanzamiento?: string;
     typeOfRelease?: string;
     release?: string;
@@ -139,15 +143,83 @@ export function DataTable<TData>({
     banners?: boolean;
     pitch?: boolean;
     EPKUpdates?: boolean;
+    trackName?: string;
     WebSiteUpdates?: boolean;
     Biography?: boolean;
     userId?: number;
     teamId?: number;
+    license?: string;
+    duration?: string;
+    isrc?: string;
     createdAt?: Date;
     updatedAt?: Date;
   };
 
   const isDesktop = useMediaQuery('(min-width: 640px)');
+
+  const prepareCardData = (row: any, index: number) => {
+    const typedRow = row as HasId & HasOptionalFields;
+
+    // Extract and prepare status elements
+    const statusElements = [
+      typedRow.status || typedRow.duration,
+      typedRow.license || typedRow.typeOfRelease,
+      typedRow.release,
+    ].filter((item): item is string => item !== undefined);
+
+    let title: string | undefined = typedRow.title || typedRow.lanzamiento;
+
+    // Prepare contributors/artists data
+    let contributors: { name: string }[] = [];
+    if (typedRow.artists) {
+      contributors = typedRow.artists.split(',').map((name) => ({ name: name.trim() }));
+    } else if (typedRow.releasesArtists) {
+      contributors = typedRow.releasesArtists.map((artist: enhancedArtists) => ({
+        name: artist.artistName || 'Unknown',
+      }));
+    } else if (typedRow.isrcArtists) {
+      contributors = typedRow.isrcArtists.map((artist: enhancedArtists) => ({
+        name: artist.artistName || 'Unknown',
+      }));
+    } else if (typedRow.lpmArtists) {
+      contributors = typedRow.lpmArtists.map((artist: enhancedArtists) => ({
+        name: artist.artistName || 'Unknown',
+      }));
+    } else if (typedRow.tuStreamsArtists) {
+      contributors = typedRow.tuStreamsArtists.map((artist: enhancedAssignees) => ({
+        name: artist.artistName || 'Unknown',
+      }));
+    }
+
+    // Prepare card properties with defaults
+    return {
+      key: typedRow.id || index,
+      status: statusElements,
+      title: title || 'Untitled',
+      fileName: typedRow.fileName || typedRow.trackName || '',
+      startDate: typedRow.startDate || typedRow.date || null,
+      endDate: typedRow.endDate,
+      contributors,
+      expandible: typedRow.isPossibleToExpand || '',
+      extensionTime: typedRow.possibleExtensionTime || '',
+      summary: typedRow.summary || '',
+      link: typedRow.streamingLink || '',
+      githubStars: 128,
+      openIssues: 5,
+      isrc: typedRow.isrc || '',
+      // All boolean flags with defaults
+      assets: Boolean(typedRow.assets),
+      canvas: Boolean(typedRow.canvas),
+      cover: Boolean(typedRow.cover),
+      audioWAV: Boolean(typedRow.audioWAV),
+      video: Boolean(typedRow.video),
+      banners: Boolean(typedRow.banners),
+      pitch: Boolean(typedRow.pitch),
+      EPKUpdates: Boolean(typedRow.EPKUpdates),
+      WebSiteUpdates: Boolean(typedRow.WebSiteUpdates),
+      Biography: Boolean(typedRow.Biography),
+    };
+  };
 
   return (
     <div className={cn('flex w-full flex-col gap-2.5 overflow-auto', className)} {...props}>
@@ -370,43 +442,8 @@ export function DataTable<TData>({
 
                 return (
                   <ProjectStatusCard
-                    key={typedRow.id || index}
-                    {...(onNavegate && {
-                      onNavigate: () => onNavegate?.(row),
-                    })}
-                    status={[typedRow.status || typedRow.typeOfRelease, typedRow.release].filter(
-                      (item): item is string => item !== undefined,
-                    )}
-                    title={typedRow.title || typedRow.lanzamiento || 'Untitled'}
-                    fileName={typedRow.fileName || ''}
-                    startDate={typedRow.startDate || typedRow.date || null}
-                    endDate={typedRow.endDate}
-                    contributors={
-                      typedRow.artists
-                        ? typedRow.artists.split(',').map((name) => ({ name: name.trim() }))
-                        : typedRow.releasesArtists
-                          ? typedRow.releasesArtists.map((artist: enhancedArtists) => ({
-                              name: artist.artistName || 'Unknown',
-                              id: artist.id,
-                            }))
-                          : []
-                    }
-                    expandible={typedRow.isPossibleToExpand || ''}
-                    extensionTime={typedRow.possibleExtensionTime || ''}
-                    summary={typedRow.summary || ''}
-                    link={typedRow.streamingLink || ''}
-                    githubStars={128}
-                    openIssues={5}
-                    assets={typedRow.assets || false}
-                    canvas={typedRow.canvas || false}
-                    cover={typedRow.cover || false}
-                    audioWAV={typedRow.audioWAV || false}
-                    video={typedRow.video || false}
-                    banners={typedRow.banners || false}
-                    pitch={typedRow.pitch || false}
-                    EPKUpdates={typedRow.EPKUpdates || false}
-                    WebSiteUpdates={typedRow.WebSiteUpdates || false}
-                    Biography={typedRow.Biography || false}
+                    {...prepareCardData(row, index)}
+                    {...(onNavegate && { onNavigate: () => onNavegate(row) })}
                   />
                 );
               })

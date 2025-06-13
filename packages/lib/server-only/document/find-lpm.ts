@@ -1,4 +1,4 @@
-import type { Prisma, Releases } from '@prisma/client';
+import type { Prisma, lpm } from '@prisma/client';
 import { DateTime } from 'luxon';
 
 import { prisma } from '@documenso/prisma';
@@ -13,7 +13,7 @@ export type FindReleaseOptions = {
   page?: number;
   perPage?: number;
   orderBy?: {
-    column: keyof Omit<Releases, 'release'>;
+    column: keyof lpm;
     direction: 'asc' | 'desc';
   };
   where?: Prisma.lpmWhereInput;
@@ -35,7 +35,6 @@ export const findLpm = async ({
   query,
 }: FindReleaseOptions) => {
   let team = null;
-
   if (teamId !== undefined) {
     team = await prisma.team.findFirstOrThrow({
       where: {
@@ -60,7 +59,7 @@ export const findLpm = async ({
     });
   }
 
-  const orderByColumn = orderBy?.column ?? 'id';
+  const orderByColumn = orderBy?.column ?? 'productType';
   const orderByDirection = orderBy?.direction ?? 'asc';
 
   const searchFilter: Prisma.lpmWhereInput = {

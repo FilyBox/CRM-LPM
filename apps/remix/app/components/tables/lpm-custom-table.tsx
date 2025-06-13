@@ -1,17 +1,27 @@
 import { useTransition } from 'react';
 
+import { msg } from '@lingui/macro';
 import { useLingui } from '@lingui/react';
 import type { ColumnDef } from '@tanstack/react-table';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale';
 import { Loader } from 'lucide-react';
 
 import { useUpdateSearchParams } from '@documenso/lib/client-only/hooks/use-update-search-params';
 import type { TFindLpmResponse } from '@documenso/trpc/server/lpm-router/schema';
+import { useDataTable } from '@documenso/ui/lib/use-data-table';
 import { Checkbox } from '@documenso/ui/primitives/checkbox';
-import { DataTable } from '@documenso/ui/primitives/data-table';
 import { DataTablePagination } from '@documenso/ui/primitives/data-table-pagination';
+import { DataTable } from '@documenso/ui/primitives/data-table-table';
 
-import { DataTableSkeleton } from '~/components/tables/data-table-skeleton';
 import { useOptionalCurrentTeam } from '~/providers/team';
+
+import { LpmTableActionBar } from '../lpm/lpm-table-action-bar';
+import { DataTableAdvancedToolbar } from './data-table-advanced-toolbar';
+import { DataTableColumnHeader } from './data-table-column-header';
+import { DataTableFilterList } from './data-table-filter-list';
+import { DataTableSkeleton } from './data-table-skeleton';
+import { DataTableSortList } from './data-table-sort-list';
 
 interface DataTableProps<TData, TValue> {
   data?: TFindLpmResponse;
@@ -45,6 +55,10 @@ export const LpmTable = ({
 
   const updateSearchParams = useUpdateSearchParams();
 
+  // ...existing code...
+
+  // ...existing code...
+
   const createColumns = (): ColumnDef<DocumentsTableRow>[] => {
     const columns: ColumnDef<DocumentsTableRow>[] = [
       {
@@ -73,327 +87,617 @@ export const LpmTable = ({
         size: 40,
       },
       {
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`ID`)} />,
         accessorKey: 'id',
-        header: 'ID',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.id || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Product ID`)} />
+        ),
         accessorKey: 'productId',
-        header: 'Product ID',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.productId || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Product Type`)} />
+        ),
         accessorKey: 'productType',
-        header: 'Product Type',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.productType || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Product Title`)} />
+        ),
         accessorKey: 'productTitle',
-        header: 'Product Title',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.productTitle || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Product Version`)} />
+        ),
         accessorKey: 'productVersion',
-        header: 'Product Version',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.productVersion || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Product Display Artist`)} />
+        ),
         accessorKey: 'lpmArtists',
-        header: 'Product Display Artist',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.lpmArtists || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Parent Label`)} />
+        ),
         accessorKey: 'parentLabel',
-        header: 'Parent Label',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.parentLabel || '-',
       },
       {
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`Label`)} />,
         accessorKey: 'label',
-        header: 'Label',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.label || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Original Release Date`)} />
+        ),
         accessorKey: 'originalReleaseDate',
-        header: 'Original Release Date',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) =>
+          row.original.originalReleaseDate
+            ? format(new Date(row.original.originalReleaseDate), 'd MMM yyyy', { locale: es })
+            : '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Release Date`)} />
+        ),
         accessorKey: 'releaseDate',
-        header: 'Release Date',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) =>
+          row.original.releaseDate
+            ? format(new Date(row.original.releaseDate), 'd MMM yyyy', { locale: es })
+            : '-',
       },
       {
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`UPC`)} />,
         accessorKey: 'upc',
-        header: 'UPC',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.upc || '-',
       },
       {
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`Catalog`)} />,
         accessorKey: 'catalog',
-        header: 'Catalog',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.catalog || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Product Price Tier`)} />
+        ),
         accessorKey: 'productPriceTier',
-        header: 'Product Price Tier',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.productPriceTier || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Product Genre`)} />
+        ),
         accessorKey: 'productGenre',
-        header: 'Product Genre',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.productGenre || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Submission Status`)} />
+        ),
         accessorKey: 'submissionStatus',
-        header: 'Submission Status',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.submissionStatus || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Product C Line`)} />
+        ),
         accessorKey: 'productCLine',
-        header: 'Product C Line',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.productCLine || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Product P Line`)} />
+        ),
         accessorKey: 'productPLine',
-        header: 'Product P Line',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.productPLine || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`PreOrder Date`)} />
+        ),
         accessorKey: 'preOrderDate',
-        header: 'PreOrder Date',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) =>
+          row.original.preOrderDate
+            ? format(new Date(row.original.preOrderDate), 'd MMM yyyy', { locale: es })
+            : '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Exclusives`)} />
+        ),
         accessorKey: 'exclusives',
-        header: 'Exclusives',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.exclusives || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Explicit Lyrics`)} />
+        ),
         accessorKey: 'explicitLyrics',
-        header: 'Explicit Lyrics',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.explicitLyrics || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Product Play Link`)} />
+        ),
         accessorKey: 'productPlayLink',
-        header: 'Product Play Link',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.productPlayLink || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Liner Notes`)} />
+        ),
         accessorKey: 'linerNotes',
-        header: 'Liner Notes',
+        enableHiding: true,
+        enableColumnFilter: true,
         size: 50,
         maxSize: 50,
-        enableHiding: true,
+        cell: ({ row }) => row.original.linerNotes || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Primary Metadata Language`)} />
+        ),
         accessorKey: 'primaryMetadataLanguage',
-        header: 'Primary Metadata Language',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.primaryMetadataLanguage || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Compilation`)} />
+        ),
         accessorKey: 'compilation',
-        header: 'Compilation',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.compilation || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`PDF Booklet`)} />
+        ),
         accessorKey: 'pdfBooklet',
-        header: 'PDF Booklet',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.pdfBooklet || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Timed Release Date`)} />
+        ),
         accessorKey: 'timedReleaseDate',
-        header: 'Timed Release Date',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) =>
+          row.original.timedReleaseDate
+            ? format(new Date(row.original.timedReleaseDate), 'd MMM yyyy', { locale: es })
+            : '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Timed Release Music Services`)} />
+        ),
         accessorKey: 'timedReleaseMusicServices',
-        header: 'Timed Release Music Services',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.timedReleaseMusicServices || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Last Process Date`)} />
+        ),
         accessorKey: 'lastProcessDate',
-        header: 'Last Process Date',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) =>
+          row.original.lastProcessDate
+            ? format(new Date(row.original.lastProcessDate), 'd MMM yyyy HH:mm', { locale: es })
+            : '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Import Date`)} />
+        ),
         accessorKey: 'importDate',
-        header: 'Import Date',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) =>
+          row.original.importDate
+            ? format(new Date(row.original.importDate), 'd MMM yyyy HH:mm', { locale: es })
+            : '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Created By`)} />
+        ),
         accessorKey: 'createdBy',
-        header: 'Created By',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.createdBy || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Last Modified`)} />
+        ),
         accessorKey: 'lastModified',
-        header: 'Last Modified',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) =>
+          row.original.lastModified
+            ? format(new Date(row.original.lastModified), 'd MMM yyyy HH:mm', { locale: es })
+            : '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Submitted At`)} />
+        ),
         accessorKey: 'submittedAt',
-        header: 'Submitted At',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) =>
+          row.original.submittedAt
+            ? format(new Date(row.original.submittedAt), 'd MMM yyyy HH:mm', { locale: es })
+            : '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Submitted By`)} />
+        ),
         accessorKey: 'submittedBy',
-        header: 'Submitted By',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.submittedBy || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Vevo Channel`)} />
+        ),
         accessorKey: 'vevoChannel',
-        header: 'Vevo Channel',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.vevoChannel || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Track Type`)} />
+        ),
         accessorKey: 'trackType',
-        header: 'Track Type',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.trackType || '-',
       },
       {
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`Track ID`)} />,
         accessorKey: 'trackId',
-        header: 'Track ID',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.trackId || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Track Volume`)} />
+        ),
         accessorKey: 'trackVolume',
-        header: 'Track Volume',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.trackVolume || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Track Number`)} />
+        ),
         accessorKey: 'trackNumber',
-        header: 'Track Number',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.trackNumber || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Track Name`)} />
+        ),
         accessorKey: 'trackName',
-        header: 'Track Name',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.trackName || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Track Version`)} />
+        ),
         accessorKey: 'trackVersion',
-        header: 'Track Version',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.trackVersion || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Track Display Artist`)} />
+        ),
         accessorKey: 'trackDisplayArtist',
-        header: 'Track Display Artist',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.trackDisplayArtist || '-',
       },
       {
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`ISRC`)} />,
         accessorKey: 'isrc',
-        header: 'ISRC',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.isrc || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Track Price Tier`)} />
+        ),
         accessorKey: 'trackPriceTier',
-        header: 'Track Price Tier',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.trackPriceTier || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Track Genre`)} />
+        ),
         accessorKey: 'trackGenre',
-        header: 'Track Genre',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.trackGenre || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Audio Language`)} />
+        ),
         accessorKey: 'audioLanguage',
-        header: 'Audio Language',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.audioLanguage || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Track C Line`)} />
+        ),
         accessorKey: 'trackCLine',
-        header: 'Track C Line',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.trackCLine || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Track P Line`)} />
+        ),
         accessorKey: 'trackPLine',
-        header: 'Track P Line',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.trackPLine || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Writers/Composers`)} />
+        ),
         accessorKey: 'writersComposers',
-        header: 'Writers/Composers',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.writersComposers || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Publishers/Collection Societies`)} />
+        ),
         accessorKey: 'publishersCollectionSocieties',
-        header: 'Publishers/Collection Societies',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.publishersCollectionSocieties || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Withhold Mechanicals`)} />
+        ),
         accessorKey: 'withholdMechanicals',
-        header: 'Withhold Mechanicals',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.withholdMechanicals || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`PreOrder Type`)} />
+        ),
         accessorKey: 'preOrderType',
-        header: 'PreOrder Type',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.preOrderType || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Instant Gratification Date`)} />
+        ),
         accessorKey: 'instantGratificationDate',
-        header: 'Instant Gratification Date',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) =>
+          row.original.instantGratificationDate
+            ? format(new Date(row.original.instantGratificationDate), 'd MMM yyyy', { locale: es })
+            : '-',
       },
       {
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`Duration`)} />,
         accessorKey: 'duration',
-        header: 'Duration',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.duration || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Sample Start Time`)} />
+        ),
         accessorKey: 'sampleStartTime',
-        header: 'Sample Start Time',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.sampleStartTime || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Explicit Lyrics Track`)} />
+        ),
         accessorKey: 'explicitLyricsTrack',
-        header: 'Explicit Lyrics Track',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.explicitLyricsTrack || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Album Only`)} />
+        ),
         accessorKey: 'albumOnly',
-        header: 'Album Only',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.albumOnly || '-',
       },
       {
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`Lyrics`)} />,
         accessorKey: 'lyrics',
-        header: 'Lyrics',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.lyrics || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader
+            column={column}
+            title={_(msg`Additional Contributors (Performing)`)}
+          />
+        ),
         accessorKey: 'additionalContributorsPerforming',
-        header: 'Additional Contributors (Performing)',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.additionalContributorsPerforming || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader
+            column={column}
+            title={_(msg`Additional Contributors (Non-Performing)`)}
+          />
+        ),
         accessorKey: 'additionalContributorsNonPerforming',
-        header: 'Additional Contributors (Non-Performing)',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.additionalContributorsNonPerforming || '-',
       },
       {
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`Producers`)} />,
         accessorKey: 'producers',
-        header: 'Producers',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.producers || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Continuous Mix`)} />
+        ),
         accessorKey: 'continuousMix',
-        header: 'Continuous Mix',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.continuousMix || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader
+            column={column}
+            title={_(msg`Continuously Mixed Individual Song`)}
+          />
+        ),
         accessorKey: 'continuouslyMixedIndividualSong',
-        header: 'Continuously Mixed Individual Song',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.continuouslyMixedIndividualSong || '-',
       },
       {
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Track Play Link`)} />
+        ),
         accessorKey: 'trackPlayLink',
-        header: 'Track Play Link',
         enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.trackPlayLink || '-',
       },
     ];
     return columns;
   };
 
+  // ...existing code...
+
   const columns = createColumns();
+
+  const { table, shallow, debounceMs, throttleMs } = useDataTable({
+    data: data?.data || [],
+    columns,
+    pageCount: data?.totalPages || 1,
+    enableAdvancedFilter: true,
+    initialState: {
+      sorting: [{ id: 'id', desc: true }],
+      columnPinning: { right: ['actions'] },
+    },
+    defaultColumn: {
+      columns,
+      enableColumnFilter: false,
+    },
+    getRowId: (originalRow) => originalRow.id.toString(),
+    shallow: false,
+    clearOnDefault: true,
+  });
 
   const onPaginationChange = (page: number, perPage: number) => {
     startTransition(() => {
@@ -413,43 +717,54 @@ export const LpmTable = ({
   };
 
   return (
-    <div className="relative">
-      <DataTable
-        columns={columns}
-        onDelete={onDelete}
-        onEdit={onEdit}
-        data={results.data}
-        perPage={results.perPage}
-        currentPage={results.currentPage}
-        totalPages={results.totalPages}
-        onPaginationChange={onPaginationChange}
-        columnVisibility={{
-          sender: team !== undefined,
-        }}
-        error={{
-          enable: isLoadingError || false,
-        }}
-        skeleton={{
-          enable: isLoading || false,
-          rows: 5,
-          component: (
-            <DataTableSkeleton
-              columnCount={columns.length}
-              cellWidths={['10rem', '30rem', '10rem', '10rem', '6rem', '6rem', '6rem']}
-              shrinkZero
-            />
-          ),
-        }}
-      >
-        {(table) => <DataTablePagination additionalInformation="VisibleCount" table={table} />}
-      </DataTable>
+    <DataTable
+      setIsMultipleDelete={setIsMultipleDelete}
+      isMultipleDelete={isMultipleDelete}
+      onDelete={onDelete}
+      onEdit={onEdit}
+      data={results.data}
+      onMultipleDelete={onMultipleDelete}
+      perPage={results.perPage}
+      currentPage={results.currentPage}
+      totalPages={results.totalPages}
+      onPaginationChange={onPaginationChange}
+      columnVisibility={{
+        sender: team !== undefined,
+      }}
+      error={{
+        enable: isLoadingError || false,
+      }}
+      skeleton={{
+        enable: isLoading || false,
+        rows: 5,
+        component: (
+          <DataTableSkeleton
+            columnCount={columns.length}
+            cellWidths={['3rem', '3rem', '3rem', '3rem', '2rem', '2rem', '2rem']}
+            shrinkZero
+          />
+        ),
+      }}
+      table={table}
+      actionBar={<LpmTableActionBar table={table} />}
+    >
+      {/* actionBar={<ReleasesTableActionBar table={table as any} />} */}
 
-      {isPending && (
-        <div className="bg-background/50 absolute inset-0 flex items-center justify-center">
-          <Loader className="text-muted-foreground h-8 w-8 animate-spin" />
-        </div>
-      )}
-    </div>
+      {/* <DataTableToolbar table={table}>
+             <DataTableSortList table={table} align="end" />
+           </DataTableToolbar> */}
+
+      <DataTableAdvancedToolbar table={table}>
+        <DataTableSortList table={table} align="start" />
+        <DataTableFilterList
+          table={table}
+          shallow={shallow}
+          debounceMs={debounceMs}
+          throttleMs={throttleMs}
+          align="start"
+        />
+      </DataTableAdvancedToolbar>
+    </DataTable>
   );
 };
 

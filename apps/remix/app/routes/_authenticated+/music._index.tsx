@@ -37,6 +37,79 @@ const ZSearchParamsSchema = ZFindLpmInternalRequestSchema.pick({
 }).extend({
   artistIds: z.string().transform(parseToIntegerArray).optional().catch([]),
 });
+const sortColumns = z
+  .enum([
+    'id',
+    'productId',
+    'productType',
+    'productTitle',
+    'productVersion',
+    'productDisplayArtist',
+    'parentLabel',
+    'label',
+    'originalReleaseDate',
+    'releaseDate',
+    'upc',
+    'catalog',
+    'productPriceTier',
+    'productGenre',
+    'submissionStatus',
+    'productCLine',
+    'productPLine',
+    'preOrderDate',
+    'exclusives',
+    'explicitLyrics',
+    'additionalContributorsNonPerforming',
+    'additionalContributorsPerforming',
+    'albumOnly',
+    'audioLanguage',
+    'compilation',
+    'continuousMix',
+    'createdBy',
+    'duration',
+    'importDate',
+    'explicitLyricsTrack',
+    'instantGratificationDate',
+    'lastModified',
+    'lastProcessDate',
+    'linerNotes',
+    'isrc',
+    'lyrics',
+    'producers',
+    'sampleStartTime',
+    'trackCLine',
+    'trackId',
+    'trackGenre',
+    'trackName',
+    'trackNumber',
+    'trackPLine',
+    'trackPriceTier',
+    'trackType',
+    'trackVolume',
+    'writersComposers',
+    'timedReleaseDate',
+    'timedReleaseMusicServices',
+    'pdfBooklet',
+    'preOrderType',
+    'submittedAt',
+    'productPlayLink',
+    'publishersCollectionSocieties',
+    'trackDisplayArtist',
+    'submittedBy',
+    'continuouslyMixedIndividualSong',
+    'primaryMetadataLanguage',
+    'trackVersion',
+    'vevoChannel',
+    'trackPlayLink',
+    'withholdMechanicals',
+    'teamId',
+    'userId',
+  ])
+  .optional();
+export const TypeSearchParams = z.record(
+  z.string(),
+  z.union([z.string(), z.array(z.string()), z.undefined()]),
+);
 
 export function meta() {
   return appMetaTags('Music');
@@ -44,19 +117,63 @@ export function meta() {
 
 export default function TablePage() {
   const [searchParams] = useSearchParams();
+
+  const sort = useMemo(
+    () => TypeSearchParams.safeParse(Object.fromEntries(searchParams.entries())).data || {},
+    [searchParams],
+  );
+
+  const columnOrder = useMemo(() => {
+    if (sort.sort) {
+      try {
+        const parsedSort = JSON.parse(sort.sort as string);
+        if (Array.isArray(parsedSort) && parsedSort.length > 0) {
+          const { id } = parsedSort[0];
+          const isValidColumn = sortColumns.safeParse(id);
+          return isValidColumn.success ? id : undefined;
+        }
+      } catch (error) {
+        console.error('Error parsing sort parameter:', error);
+        return 'id';
+      }
+    }
+    return 'id';
+  }, [sort]);
+
+  const columnDirection = useMemo(() => {
+    if (sort.sort) {
+      try {
+        const parsedSort = JSON.parse(sort.sort as string);
+        if (Array.isArray(parsedSort) && parsedSort.length > 0) {
+          const { desc } = parsedSort[0];
+          return desc ? 'desc' : 'asc';
+        }
+      } catch (error) {
+        console.error('Error parsing sort parameter:', error);
+        return 'asc';
+      }
+    }
+    return 'asc';
+  }, [sort]);
+
   const [csvFile, setCsvFile] = useState<File | null>(null);
 
   const findDocumentSearchParams = useMemo(
     () => ZSearchParamsSchema.safeParse(Object.fromEntries(searchParams.entries())).data || {},
     [searchParams],
   );
+
   const { data, isLoading, isLoadingError, refetch } = trpc.lpm.findLpm.useQuery({
     query: findDocumentSearchParams.query,
     artistIds: findDocumentSearchParams.artistIds,
     period: findDocumentSearchParams.period,
     page: findDocumentSearchParams.page,
     perPage: findDocumentSearchParams.perPage,
+    orderByColumn: columnOrder,
+    orderByDirection: columnDirection,
   });
+
+  console.log('data', data);
 
   const { data: artistData, isLoading: artistDataloading } =
     trpc.lpm.findLpmUniqueArtists.useQuery();

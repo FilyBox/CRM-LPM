@@ -2,32 +2,24 @@ import { useMemo, useTransition } from 'react';
 
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
+import type { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale/es';
-import { Loader } from 'lucide-react';
-import { CheckIcon, XIcon } from 'lucide-react';
-import { DateTime } from 'luxon';
-import { Link } from 'react-router';
 
 import { useUpdateSearchParams } from '@documenso/lib/client-only/hooks/use-update-search-params';
 import type { TFindTuStreamsResponse } from '@documenso/trpc/server/tustreams-router/schema';
+import { useDataTable } from '@documenso/ui/lib/use-data-table';
 import { Checkbox } from '@documenso/ui/primitives/checkbox';
-import type { DataTableColumnDef } from '@documenso/ui/primitives/data-table';
-import { DataTable } from '@documenso/ui/primitives/data-table';
-import { DataTablePagination } from '@documenso/ui/primitives/data-table-pagination';
+import { DataTable } from '@documenso/ui/primitives/data-table-table';
 
-import { DataTableSkeleton } from '~/components/tables/data-table-skeleton';
 import { useOptionalCurrentTeam } from '~/providers/team';
 
-// export type DocumentsTableProps = {
-//   data?: TFindTuStreamsResponse;
-//   isLoading?: boolean;
-//   isLoadingError?: boolean;
-//   onMoveDocument?: (documentId: number) => void;
-//     onAdd: () => void;
-//   onEdit: (data: TData) => void;
-//   onDelete: (data: TData) => void;
-// };
+import { TableActionBar } from '../tustreams/tustreams-table-action-bar';
+import { DataTableAdvancedToolbar } from './data-table-advanced-toolbar';
+import { DataTableColumnHeader } from './data-table-column-header';
+import { DataTableFilterList } from './data-table-filter-list';
+import { DataTableSkeleton } from './data-table-skeleton';
+import { DataTableSortList } from './data-table-sort-list';
 
 interface DataTableProps<TData, TValue> {
   data?: TFindTuStreamsResponse;
@@ -61,8 +53,8 @@ export const TuStreamsTable = ({
 
   const updateSearchParams = useUpdateSearchParams();
 
-  const columns = useMemo(() => {
-    return [
+  const createColumns = (): ColumnDef<DocumentsTableRow>[] => {
+    const columns: ColumnDef<DocumentsTableRow>[] = [
       {
         id: 'select',
         header: ({ table }) => (
@@ -88,48 +80,84 @@ export const TuStreamsTable = ({
         enableHiding: false,
         size: 40,
       },
+
       {
-        header: _(msg`Title`),
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`Date`)} />,
+        accessorKey: 'date',
+        enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) =>
+          row.original.date ? format(row.original.date, 'd MMM yyyy', { locale: es }) : '-',
+      },
+      {
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`Title`)} />,
         accessorKey: 'title',
+        enableHiding: true,
+        enableColumnFilter: true,
         cell: ({ row }) => row.original.title || '-',
       },
       {
-        header: _(msg`UPC`),
-        accessorKey: 'UPC',
-        cell: ({ row }) => row.original.UPC || '-',
-        enableHiding: team !== undefined,
-      },
-      {
-        header: _(msg`Type`),
-        accessorKey: 'type',
-        cell: ({ row }) => row.original.type || '-',
-      },
-      {
-        header: _(msg`Artist`),
+        header: _(msg`Artists`),
+
         accessorKey: 'tuStreamsArtists',
+        enableHiding: true,
+        enableColumnFilter: true,
         cell: ({ row }) => row.original.tuStreamsArtists || '-',
       },
       {
-        header: _(msg`Total`),
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`Type`)} />,
+        accessorKey: 'type',
+        enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.type || '-',
+      },
+      {
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`UPC`)} />,
+        accessorKey: 'UPC',
+        enableHiding: true,
+        enableColumnFilter: true,
+        cell: ({ row }) => row.original.UPC || '-',
+      },
+      {
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`total`)} />,
         accessorKey: 'total',
+        enableHiding: true,
+        enableColumnFilter: true,
         cell: ({ row }) => row.original.total || '-',
       },
       {
-        header: _(msg`Created`),
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`CreatedAt`)} />,
         accessorKey: 'createdAt',
+        enableHiding: true,
+        enableColumnFilter: true,
         cell: ({ row }) =>
-          i18n.date(row.original.createdAt, { ...DateTime.DATETIME_SHORT, hourCycle: 'h12' }),
+          row.original.createdAt
+            ? format(row.original.createdAt, 'd MMM yyyy', { locale: es })
+            : '-',
       },
-      // {
-      //   header: _(msg`Date`),
-      //   accessorKey: 'date',
-      //   cell: ({ row }) =>
-      //     row.original.date ? format(row.original.date, 'd MMM yyyy', { locale: es }) + '' : '-',
+    ];
+    return columns;
+  };
 
-      //   // format(new Date(row.original.date + 'T00:00:00'), 'dd/MM/yyyy') : '-',
-      // },
-    ] satisfies DataTableColumnDef<DocumentsTableRow>[];
-  }, [team]);
+  const columns = createColumns();
+
+  const { table, shallow, debounceMs, throttleMs } = useDataTable({
+    data: data?.data || [],
+    columns,
+    pageCount: data?.totalPages || 1,
+    enableAdvancedFilter: true,
+    initialState: {
+      sorting: [{ id: 'createdAt', desc: true }],
+      columnPinning: { right: ['actions'] },
+    },
+    defaultColumn: {
+      columns,
+      enableColumnFilter: false,
+    },
+    getRowId: (originalRow) => originalRow.id.toString(),
+    shallow: false,
+    clearOnDefault: true,
+  });
 
   const onPaginationChange = (page: number, perPage: number) => {
     startTransition(() => {
@@ -150,13 +178,12 @@ export const TuStreamsTable = ({
   return (
     <div className="relative">
       <DataTable
-        isMultipleDelete={isMultipleDelete}
         setIsMultipleDelete={setIsMultipleDelete}
-        onMultipleDelete={onMultipleDelete}
-        columns={columns}
+        isMultipleDelete={isMultipleDelete}
         onDelete={onDelete}
         onEdit={onEdit}
         data={results.data}
+        onMultipleDelete={onMultipleDelete}
         perPage={results.perPage}
         currentPage={results.currentPage}
         totalPages={results.totalPages}
@@ -173,25 +200,25 @@ export const TuStreamsTable = ({
           component: (
             <DataTableSkeleton
               columnCount={columns.length}
-              cellWidths={['10rem', '30rem', '10rem', '10rem', '6rem', '6rem', '6rem']}
+              cellWidths={['3rem', '3rem', '3rem', '3rem', '2rem', '2rem', '2rem']}
               shrinkZero
             />
           ),
         }}
+        table={table}
+        actionBar={<TableActionBar table={table} />}
       >
-        {(table) => <DataTablePagination additionalInformation="VisibleCount" table={table} />}
+        <DataTableAdvancedToolbar table={table}>
+          <DataTableSortList table={table} align="start" />
+          <DataTableFilterList
+            table={table}
+            shallow={shallow}
+            debounceMs={debounceMs}
+            throttleMs={throttleMs}
+            align="start"
+          />
+        </DataTableAdvancedToolbar>
       </DataTable>
-
-      {isPending && (
-        <div className="bg-background/50 absolute inset-0 flex items-center justify-center">
-          <Loader className="text-muted-foreground h-8 w-8 animate-spin" />
-        </div>
-      )}
     </div>
   );
-};
-
-type DataTableTitleProps = {
-  row: DocumentsTableRow;
-  teamUrl?: string;
 };

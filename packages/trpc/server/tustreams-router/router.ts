@@ -248,7 +248,18 @@ export const tuStreamsRouter = router({
         orderBy: z.enum(['createdAt', 'updatedAt']).optional(),
         orderByDirection: z.enum(['asc', 'desc']).optional().default('desc'),
         orderByColumn: z
-          .enum(['teamId', 'id', 'userId', 'createdAt', 'date', 'title', 'artist', 'UPC', 'total'])
+          .enum([
+            'id',
+            'date',
+            'artist',
+            'title',
+            'UPC',
+            'createdAt',
+            'type',
+            'total',
+            'teamId',
+            'userId',
+          ])
           .optional(),
         artistIds: z.array(z.number()).optional(),
       }),

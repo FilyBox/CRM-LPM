@@ -38,6 +38,15 @@ export function meta() {
   return appMetaTags('Isrc');
 }
 
+const sortColumns = z
+  .enum(['id', 'date', 'createdAt', 'isrc', 'artist', 'duration', 'trackName', 'title', 'license'])
+  .optional();
+
+export const TypeSearchParams = z.record(
+  z.string(),
+  z.union([z.string(), z.array(z.string()), z.undefined()]),
+);
+
 const ZSearchParamsSchema = ZFindIsrcSongsInternalRequestSchema.pick({
   period: true,
   page: true,
@@ -49,6 +58,45 @@ const ZSearchParamsSchema = ZFindIsrcSongsInternalRequestSchema.pick({
 
 export default function IsrcPage() {
   const [searchParams] = useSearchParams();
+
+  const sort = useMemo(
+    () => TypeSearchParams.safeParse(Object.fromEntries(searchParams.entries())).data || {},
+    [searchParams],
+  );
+
+  const columnOrder = useMemo(() => {
+    if (sort.sort) {
+      try {
+        const parsedSort = JSON.parse(sort.sort as string);
+        if (Array.isArray(parsedSort) && parsedSort.length > 0) {
+          const { id } = parsedSort[0];
+          const isValidColumn = sortColumns.safeParse(id);
+          return isValidColumn.success ? id : undefined;
+        }
+      } catch (error) {
+        console.error('Error parsing sort parameter:', error);
+        return 'title';
+      }
+    }
+    return 'title';
+  }, [sort]);
+
+  const columnDirection = useMemo(() => {
+    if (sort.sort) {
+      try {
+        const parsedSort = JSON.parse(sort.sort as string);
+        if (Array.isArray(parsedSort) && parsedSort.length > 0) {
+          const { desc } = parsedSort[0];
+          return desc ? 'desc' : 'asc';
+        }
+      } catch (error) {
+        console.error('Error parsing sort parameter:', error);
+        return 'asc';
+      }
+    }
+    return 'asc';
+  }, [sort]);
+
   const team = useOptionalCurrentTeam();
 
   const findDocumentSearchParams = useMemo(
@@ -60,6 +108,8 @@ export default function IsrcPage() {
     period: findDocumentSearchParams.period,
     page: findDocumentSearchParams.page,
     artistIds: findDocumentSearchParams.artistIds,
+    orderByColumn: columnOrder,
+    orderByDirection: columnDirection,
 
     perPage: findDocumentSearchParams.perPage,
   });

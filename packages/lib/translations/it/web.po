@@ -797,6 +797,14 @@ msgstr "Aggiungere e rimuovere posti adeguerà di conseguenza la tua fattura."
 msgid "Additional brand information to display at the bottom of emails"
 msgstr "Informazioni aggiuntive sul marchio da mostrare in fondo alle email"
 
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Additional Contributors (Non-Performing)"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Additional Contributors (Performing)"
+msgstr ""
+
 #: packages/lib/constants/teams.ts
 msgid "Admin"
 msgstr "Amministratore"
@@ -837,6 +845,10 @@ msgstr "Dopo l'invio, un documento verrà generato automaticamente e aggiunto al
 #: apps/remix/app/components/general/task/release-type.tsx
 #: apps/remix/app/components/general/task/release-type.tsx
 msgid "Album"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Album Only"
 msgstr ""
 
 #: apps/remix/app/components/general/task/tustreams-type.tsx
@@ -1109,9 +1121,9 @@ msgstr "Si è verificato un errore durante l'aggiornamento del tuo profilo."
 msgid "An error occurred while uploading your document."
 msgstr "Si è verificato un errore durante il caricamento del tuo documento."
 
-#: apps/remix/app/components/dialogs/advanced-filte-dialog.tsx
-#: apps/remix/app/components/dialogs/advanced-filte-dialog.tsx
-#: apps/remix/app/components/dialogs/advanced-filte-dialog.tsx
+#: apps/remix/app/components/dialogs/advanced-filter-drawer.tsx
+#: apps/remix/app/components/dialogs/advanced-filter-drawer.tsx
+#: apps/remix/app/components/dialogs/advanced-filter-drawer.tsx
 msgid "An error occurred. Please try again."
 msgstr ""
 
@@ -1249,7 +1261,6 @@ msgstr "Sei sicuro di voler eliminare questo team?"
 msgid "Are you sure?"
 msgstr "Sei sicuro?"
 
-#: apps/remix/app/components/tables/tustreams-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Artist"
 msgstr ""
@@ -1258,11 +1269,14 @@ msgstr ""
 msgid "Artist created successfully"
 msgstr ""
 
+#: apps/remix/app/components/tables/tustreams-table.tsx
+msgid "Artists"
+msgstr ""
+
 #: apps/remix/app/components/general/task/tasks-list.tsx
 msgid "Asignados"
 msgstr ""
 
-#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Assets"
 msgstr ""
@@ -1312,9 +1326,12 @@ msgstr "Deve essere abilitato almeno un tipo di firma"
 msgid "Attempts sealing the document again, useful for after a code change has occurred to resolve an erroneous document."
 msgstr "Tenta nuovamente di sigillare il documento, utile dopo una modifica al codice per risolvere un documento errato."
 
-#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Audio"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Audio Language"
 msgstr ""
 
 #: apps/remix/app/components/general/document/document-page-view-dropdown.tsx
@@ -1370,7 +1387,6 @@ msgstr "Codici di Backup"
 msgid "Banner Updated"
 msgstr "Banner Aggiornato"
 
-#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Banners"
 msgstr ""
@@ -1388,7 +1404,6 @@ msgstr "Dettagli di Base"
 msgid "Billing"
 msgstr "Fatturazione"
 
-#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Biography"
 msgstr ""
@@ -1549,9 +1564,12 @@ msgstr ""
 msgid "Cannot remove signer"
 msgstr "Impossibile rimuovere il firmatario"
 
-#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Canvas"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Catalog"
 msgstr ""
 
 #: packages/lib/constants/recipient-roles.ts
@@ -1691,6 +1709,10 @@ msgstr ""
 
 #: apps/remix/app/components/embed/authoring/configure-document-advanced-settings.tsx
 msgid "Communication"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Compilation"
 msgstr ""
 
 #: apps/remix/app/components/general/document-signing/document-signing-complete-dialog.tsx
@@ -1887,6 +1909,14 @@ msgstr "Continua visualizzando il documento."
 msgid "Continue to login"
 msgstr "Continua per accedere"
 
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Continuous Mix"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Continuously Mixed Individual Song"
+msgstr ""
+
 #: apps/remix/app/routes/_authenticated+/contracts._index.tsx
 #: apps/remix/app/routes/_authenticated+/contracts.f.$folderId._index.tsx
 #: apps/remix/app/routes/_authenticated+/contracts.$id._index.tsx
@@ -1976,7 +2006,6 @@ msgstr ""
 msgid "Costo Distribución"
 msgstr ""
 
-#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Cover"
 msgstr ""
@@ -2101,7 +2130,6 @@ msgid "Create your account and start using state-of-the-art document signing. Op
 msgstr "Crea il tuo account e inizia a utilizzare firme digitali all'avanguardia. Una firma aperta e bella è a tua portata."
 
 #: apps/remix/app/routes/_authenticated+/admin+/documents._index.tsx
-#: apps/remix/app/components/tables/tustreams-table.tsx
 #: apps/remix/app/components/tables/templates-table.tsx
 #: apps/remix/app/components/tables/settings-security-passkey-table.tsx
 #: apps/remix/app/components/tables/releases-table.tsx
@@ -2128,6 +2156,10 @@ msgstr "Creato il"
 msgid "Created by"
 msgstr "Creato da"
 
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Created By"
+msgstr ""
+
 #: apps/remix/app/routes/_authenticated+/admin+/documents.$id.tsx
 #: apps/remix/app/components/tables/user-settings-pending-teams-table.tsx
 msgid "Created on"
@@ -2140,6 +2172,10 @@ msgstr "Creato il"
 #: apps/remix/app/routes/_authenticated+/settings+/tokens.tsx
 msgid "Created on {0}"
 msgstr "Creato il {0}"
+
+#: apps/remix/app/components/tables/tustreams-table.tsx
+msgid "CreatedAt"
+msgstr ""
 
 #: apps/remix/app/components/general/task/task-priority.tsx
 msgid "Critical"
@@ -2173,6 +2209,7 @@ msgstr "Giornaliero"
 msgid "Dark Mode"
 msgstr "Modalità Scura"
 
+#: apps/remix/app/components/tables/tustreams-table.tsx
 #: apps/remix/app/components/tables/settings-security-activity-table.tsx
 #: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
@@ -2870,6 +2907,10 @@ msgstr "A causa di una fattura non pagata, il vostro team è stato limitato. Si 
 msgid "Duplicate"
 msgstr "Duplica"
 
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Duration"
+msgstr ""
+
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.webhooks._index.tsx
 #: apps/remix/app/routes/_authenticated+/settings+/webhooks._index.tsx
 #: apps/remix/app/components/tables/templates-table-action-dropdown.tsx
@@ -3072,7 +3113,6 @@ msgstr "Inserisci il tuo testo qui"
 msgid "EP"
 msgstr ""
 
-#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "EPK"
 msgstr ""
@@ -3170,6 +3210,10 @@ msgstr "Hanno firmato tutti! Riceverai una copia via email del documento firmato
 msgid "Exceeded timeout"
 msgstr "Tempo scaduto"
 
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Exclusives"
+msgstr ""
+
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings._index.tsx
 msgid "Expired"
 msgstr "Scaduto"
@@ -3178,6 +3222,14 @@ msgstr "Scaduto"
 #: apps/remix/app/routes/_authenticated+/settings+/tokens.tsx
 msgid "Expires on {0}"
 msgstr "Scade il {0}"
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Explicit Lyrics"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Explicit Lyrics Track"
+msgstr ""
 
 #: apps/remix/app/components/dialogs/artist-create-dialog.tsx
 msgid "Failed to create artist"
@@ -3495,6 +3547,7 @@ msgstr "Sono il proprietario di questo documento"
 msgid "I'm sure! Delete it"
 msgstr "Sono sicuro! Eliminalo"
 
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
 #: apps/remix/app/components/tables/distribution-table.tsx
 msgid "ID"
 msgstr ""
@@ -3514,6 +3567,10 @@ msgstr "Se non trovi il link di conferma nella tua casella di posta, puoi richie
 #: apps/remix/app/components/forms/2fa/enable-authenticator-app-dialog.tsx
 msgid "If your authenticator app does not support QR codes, you can use the following code instead:"
 msgstr "Se la tua app autenticatrice non supporta i codici QR, puoi usare il seguente codice:"
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Import Date"
+msgstr ""
 
 #: apps/remix/app/components/general/task/task-status.tsx
 msgid "In Progress"
@@ -3557,6 +3614,10 @@ msgstr "Inserito"
 #: apps/remix/app/routes/_authenticated+/admin+/stats.tsx
 msgid "Instance Stats"
 msgstr "Statistiche istanze"
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Instant Gratification Date"
+msgstr ""
 
 #: apps/remix/app/components/forms/2fa/view-recovery-codes-dialog.tsx
 msgid "Invalid code. Please try again."
@@ -3629,6 +3690,7 @@ msgstr "Indirizzo IP"
 msgid "Isrc"
 msgstr ""
 
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
 #: apps/remix/app/components/tables/distribution-table.tsx
 #: apps/remix/app/components/general/app-nav-mobile-team.tsx
 #: apps/remix/app/components/general/app-nav-desktop-team.tsx
@@ -3660,6 +3722,7 @@ msgstr "Attualmente non è il tuo turno di firmare. Torna presto a controllare p
 msgid "It's currently not your turn to sign. You will receive an email with instructions once it's your turn to sign the document."
 msgstr "Al momento, non è il tuo turno di firmare. Riceverai un'email con le istruzioni quando sarà il tuo turno di firmare il documento."
 
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
 #: packages/ui/primitives/document-flow/field-items-advanced-settings/text-field.tsx
 #: packages/ui/primitives/document-flow/field-items-advanced-settings/radio-field.tsx
 #: packages/ui/primitives/document-flow/field-items-advanced-settings/number-field.tsx
@@ -3674,10 +3737,6 @@ msgstr "Etichetta"
 #: packages/ui/primitives/document-flow/add-settings.tsx
 msgid "Language"
 msgstr "Lingua"
-
-#: apps/remix/app/components/tables/releases-table.tsx
-msgid "Lanzamiento"
-msgstr ""
 
 #: apps/remix/app/components/general/period-selector.tsx
 msgid "Last 14 days"
@@ -3695,6 +3754,14 @@ msgstr "Ultimi 7 giorni"
 #: apps/remix/app/components/general/document/document-page-view-information.tsx
 msgid "Last modified"
 msgstr "Ultima modifica"
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Last Modified"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Last Process Date"
+msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/documents.f.$folderId.$id.logs.tsx
 #: apps/remix/app/routes/_authenticated+/documents.f.$folderId.$id.logs copy.tsx
@@ -3735,6 +3802,10 @@ msgstr "Modalità chiara"
 #: apps/remix/app/routes/_profile+/_layout.tsx
 msgid "Like to have your own public profile with agreements?"
 msgstr "Ti piacerebbe avere il tuo profilo pubblico con accordi?"
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Liner Notes"
+msgstr ""
 
 #: packages/email/templates/team-transfer-request.tsx
 msgid "Link expires in 1 hour."
@@ -3789,6 +3860,10 @@ msgstr "Accedi"
 
 #: apps/remix/app/components/general/task/task-priority.tsx
 msgid "Low"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Lyrics"
 msgstr ""
 
 #: apps/remix/app/components/tables/user-settings-current-teams-table.tsx
@@ -4316,6 +4391,10 @@ msgstr "Oppure"
 msgid "Or continue with"
 msgstr "Oppure continua con"
 
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Original Release Date"
+msgstr ""
+
 #: apps/remix/app/components/dialogs/template-use-dialog.tsx
 msgid "Otherwise, the document will be created as a draft."
 msgstr "Altrimenti, il documento sarà creato come bozza."
@@ -4346,6 +4425,10 @@ msgstr "Pagina {0} di {numPages}"
 #: apps/remix/app/components/tables/team-settings-billing-invoices-table.tsx
 msgid "Paid"
 msgstr "Pagato"
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Parent Label"
+msgstr ""
 
 #: apps/remix/app/components/forms/signin.tsx
 msgid "Passkey"
@@ -4417,6 +4500,10 @@ msgstr "È necessario il pagamento per completare la creazione del tuo team."
 msgid "Payment overdue"
 msgstr "Pagamento scaduto"
 
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "PDF Booklet"
+msgstr ""
+
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.members.tsx
 #: apps/remix/app/components/tables/user-settings-teams-page-table.tsx
 #: apps/remix/app/components/general/template/template-page-view-documents-table.tsx
@@ -4464,7 +4551,6 @@ msgstr "Scegli un numero"
 msgid "Pick a password"
 msgstr "Inserisci una password"
 
-#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Pitch"
 msgstr ""
@@ -4622,6 +4708,14 @@ msgstr "Modello CSV preformattato con dati di esempio."
 msgid "Preferences"
 msgstr "Preferenze"
 
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "PreOrder Date"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "PreOrder Type"
+msgstr ""
+
 #: apps/remix/app/components/forms/team-document-preferences-form.tsx
 msgid "Preview"
 msgstr "Anteprima"
@@ -4629,6 +4723,10 @@ msgstr "Anteprima"
 #: apps/remix/app/components/general/direct-template/direct-template-page.tsx
 msgid "Preview and configure template."
 msgstr "Anteprima e configurazione del modello."
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Primary Metadata Language"
+msgstr ""
 
 #: apps/remix/app/components/general/task/tasks-list.tsx
 msgid "Prioridad"
@@ -4650,6 +4748,50 @@ msgstr "I modelli privati possono essere modificati e visualizzati solo da te."
 #: apps/remix/app/components/dialogs/assistant-confirmation-dialog.tsx
 msgid "Proceed"
 msgstr "Procedi"
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Producers"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Product C Line"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Product Display Artist"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Product Genre"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Product ID"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Product P Line"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Product Play Link"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Product Price Tier"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Product Title"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Product Type"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Product Version"
+msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/settings+/profile.tsx
 #: apps/remix/app/components/general/settings-nav-mobile.tsx
@@ -4699,6 +4841,10 @@ msgstr "Nome utente del profilo pubblico"
 #: apps/remix/app/components/tables/templates-table.tsx
 msgid "Public templates are connected to your public profile. Any modifications to public templates will also appear in your public profile."
 msgstr "I modelli pubblici sono collegati al tuo profilo pubblico. Ogni modifica ai modelli pubblici apparirà anche nel tuo profilo pubblico."
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Publishers/Collection Societies"
+msgstr ""
 
 #: packages/ui/primitives/document-flow/types.ts
 msgid "Radio"
@@ -4865,8 +5011,8 @@ msgstr "Rifiuto confermato"
 msgid "Rejection reason: {reason}"
 msgstr "Motivo del rifiuto: {reason}"
 
-#: apps/remix/app/components/tables/releases-table.tsx
-msgid "Release"
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Release Date"
 msgstr ""
 
 #: apps/remix/app/components/tables/lpm-table.tsx
@@ -5065,6 +5211,10 @@ msgstr "Righe per pagina"
 
 #: apps/remix/app/components/tables/distribution-table.tsx
 msgid "RTL"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Sample Start Time"
 msgstr ""
 
 #: apps/remix/app/components/general/document-signing/document-signing-text-field.tsx
@@ -5658,7 +5808,6 @@ msgstr "Stato"
 msgid "Step <0>{step} of {maxStep}</0>"
 msgstr "Passo <0>{step} di {maxStep}</0>"
 
-#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Streaming Link"
 msgstr ""
@@ -5668,6 +5817,18 @@ msgstr ""
 #: packages/ui/primitives/document-flow/add-subject.tsx
 msgid "Subject <0>(Optional)</0>"
 msgstr "Oggetto <0>(Opzionale)</0>"
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Submission Status"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Submitted At"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Submitted By"
+msgstr ""
 
 #: apps/remix/app/components/general/billing-plans.tsx
 msgid "Subscribe"
@@ -6526,6 +6687,14 @@ msgstr "Fuso orario"
 msgid "Time Zone"
 msgstr "Fuso orario"
 
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Timed Release Date"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Timed Release Music Services"
+msgstr ""
+
 #: apps/remix/app/components/tables/distribution-table.tsx
 msgid "Tipo de Cambio"
 msgstr ""
@@ -6656,7 +6825,7 @@ msgid "Token name"
 msgstr "Nome del token"
 
 #: apps/remix/app/components/tables/tustreams-table.tsx
-msgid "Total"
+msgid "total"
 msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/admin+/stats.tsx
@@ -6674,6 +6843,54 @@ msgstr "Totale firmatari che si sono iscritti"
 #: apps/remix/app/routes/_authenticated+/admin+/stats.tsx
 msgid "Total Users"
 msgstr "Totale utenti"
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Track C Line"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Track Display Artist"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Track Genre"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Track ID"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Track Name"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Track Number"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Track P Line"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Track Play Link"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Track Price Tier"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Track Type"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Track Version"
+msgstr ""
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Track Volume"
+msgstr ""
 
 #: apps/remix/app/components/dialogs/team-transfer-dialog.tsx
 msgid "transfer {teamName}"
@@ -6735,7 +6952,6 @@ msgstr "Ri-autenticazione a due fattori"
 
 #: apps/remix/app/components/tables/tustreams-table.tsx
 #: apps/remix/app/components/tables/templates-table.tsx
-#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 #: apps/remix/app/components/tables/admin-document-recipient-item-table.tsx
 #: packages/lib/constants/document.ts
@@ -6860,6 +7076,7 @@ msgid "Unpaid"
 msgstr "Non pagato"
 
 #: apps/remix/app/components/tables/tustreams-table.tsx
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
 #: apps/remix/app/components/tables/distribution-table.tsx
 msgid "UPC"
 msgstr ""
@@ -7000,7 +7217,6 @@ msgstr "Carica Documento Modello"
 msgid "Upload your brand logo (max 5MB, JPG, PNG, or WebP)"
 msgstr "Carica il tuo logo aziendale (max 5MB, JPG, PNG o WebP)"
 
-#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Uploaded"
 msgstr ""
@@ -7145,7 +7361,10 @@ msgstr "Verifica il tuo email per caricare documenti."
 msgid "Version History"
 msgstr "Cronologia delle versioni"
 
-#: apps/remix/app/components/tables/releases-table.tsx
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Vevo Channel"
+msgstr ""
+
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Video"
 msgstr ""
@@ -7547,10 +7766,6 @@ msgstr "URL del webhook"
 msgid "Webhooks"
 msgstr "Webhook"
 
-#: apps/remix/app/components/tables/releases-table.tsx
-msgid "WebSite Updates"
-msgstr ""
-
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "WebSiteUpdates"
 msgstr ""
@@ -7601,6 +7816,10 @@ msgstr "Chi vuoi ricordare?"
 msgid "Withdrawing Consent"
 msgstr "Ritiro del consenso"
 
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Withhold Mechanicals"
+msgstr ""
+
 #: apps/remix/app/components/forms/public-profile-form.tsx
 msgid "Write about the team"
 msgstr "Scrivi della squadra"
@@ -7608,6 +7827,10 @@ msgstr "Scrivi della squadra"
 #: apps/remix/app/components/forms/public-profile-form.tsx
 msgid "Write about yourself"
 msgstr "Scrivi di te stesso"
+
+#: apps/remix/app/components/tables/lpm-custom-table.tsx
+msgid "Writers/Composers"
+msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.billing.tsx
 #: apps/remix/app/components/general/billing-plans.tsx

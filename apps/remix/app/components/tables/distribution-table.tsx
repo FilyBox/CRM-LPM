@@ -3,18 +3,22 @@ import { useTransition } from 'react';
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import type { ColumnDef } from '@tanstack/react-table';
-import { Loader } from 'lucide-react';
 import { DateTime } from 'luxon';
 
 import { useUpdateSearchParams } from '@documenso/lib/client-only/hooks/use-update-search-params';
 import type { TFindDistributionInternalResponse } from '@documenso/trpc/server/distributionStatement-router/schema';
+import { useDataTable } from '@documenso/ui/lib/use-data-table';
 import { Checkbox } from '@documenso/ui/primitives/checkbox';
-import { DataTable } from '@documenso/ui/primitives/data-table';
-import { DataTablePagination } from '@documenso/ui/primitives/data-table-pagination';
+import { DataTable } from '@documenso/ui/primitives/data-table-table';
 
 import { useOptionalCurrentTeam } from '~/providers/team';
 
+import { TableActionBar } from '../distribution/distribution-table-action-bar';
+import { DataTableAdvancedToolbar } from './data-table-advanced-toolbar';
+import { DataTableColumnHeader } from './data-table-column-header';
+import { DataTableFilterList } from './data-table-filter-list';
 import { DataTableSkeleton } from './data-table-skeleton';
+import { DataTableSortList } from './data-table-sort-list';
 
 export type DocumentsTableProps = {
   data?: TFindDistributionInternalResponse;
@@ -88,57 +92,90 @@ export const DistributionTable = ({
         size: 40,
       },
       {
-        header: _(msg`ID`),
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`ID`)} />,
+        enableHiding: true,
+        enableColumnFilter: true,
         accessorKey: 'id',
         cell: ({ row }) => row.original.id,
       },
       {
-        header: _(msg`Marketing Owner`),
+        enableHiding: true,
+        enableColumnFilter: true,
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Marketing Owner`)} />
+        ),
         accessorKey: 'marketingOwner',
         cell: ({ row }) => row.original.marketingOwner || '-',
       },
       {
-        header: _(msg`Nombre Distribución`),
+        enableHiding: true,
+        enableColumnFilter: true,
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Nombre Distribución`)} />
+        ),
         accessorKey: 'nombreDistribucion',
         cell: ({ row }) => row.original.nombreDistribucion || '-',
       },
       {
-        header: _(msg`Proyecto`),
+        enableHiding: true,
+        enableColumnFilter: true,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`Proyecto`)} />,
         accessorKey: 'proyecto',
         cell: ({ row }) => row.original.proyecto || '-',
       },
       {
-        header: _(msg`Número de Catálogo`),
+        enableHiding: true,
+        enableColumnFilter: true,
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Número de Catálogo`)} />
+        ),
         accessorKey: 'numeroDeCatalogo',
         cell: ({ row }) => row.original.numeroDeCatalogo || '-',
       },
       {
-        header: _(msg`UPC`),
+        enableHiding: true,
+        enableColumnFilter: true,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`UPC`)} />,
         accessorKey: 'upc',
         cell: ({ row }) => row.original.upc || '-',
       },
       {
-        header: _(msg`Local Product Number`),
+        enableHiding: true,
+        enableColumnFilter: true,
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Local Product Number`)} />
+        ),
         accessorKey: 'localProductNumber',
         cell: ({ row }) => row.original.localProductNumber || '-',
       },
       {
-        header: _(msg`ISRC`),
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`ISRC`)} />,
+        enableHiding: true,
+        enableColumnFilter: true,
         accessorKey: 'isrc',
         cell: ({ row }) => row.original.isrc || '-',
       },
       {
-        header: _(msg`Título Catálogo`),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Título Catálogo`)} />
+        ),
+        enableHiding: true,
+        enableColumnFilter: true,
         accessorKey: 'tituloCatalogo',
         cell: ({ row }) => row.original.tituloCatalogo || '-',
       },
       {
-        header: _(msg`Mes Reportado`),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Mes Reportado`)} />
+        ),
+        enableHiding: true,
+        enableColumnFilter: true,
         accessorKey: 'mesReportado',
         cell: ({ row }) => (row.original.mesReportado ? String(row.original.mesReportado) : '-'),
       },
       {
         header: _(msg`Territorio`),
+        enableHiding: true,
         accessorKey: 'distributionStatementMusicPlatforms',
         cell: ({ row }) => {
           const platforms = row.original.distributionStatementMusicPlatforms;
@@ -152,7 +189,11 @@ export const DistributionTable = ({
         },
       },
       {
-        header: _(msg`Código del Territorio`),
+        enableHiding: true,
+        enableColumnFilter: true,
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Código del Territorio`)} />
+        ),
         accessorKey: 'codigoDelTerritorio',
         cell: ({ row }) => row.original.codigoDelTerritorio || '-',
       },
@@ -164,72 +205,82 @@ export const DistributionTable = ({
           const territories = row.original.distributionStatementTerritories;
           if (!territories || territories.length === 0) return '-';
 
-          // If you want to display all platform names, join them with commas
           return territories[0]?.name;
-
-          // Or if you want to display just the first platform name:
-          // return platforms[0]?.name || '-';
         },
       },
       {
-        header: _(msg`Tipo de Precio`),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Tipo de Precio`)} />
+        ),
         accessorKey: 'tipoDePrecio',
         cell: ({ row }) => row.original.tipoDePrecio || '-',
       },
       {
-        header: _(msg`Tipo de Ingreso`),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Tipo de Ingreso`)} />
+        ),
         accessorKey: 'tipoDeIngreso',
         cell: ({ row }) => row.original.tipoDeIngreso || '-',
       },
       {
-        header: _(msg`Venta`),
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`Venta`)} />,
         accessorKey: 'venta',
         cell: ({ row }) => (row.original.venta !== null ? String(row.original.venta) : '-'),
       },
       {
-        header: _(msg`RTL`),
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`RTL`)} />,
         accessorKey: 'rtl',
         cell: ({ row }) => (row.original.rtl !== null ? row.original.rtl : '-'),
       },
       {
-        header: _(msg`PPD`),
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`PPD`)} />,
         accessorKey: 'ppd',
         cell: ({ row }) => (row.original.ppd !== null ? row.original.ppd : '-'),
       },
       {
-        header: _(msg`RBP`),
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`RBP`)} />,
         accessorKey: 'rbp',
         cell: ({ row }) => (row.original.rbp !== null ? row.original.rbp : '-'),
       },
       {
-        header: _(msg`Tipo de Cambio`),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Tipo de Cambio`)} />
+        ),
         accessorKey: 'tipoDeCambio',
         cell: ({ row }) => (row.original.tipoDeCambio !== null ? row.original.tipoDeCambio : '-'),
       },
       {
-        header: _(msg`Valor Recibido`),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Valor Recibido`)} />
+        ),
         accessorKey: 'valorRecibido',
         cell: ({ row }) => (row.original.valorRecibido !== null ? row.original.valorRecibido : '-'),
       },
       {
-        header: _(msg`Regalías Artísticas`),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Regalías Artísticas`)} />
+        ),
         accessorKey: 'regaliasArtisticas',
         cell: ({ row }) =>
           row.original.regaliasArtisticas !== null ? String(row.original.regaliasArtisticas) : '-',
       },
       {
-        header: _(msg`Costo Distribución`),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Costo Distribución`)} />
+        ),
         accessorKey: 'costoDistribucion',
         cell: ({ row }) =>
           row.original.costoDistribucion !== null ? row.original.costoDistribucion : '-',
       },
       {
-        header: _(msg`Copyright`),
+        header: ({ column }) => <DataTableColumnHeader column={column} title={_(msg`Copyright`)} />,
         accessorKey: 'copyright',
         cell: ({ row }) => (row.original.copyright !== null ? String(row.original.copyright) : '-'),
       },
       {
-        header: _(msg`Cuota Administración`),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Cuota Administración`)} />
+        ),
         accessorKey: 'cuotaAdministracion',
         cell: ({ row }) =>
           row.original.cuotaAdministracion !== null
@@ -237,31 +288,41 @@ export const DistributionTable = ({
             : '-',
       },
       {
-        header: _(msg`Costo Carga`),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Costo Carga`)} />
+        ),
         accessorKey: 'costoCarga',
         cell: ({ row }) =>
           row.original.costoCarga !== null ? String(row.original.costoCarga) : '-',
       },
       {
-        header: _(msg`Otros Costos`),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Otros Costos`)} />
+        ),
         accessorKey: 'otrosCostos',
         cell: ({ row }) =>
           row.original.otrosCostos !== null ? String(row.original.otrosCostos) : '-',
       },
       {
-        header: _(msg`Ingresos Recibidos`),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Ingresos Recibidos`)} />
+        ),
         accessorKey: 'ingresosRecibidos',
         cell: ({ row }) =>
           row.original.ingresosRecibidos !== null ? row.original.ingresosRecibidos : '-',
       },
       {
-        header: _(msg`Fecha de Creación`),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Fecha de Creación`)} />
+        ),
         accessorKey: 'createdAt',
         cell: ({ row }) =>
           i18n.date(row.original.createdAt, { ...DateTime.DATETIME_SHORT, hourCycle: 'h12' }),
       },
       {
-        header: _(msg`Última Actualización`),
+        header: ({ column }) => (
+          <DataTableColumnHeader column={column} title={_(msg`Última Actualización`)} />
+        ),
         accessorKey: 'updatedAt',
         cell: ({ row }) =>
           i18n.date(row.original.updatedAt, { ...DateTime.DATETIME_SHORT, hourCycle: 'h12' }),
@@ -270,6 +331,24 @@ export const DistributionTable = ({
     return columns;
   };
   const columns = createColumns();
+
+  const { table, shallow, debounceMs, throttleMs } = useDataTable({
+    data: data?.data || [],
+    columns,
+    pageCount: data?.totalPages || 1,
+    enableAdvancedFilter: true,
+    initialState: {
+      sorting: [{ id: 'createdAt', desc: true }],
+      columnPinning: { right: ['actions'] },
+    },
+    defaultColumn: {
+      columns,
+      enableColumnFilter: false,
+    },
+    getRowId: (originalRow) => originalRow.id.toString(),
+    shallow: false,
+    clearOnDefault: true,
+  });
 
   const onPaginationChange = (page: number, perPage: number) => {
     startTransition(() => {
@@ -294,8 +373,8 @@ export const DistributionTable = ({
         isMultipleDelete={isMultipleDelete}
         onDelete={onDelete}
         onEdit={onEdit}
-        columns={columns}
         data={results.data}
+        onMultipleDelete={onMultipleDelete}
         perPage={results.perPage}
         currentPage={results.currentPage}
         totalPages={results.totalPages}
@@ -312,25 +391,25 @@ export const DistributionTable = ({
           component: (
             <DataTableSkeleton
               columnCount={columns.length}
-              cellWidths={['10rem', '30rem', '10rem', '10rem', '6rem', '6rem', '6rem']}
+              cellWidths={['3rem', '3rem', '3rem', '3rem', '2rem', '2rem', '2rem']}
               shrinkZero
             />
           ),
         }}
+        table={table}
+        actionBar={<TableActionBar table={table} />}
       >
-        {(table) => <DataTablePagination additionalInformation="VisibleCount" table={table} />}
+        <DataTableAdvancedToolbar table={table}>
+          <DataTableSortList table={table} align="start" />
+          <DataTableFilterList
+            table={table}
+            shallow={shallow}
+            debounceMs={debounceMs}
+            throttleMs={throttleMs}
+            align="start"
+          />
+        </DataTableAdvancedToolbar>
       </DataTable>
-
-      {isPending && (
-        <div className="bg-background/50 absolute inset-0 flex items-center justify-center">
-          <Loader className="text-muted-foreground h-8 w-8 animate-spin" />
-        </div>
-      )}
     </div>
   );
-};
-
-type DataTableTitleProps = {
-  row: DocumentsTableRow;
-  teamUrl?: string;
 };

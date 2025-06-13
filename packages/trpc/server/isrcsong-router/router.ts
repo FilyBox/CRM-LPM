@@ -204,7 +204,17 @@ export const IsrcSongsRouter = router({
         orderBy: z.enum(['createdAt', 'updatedAt']).optional(),
         orderByDirection: z.enum(['asc', 'desc']).optional().default('desc'),
         orderByColumn: z
-          .enum(['id', 'lanzamiento', 'typeOfRelease', 'createdAt', 'updatedAt'])
+          .enum([
+            'id',
+            'date',
+            'createdAt',
+            'isrc',
+            'artist',
+            'duration',
+            'trackName',
+            'title',
+            'license',
+          ])
           .optional(),
       }),
     )

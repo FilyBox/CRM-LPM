@@ -1,4 +1,4 @@
-import type { Prisma, Releases } from '@prisma/client';
+import type { DistributionStatement, Prisma } from '@prisma/client';
 import { DateTime } from 'luxon';
 
 import { prisma } from '@documenso/prisma';
@@ -13,7 +13,7 @@ export type FindReleaseOptions = {
   page?: number;
   perPage?: number;
   orderBy?: {
-    column: keyof Omit<Releases, 'release'>;
+    column: keyof DistributionStatement;
     direction: 'asc' | 'desc';
   };
   where?: Prisma.DistributionStatementWhereInput;
