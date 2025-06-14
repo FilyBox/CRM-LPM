@@ -446,25 +446,26 @@ export const releaseRouter = router({
         release: z.nativeEnum(Release).optional(),
         uploaded: z.string().optional(),
         streamingLink: z.string().optional(),
-        assets: z.boolean().optional(),
-        canvas: z.boolean().optional(),
-        cover: z.boolean().optional(),
-        audioWAV: z.boolean().optional(),
-        video: z.boolean().optional(),
-        banners: z.boolean().optional(),
-        pitch: z.boolean().optional(),
-        EPKUpdates: z.boolean().optional(),
-        WebSiteUpdates: z.boolean().optional(),
-        Biography: z.boolean().optional(),
+        assets: z.boolean().optional().nullable(),
+        canvas: z.boolean().optional().nullable(),
+        cover: z.boolean().optional().nullable(),
+        audioWAV: z.boolean().optional().nullable(),
+        video: z.boolean().optional().nullable(),
+        banners: z.boolean().optional().nullable(),
+        pitch: z.boolean().optional().nullable(),
+        EPKUpdates: z.boolean().optional().nullable(),
+        WebSiteUpdates: z.boolean().optional().nullable(),
+        Biography: z.boolean().optional().nullable(),
       }),
     )
     .mutation(async ({ input }) => {
       const { ...data } = input;
-
       // Verificar permisos si es tarea de equipo
       // if (teamId && ctx.teamId !== teamId) {
       //   throw new Error('No tienes permisos para actualizar tareas en este equipo');
       // }
+
+      console.log('Updating release with data:', data);
 
       return await prisma.releases.update({
         where: { id: Number(input.id) },

@@ -16,7 +16,6 @@ import { DEFAULT_DOCUMENT_TIME_ZONE, TIME_ZONES } from '@documenso/lib/constants
 import { AppError, AppErrorCode } from '@documenso/lib/errors/app-error';
 import { megabytesToBytes } from '@documenso/lib/universal/unit-convertions';
 import { putPdfFile } from '@documenso/lib/universal/upload/put-file';
-import { formatDocumentsPath } from '@documenso/lib/utils/teams';
 import { trpc } from '@documenso/trpc/react';
 import { cn } from '@documenso/ui/lib/utils';
 import { useToast } from '@documenso/ui/primitives/use-toast';
@@ -140,7 +139,7 @@ export const DocumentDropZoneWrapper = ({ children, className }: DocumentDropZon
   });
 
   return (
-    <div {...getRootProps()} className={cn('relative min-h-screen', className)}>
+    <div {...getRootProps()} className={cn('relative min-h-[85vh]', className)}>
       <input {...getInputProps()} />
       {children}
 

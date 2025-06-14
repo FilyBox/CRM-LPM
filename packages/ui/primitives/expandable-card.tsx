@@ -3,11 +3,13 @@
 import React, { useEffect, useRef } from 'react';
 import { useCallback, useState } from 'react';
 
+import { Trans } from '@lingui/react/macro';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale/es';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useSpring } from 'framer-motion';
 import { CalendarIcon, CalendarOff, CheckCircle2, User, Users, X } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { Badge } from './badge';
 import { Button } from './button';
@@ -19,7 +21,9 @@ interface ProjectStatusCardProps {
   fileName?: string;
   isrc?: string;
   progress?: number;
-  onNavigate?: () => void;
+  onNavegate?: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
   status?: (string | undefined)[];
   startDate: Date | null | undefined;
   expandible?: string;
@@ -61,7 +65,9 @@ export function ProjectStatusCard({
   startDate,
   contributors,
   tasks,
-  onNavigate,
+  onNavegate,
+  onEdit,
+  onDelete,
   status,
   isrc,
   endDate,
@@ -123,7 +129,7 @@ export function ProjectStatusCard({
             >
               {progress === 100 ? 'Completed' : 'In Progress'}
             </Badge> */}
-            <h3 className="text-2xl font-semibold">{title}</h3>
+            <h3 className="text-xl font-semibold">{title}</h3>
             {fileName && (
               <h4 className="text-accent-foreground text-lg font-semibold">{fileName}</h4>
             )}
@@ -195,21 +201,23 @@ export function ProjectStatusCard({
                         </a>
                       )}
                     </div>
-                    {contributors.map((contributor, index) => (
+
+                    {contributors && contributors.length > 0 && (
                       <div className="space-y-2">
                         <h4 className="flex items-center text-sm font-medium">
                           <Users className="mr-2 h-4 w-4" />
                           Artistas
                         </h4>
-                        <div className="flex flex-col gap-2">
-                          <div key={index} className="flex items-center">
-                            <User className="text-accent-foreground mr-2 h-4 w-4" />
-                            <p>{contributor.name}</p>
+                        {contributors.map((contributor, index) => (
+                          <div key={index} className="flex flex-col gap-2">
+                            <div className="flex items-center">
+                              <User className="text-accent-foreground mr-2 h-4 w-4" />
+                              <p>{contributor.name}</p>
+                            </div>
                           </div>
-                        </div>
+                        ))}
                       </div>
-                    ))}
-
+                    )}
                     {/* Deliverables/Assets Section */}
                     {(assets ||
                       canvas ||
@@ -391,15 +399,7 @@ export function ProjectStatusCard({
       </CardContent>
 
       <CardFooter>
-        <div className="text-foreground flex w-full flex-col-reverse items-center justify-between gap-2 text-sm">
-          {onNavigate && (
-            <div className="w-full space-y-2">
-              <Button onClick={onNavigate} className="w-full">
-                {/* <MessageSquare className="mr-2 h-4 w-4" /> */}
-                View
-              </Button>
-            </div>
-          )}
+        <div className="text-foreground flex w-full flex-col items-center justify-between gap-2 text-sm">
           <div className="flex w-full items-center justify-between">
             {startDate ? (
               <div className="flex items-center">
@@ -425,6 +425,46 @@ export function ProjectStatusCard({
               </div>
             )}
           </div>
+
+          {onNavegate && (
+            <div className="w-full space-y-2">
+              <Button size={'sm'} onClick={onNavegate} className="w-full">
+                {/* <MessageSquare className="mr-2 h-4 w-4" /> */}
+                <Trans>View</Trans>
+              </Button>
+            </div>
+          )}
+          {onEdit && (
+            <div className="w-full space-y-2">
+              <Button size={'sm'} onClick={onEdit} className="w-full">
+                {/* <MessageSquare className="mr-2 h-4 w-4" /> */}
+                <Trans>Edit</Trans>
+              </Button>
+            </div>
+          )}
+
+          {onDelete && (
+            <div className="w-full space-y-2">
+              {/* <Button size={'sm'} variant={'destructive'} onClick={onDelete} className="w-full">
+                Delete
+              </Button> */}
+              <Button
+                variant="outline"
+                className="w-full"
+                onClick={() => {
+                  toast.warning('Esta acción sera permanente', {
+                    description: 'Estas seguro que quieres eliminar este elemento?',
+                    action: {
+                      label: 'Eliminar',
+                      onClick: () => onDelete(),
+                    },
+                  });
+                }}
+              >
+                <Trans>Delete</Trans>
+              </Button>
+            </div>
+          )}
         </div>
       </CardFooter>
     </Card>

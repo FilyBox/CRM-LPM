@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import type { Table } from '@tanstack/react-table';
 import { Download, Trash2 } from 'lucide-react';
+import { toast as sonnertoast } from 'sonner';
 
 import { trpc } from '@documenso/trpc/react';
 import type { TFindReleaseResponse } from '@documenso/trpc/server/releases-router/schema';
@@ -119,7 +120,15 @@ export function ReleasesTableActionBar({ table }: ReleasesTableActionBarProps) {
           size="icon"
           tooltip="Delete"
           isPending={isPending || currentAction === 'delete'}
-          onClick={handleMultipleDelete}
+          onClick={() => {
+            sonnertoast.warning('Esta acción sera permanente', {
+              description: 'Estas seguro que quieres eliminar este elemento?',
+              action: {
+                label: 'Eliminar',
+                onClick: () => handleMultipleDelete(),
+              },
+            });
+          }}
         >
           <Trash2 />
         </DataTableActionBarAction>

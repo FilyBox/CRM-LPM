@@ -8,9 +8,9 @@ import {
 } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale/es';
+import { Toaster } from 'sonner';
 
 import { StackAvatarsArtistWithTooltip } from '../components/lpm/stack-avatars-artist-with-tooltip';
-// import { getCommonPinningStyles } from '../lib/data-table';
 import { useMediaQuery } from '../lib/use-media-query';
 import { cn } from '../lib/utils';
 import {
@@ -157,7 +157,7 @@ export function DataTable<TData>({
 
   const isDesktop = useMediaQuery('(min-width: 640px)');
 
-  const prepareCardData = (row: any, index: number) => {
+  const prepareCardData = (row: TData) => {
     const typedRow = row as HasId & HasOptionalFields;
 
     // Extract and prepare status elements
@@ -167,7 +167,7 @@ export function DataTable<TData>({
       typedRow.release,
     ].filter((item): item is string => item !== undefined);
 
-    let title: string | undefined = typedRow.title || typedRow.lanzamiento;
+    const title: string | undefined = typedRow.title || typedRow.lanzamiento;
 
     // Prepare contributors/artists data
     let contributors: { name: string }[] = [];
@@ -193,7 +193,6 @@ export function DataTable<TData>({
 
     // Prepare card properties with defaults
     return {
-      key: typedRow.id || index,
       status: statusElements,
       title: title || 'Untitled',
       fileName: typedRow.fileName || typedRow.trackName || '',
@@ -225,6 +224,8 @@ export function DataTable<TData>({
     <div className={cn('flex w-full flex-col gap-2.5 overflow-auto', className)} {...props}>
       {children}
       <div className="overflow-hidden rounded-md">
+        <Toaster richColors />
+
         {isDesktop ? (
           <Table>
             <TableHeader>
@@ -436,14 +437,18 @@ export function DataTable<TData>({
           </Table>
         ) : (
           <div className="flex flex-col gap-5">
+            <Toaster richColors />
             {data && data.length > 0 ? (
               data.map((row, index) => {
                 const typedRow = row as HasId & HasOptionalFields;
 
                 return (
                   <ProjectStatusCard
-                    {...prepareCardData(row, index)}
-                    {...(onNavegate && { onNavigate: () => onNavegate(row) })}
+                    key={index}
+                    {...prepareCardData(row)}
+                    {...(onNavegate && { onNavegate: () => onNavegate(row) })}
+                    {...(onEdit && { onEdit: () => onEdit(row) })}
+                    {...(onDelete && { onDelete: () => onDelete(row) })}
                   />
                 );
               })

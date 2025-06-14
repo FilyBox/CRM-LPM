@@ -146,7 +146,7 @@ export const FolderDeleteDialog = ({ folder, isOpen, onOpenChange }: FolderDelet
               )}
             />
             <DialogFooter>
-              <Button variant="secondary" onClick={() => onOpenChange(false)}>
+              <Button variant="secondary" disabled={isDeleting} onClick={() => onOpenChange(false)}>
                 Cancel
               </Button>
               <Button

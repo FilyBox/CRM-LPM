@@ -673,7 +673,6 @@ export default function MyForm({ onSubmit, initialData, artistData }: MyFormProp
                                       {field.value ? (
                                         (() => {
                                           try {
-                                            console.log('Field value:', field.value);
                                             // Handle different date formats safely
                                             const date = new Date(field.value);
                                             return isNaN(date.getTime())

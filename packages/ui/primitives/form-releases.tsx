@@ -15,13 +15,13 @@ import { Button } from './button';
 // import { Calendar } from './calendar';
 import { Calendar } from './calendar-year-picker';
 import { Card, CardContent } from './card';
-import { Checkbox } from './checkbox';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from './form';
 import { Input } from './input';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { ScrollArea } from './scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select';
 import { Separator } from './separator';
+import { Switch } from './switch';
 
 const TypeOfReleaseValues = {
   ALBUM: 'Album',
@@ -161,12 +161,9 @@ export default function FormReleases({ onSubmit, initialData }: MyFormProps) {
   }, [form, initialData]);
 
   async function handleSubmit(values: z.infer<typeof formSchema>) {
-    console.log('Form values:', values);
     try {
       setIsLoading(true);
       const dataToSubmit = initialData?.id ? { ...values, id: initialData.id } : values;
-      console.log('Form submitted:', dataToSubmit);
-
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       await onSubmit(dataToSubmit as unknown as Releases);
 
@@ -202,7 +199,6 @@ export default function FormReleases({ onSubmit, initialData }: MyFormProps) {
                   {/* Basic Information */}
                   <div className="grid grid-cols-12 gap-4">
                     <div className="col-span-12 md:col-span-6">
-
                       <FormField
                         control={form.control}
                         name="date"
@@ -215,19 +211,18 @@ export default function FormReleases({ onSubmit, initialData }: MyFormProps) {
                                   <Button
                                     variant={'outline'}
                                     className={cn(
-                                      'w-[240px] pl-3 text-left font-normal',
+                                      'w-full pl-3 text-left font-normal',
                                       !field.value && 'text-muted-foreground',
                                     )}
                                   >
                                     {field.value ? (
-                                      (console.log('pepe', field.value),
                                       format(
                                         // Only try to format if field.value is a non-empty string
                                         field.value && field.value.trim() !== ''
                                           ? new Date(field.value + 'T00:00:00')
                                           : new Date(),
                                         'dd/MM/yyyy',
-                                      ))
+                                      )
                                     ) : (
                                       <span>Pick a date</span>
                                     )}
@@ -419,7 +414,9 @@ export default function FormReleases({ onSubmit, initialData }: MyFormProps) {
                         render={({ field }) => (
                           <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
                             <FormControl>
-                              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                              <Switch checked={field.value} onCheckedChange={field.onChange} />
+
+                              {/* <Switch checked={field.value} onCheckedChange={field.onChange} /> */}
                             </FormControl>
                             <FormLabel className="font-normal">Assets</FormLabel>
                             <FormMessage />
@@ -434,7 +431,7 @@ export default function FormReleases({ onSubmit, initialData }: MyFormProps) {
                         render={({ field }) => (
                           <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
                             <FormControl>
-                              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                              <Switch checked={field.value} onCheckedChange={field.onChange} />
                             </FormControl>
                             <FormLabel className="font-normal">Canvas</FormLabel>
                             <FormMessage />
@@ -450,7 +447,7 @@ export default function FormReleases({ onSubmit, initialData }: MyFormProps) {
                         render={({ field }) => (
                           <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
                             <FormControl>
-                              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                              <Switch checked={field.value} onCheckedChange={field.onChange} />
                             </FormControl>
                             <FormLabel className="font-normal">Cover</FormLabel>
                             <FormMessage />
@@ -466,7 +463,7 @@ export default function FormReleases({ onSubmit, initialData }: MyFormProps) {
                         render={({ field }) => (
                           <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
                             <FormControl>
-                              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                              <Switch checked={field.value} onCheckedChange={field.onChange} />
                             </FormControl>
                             <FormLabel className="font-normal">Audio WAV</FormLabel>
                             <FormMessage />
@@ -482,7 +479,7 @@ export default function FormReleases({ onSubmit, initialData }: MyFormProps) {
                         render={({ field }) => (
                           <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
                             <FormControl>
-                              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                              <Switch checked={field.value} onCheckedChange={field.onChange} />
                             </FormControl>
                             <FormLabel className="font-normal">Video</FormLabel>
                             <FormMessage />
@@ -498,7 +495,7 @@ export default function FormReleases({ onSubmit, initialData }: MyFormProps) {
                         render={({ field }) => (
                           <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
                             <FormControl>
-                              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                              <Switch checked={field.value} onCheckedChange={field.onChange} />
                             </FormControl>
                             <FormLabel className="font-normal">Banners</FormLabel>
                             <FormMessage />
@@ -514,7 +511,7 @@ export default function FormReleases({ onSubmit, initialData }: MyFormProps) {
                         render={({ field }) => (
                           <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
                             <FormControl>
-                              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                              <Switch checked={field.value} onCheckedChange={field.onChange} />
                             </FormControl>
                             <FormLabel className="font-normal">Pitch</FormLabel>
                             <FormMessage />
@@ -530,7 +527,7 @@ export default function FormReleases({ onSubmit, initialData }: MyFormProps) {
                         render={({ field }) => (
                           <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
                             <FormControl>
-                              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                              <Switch checked={field.value} onCheckedChange={field.onChange} />
                             </FormControl>
                             <FormLabel className="font-normal">EPK Updates</FormLabel>
                             <FormMessage />
@@ -546,7 +543,7 @@ export default function FormReleases({ onSubmit, initialData }: MyFormProps) {
                         render={({ field }) => (
                           <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
                             <FormControl>
-                              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                              <Switch checked={field.value} onCheckedChange={field.onChange} />
                             </FormControl>
                             <FormLabel className="font-normal">Website Updates</FormLabel>
                             <FormMessage />
@@ -562,7 +559,7 @@ export default function FormReleases({ onSubmit, initialData }: MyFormProps) {
                         render={({ field }) => (
                           <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-2">
                             <FormControl>
-                              <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                              <Switch checked={field.value} onCheckedChange={field.onChange} />
                             </FormControl>
                             <FormLabel className="font-normal">Biography</FormLabel>
                             <FormMessage />

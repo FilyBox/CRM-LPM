@@ -303,7 +303,6 @@ export default function ContractForm({
                                     {field.value ? (
                                       (() => {
                                         try {
-                                          console.log('Field value:', field.value);
                                           // Handle different date formats safely
                                           const date = new Date(field.value);
                                           return isNaN(date.getTime())
@@ -411,7 +410,6 @@ export default function ContractForm({
                                     {field.value ? (
                                       (() => {
                                         try {
-                                          console.log('Field value:', field.value);
                                           // Handle different date formats safely
                                           const date = new Date(field.value);
                                           return isNaN(date.getTime())

@@ -1272,6 +1272,7 @@ msgstr "Artists"
 msgid "Asignados"
 msgstr "Asignados"
 
+#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Assets"
 msgstr "Assets"
@@ -1321,6 +1322,7 @@ msgstr "At least one signature type must be enabled"
 msgid "Attempts sealing the document again, useful for after a code change has occurred to resolve an erroneous document."
 msgstr "Attempts sealing the document again, useful for after a code change has occurred to resolve an erroneous document."
 
+#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Audio"
 msgstr "Audio"
@@ -1382,6 +1384,7 @@ msgstr "Backup codes"
 msgid "Banner Updated"
 msgstr "Banner Updated"
 
+#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Banners"
 msgstr "Banners"
@@ -1399,6 +1402,7 @@ msgstr "Basic details"
 msgid "Billing"
 msgstr "Billing"
 
+#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Biography"
 msgstr "Biography"
@@ -1559,6 +1563,7 @@ msgstr "Cannot remove document"
 msgid "Cannot remove signer"
 msgstr "Cannot remove signer"
 
+#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Canvas"
 msgstr "Canvas"
@@ -2001,6 +2006,7 @@ msgstr "Costo Carga"
 msgid "Costo Distribución"
 msgstr "Costo Distribución"
 
+#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Cover"
 msgstr "Cover"
@@ -2267,6 +2273,7 @@ msgstr "delete"
 #: apps/remix/app/components/dialogs/team-member-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/team-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
+#: packages/ui/primitives/expandable-card.tsx
 msgid "Delete"
 msgstr "Delete"
 
@@ -2916,6 +2923,7 @@ msgstr "Duration"
 #: apps/remix/app/components/general/teams/team-email-dropdown.tsx
 #: apps/remix/app/components/general/document/document-page-view-dropdown.tsx
 #: apps/remix/app/components/general/document/document-page-view-button.tsx
+#: packages/ui/primitives/expandable-card.tsx
 msgid "Edit"
 msgstr "Edit"
 
@@ -3108,6 +3116,7 @@ msgstr "Enter your text here"
 msgid "EP"
 msgstr "EP"
 
+#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "EPK"
 msgstr "EPK"
@@ -3732,6 +3741,10 @@ msgstr "Label"
 #: packages/ui/primitives/document-flow/add-settings.tsx
 msgid "Language"
 msgstr "Language"
+
+#: apps/remix/app/components/tables/releases-table.tsx
+msgid "Lanzamiento"
+msgstr "Lanzamiento"
 
 #: apps/remix/app/components/general/period-selector.tsx
 msgid "Last 14 days"
@@ -4546,6 +4559,7 @@ msgstr "Pick a number"
 msgid "Pick a password"
 msgstr "Pick a password"
 
+#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Pitch"
 msgstr "Pitch"
@@ -5005,6 +5019,10 @@ msgstr "Rejection Confirmed"
 #: packages/email/template-components/template-document-rejection-confirmed.tsx
 msgid "Rejection reason: {reason}"
 msgstr "Rejection reason: {reason}"
+
+#: apps/remix/app/components/tables/releases-table.tsx
+msgid "Release"
+msgstr "Release"
 
 #: apps/remix/app/components/tables/lpm-custom-table.tsx
 msgid "Release Date"
@@ -5803,6 +5821,7 @@ msgstr "Status"
 msgid "Step <0>{step} of {maxStep}</0>"
 msgstr "Step <0>{step} of {maxStep}</0>"
 
+#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Streaming Link"
 msgstr "Streaming Link"
@@ -6947,6 +6966,7 @@ msgstr "Two-Factor Re-Authentication"
 
 #: apps/remix/app/components/tables/tustreams-table.tsx
 #: apps/remix/app/components/tables/templates-table.tsx
+#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 #: apps/remix/app/components/tables/admin-document-recipient-item-table.tsx
 #: packages/lib/constants/document.ts
@@ -7212,6 +7232,7 @@ msgstr "Upload Template Document"
 msgid "Upload your brand logo (max 5MB, JPG, PNG, or WebP)"
 msgstr "Upload your brand logo (max 5MB, JPG, PNG, or WebP)"
 
+#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Uploaded"
 msgstr "Uploaded"
@@ -7360,6 +7381,7 @@ msgstr "Version History"
 msgid "Vevo Channel"
 msgstr "Vevo Channel"
 
+#: apps/remix/app/components/tables/releases-table.tsx
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "Video"
 msgstr "Video"
@@ -7373,6 +7395,7 @@ msgstr "Video"
 #: apps/remix/app/components/tables/chat-table-action-dropdown.tsx
 #: apps/remix/app/components/general/document/document-page-view-button.tsx
 #: apps/remix/app/components/forms/2fa/view-recovery-codes-dialog.tsx
+#: packages/ui/primitives/expandable-card.tsx
 #: packages/lib/constants/recipient-roles.ts
 msgid "View"
 msgstr "View"
@@ -7760,6 +7783,10 @@ msgstr "Webhook URL"
 #: apps/remix/app/routes/_authenticated+/settings+/webhooks._index.tsx
 msgid "Webhooks"
 msgstr "Webhooks"
+
+#: apps/remix/app/components/tables/releases-table.tsx
+msgid "WebSite Updates"
+msgstr "WebSite Updates"
 
 #: apps/remix/app/components/tables/lpm-table.tsx
 msgid "WebSiteUpdates"
