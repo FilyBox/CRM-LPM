@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import type { Table } from '@tanstack/react-table';
 import { Download, Trash2 } from 'lucide-react';
+import { toast as sonnertoast } from 'sonner';
 
 import { trpc } from '@documenso/trpc/react';
 import type { TFindLpmResponse } from '@documenso/trpc/server/lpm-router/schema';
@@ -91,35 +92,19 @@ export function LpmTableActionBar({ table }: TableActionBarProps) {
         className="hidden data-[orientation=vertical]:h-5 sm:block"
       />
       <div className="flex items-center gap-1.5">
-        {/* <Select
-          onValueChange={(value: string) =>
-            onTaskUpdate({ field: 'status', value: value as ContractStatus })
-          }
-        >
-          <SelectTrigger asChild>
-            <DataTableActionBarAction
-              size="icon"
-              tooltip="Update status"
-              isPending={getIsActionPending('update-status')}
-            >
-              <CheckCircle2 />
-            </DataTableActionBarAction>
-          </SelectTrigger>
-          <SelectContent align="center">
-            <SelectGroup>
-              {Object.values(ContractStatus).map((status) => (
-                <SelectItem key={status} value={status} className="capitalize">
-                  {status}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select> */}
         <DataTableActionBarAction
           size="icon"
           tooltip="Delete"
           isPending={isPending || currentAction === 'delete'}
-          onClick={handleMultipleDelete}
+          onClick={() => {
+            sonnertoast.warning('Esta acción sera permanente', {
+              description: 'Estas seguro que quieres eliminar este elemento?',
+              action: {
+                label: 'Eliminar',
+                onClick: () => handleMultipleDelete(),
+              },
+            });
+          }}
         >
           <Trash2 />
         </DataTableActionBarAction>
@@ -127,7 +112,7 @@ export function LpmTableActionBar({ table }: TableActionBarProps) {
         <DataTableActionBarAction
           size="icon"
           tooltip="Export"
-          isPending={getIsActionPending('export')}
+          isPending={isPending || currentAction === 'export' || currentAction === 'delete'}
           onClick={onTaskExport}
         >
           <Download />

@@ -153,7 +153,6 @@ export const lpmRouter = router({
       const userId = user.id;
       const { artists, ...data } = input;
 
-      console.log('artists to create:', artists);
       const allData = { ...data, userId, ...(teamId ? { teamId } : {}) };
 
       return await prisma.lpm.create({
@@ -458,9 +457,6 @@ export const lpmRouter = router({
         period,
         // orderBy = 'createdAt',
       } = input;
-
-      console.log('orderbyColumn roUTER', orderByColumn);
-      console.log('orderByDirection', orderByDirection);
 
       const { user, teamId } = ctx;
       const userId = user.id;

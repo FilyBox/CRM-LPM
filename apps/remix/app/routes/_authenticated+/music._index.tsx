@@ -173,8 +173,6 @@ export default function TablePage() {
     orderByDirection: columnDirection,
   });
 
-  console.log('data', data);
-
   const { data: artistData, isLoading: artistDataloading } =
     trpc.lpm.findLpmUniqueArtists.useQuery();
 

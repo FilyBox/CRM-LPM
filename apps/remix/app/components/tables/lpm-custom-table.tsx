@@ -5,13 +5,11 @@ import { useLingui } from '@lingui/react';
 import type { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { Loader } from 'lucide-react';
 
 import { useUpdateSearchParams } from '@documenso/lib/client-only/hooks/use-update-search-params';
 import type { TFindLpmResponse } from '@documenso/trpc/server/lpm-router/schema';
 import { useDataTable } from '@documenso/ui/lib/use-data-table';
 import { Checkbox } from '@documenso/ui/primitives/checkbox';
-import { DataTablePagination } from '@documenso/ui/primitives/data-table-pagination';
 import { DataTable } from '@documenso/ui/primitives/data-table-table';
 
 import { useOptionalCurrentTeam } from '~/providers/team';
@@ -54,10 +52,6 @@ export const LpmTable = ({
   const [isPending, startTransition] = useTransition();
 
   const updateSearchParams = useUpdateSearchParams();
-
-  // ...existing code...
-
-  // ...existing code...
 
   const createColumns = (): ColumnDef<DocumentsTableRow>[] => {
     const columns: ColumnDef<DocumentsTableRow>[] = [
@@ -677,8 +671,6 @@ export const LpmTable = ({
     return columns;
   };
 
-  // ...existing code...
-
   const columns = createColumns();
 
   const { table, shallow, debounceMs, throttleMs } = useDataTable({
@@ -718,6 +710,7 @@ export const LpmTable = ({
 
   return (
     <DataTable
+      from="lpm"
       setIsMultipleDelete={setIsMultipleDelete}
       isMultipleDelete={isMultipleDelete}
       onDelete={onDelete}
@@ -748,12 +741,6 @@ export const LpmTable = ({
       table={table}
       actionBar={<LpmTableActionBar table={table} />}
     >
-      {/* actionBar={<ReleasesTableActionBar table={table as any} />} */}
-
-      {/* <DataTableToolbar table={table}>
-             <DataTableSortList table={table} align="end" />
-           </DataTableToolbar> */}
-
       <DataTableAdvancedToolbar table={table}>
         <DataTableSortList table={table} align="start" />
         <DataTableFilterList

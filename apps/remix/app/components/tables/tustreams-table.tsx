@@ -1,4 +1,4 @@
-import { useMemo, useTransition } from 'react';
+import { useTransition } from 'react';
 
 import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
@@ -187,6 +187,7 @@ export const TuStreamsTable = ({
         perPage={results.perPage}
         currentPage={results.currentPage}
         totalPages={results.totalPages}
+        from="tustreams"
         onPaginationChange={onPaginationChange}
         columnVisibility={{
           sender: team !== undefined,

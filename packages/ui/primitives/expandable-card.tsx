@@ -11,12 +11,14 @@ import { useSpring } from 'framer-motion';
 import { CalendarIcon, CalendarOff, CheckCircle2, User, Users, X } from 'lucide-react';
 import { toast } from 'sonner';
 
+import LpmMobileDetails from '../components/lpm/lpm-mobile-table-details';
+import { Button } from '../primitives/button';
+import { Card, CardContent, CardFooter, CardHeader } from '../primitives/card';
+import { Progress as ProgressBar } from '../primitives/progress';
+import type { LpmData } from '../types/tables-types';
 import { Badge } from './badge';
-import { Button } from './button';
-import { Card, CardContent, CardFooter, CardHeader } from './card';
-import { Progress as ProgressBar } from './progress';
 
-interface ProjectStatusCardProps {
+interface ExpandibleCardProps {
   title: string;
   fileName?: string;
   isrc?: string;
@@ -35,11 +37,14 @@ interface ProjectStatusCardProps {
   githubStars: number;
   openIssues: number;
   link?: string;
+  total?: number;
   assets?: boolean;
   canvas?: boolean;
   cover?: boolean;
+  LpmData?: LpmData;
   audioWAV?: boolean;
   video?: boolean;
+  from?: string;
   banners?: boolean;
   pitch?: boolean;
   EPKUpdates?: boolean;
@@ -59,13 +64,14 @@ export function useExpandable(initialState = false) {
   return { isExpanded, toggleExpand, animatedHeight };
 }
 
-export function ProjectStatusCard({
+export function ExpandibleCard({
   title,
   progress,
   startDate,
   contributors,
   tasks,
   onNavegate,
+  from,
   onEdit,
   onDelete,
   status,
@@ -84,23 +90,33 @@ export function ProjectStatusCard({
   expandible,
   summary,
   extensionTime,
-  githubStars,
+  LpmData,
   link,
+  total,
   fileName,
-  openIssues,
-}: ProjectStatusCardProps) {
+}: ExpandibleCardProps) {
   const { isExpanded, toggleExpand, animatedHeight } = useExpandable();
   const contentRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     if (contentRef.current) {
       animatedHeight.set(isExpanded ? contentRef.current.scrollHeight : 0);
     }
   }, [isExpanded, animatedHeight]);
 
+  const renderDetailComponent = () => {
+    if (!isExpanded) return null;
+
+    switch (from) {
+      case 'lpm':
+        return LpmData ? <LpmMobileDetails data={LpmData} /> : null;
+      default:
+        return <></>;
+    }
+  };
+
   return (
     <Card className="text-foreground w-full cursor-pointer transition-all duration-300 hover:shadow-lg">
-      <CardHeader onClick={toggleExpand} className="space-y-1">
+      <CardHeader onClick={toggleExpand} className="pb-0">
         <div className="flex w-full items-start justify-between">
           <div className="space-y-2">
             <div className="flex gap-2">
@@ -121,31 +137,12 @@ export function ProjectStatusCard({
                 ))}
             </div>
 
-            {/* <Badge
-              variant="secondary"
-              className={
-                progress === 100 ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'
-              }
-            >
-              {progress === 100 ? 'Completed' : 'In Progress'}
-            </Badge> */}
             <h3 className="text-xl font-semibold">{title}</h3>
+
             {fileName && (
               <h4 className="text-accent-foreground text-lg font-semibold">{fileName}</h4>
             )}
           </div>
-          {/* <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button size="icon" variant="outline" className="h-8 w-8">
-                  <Github className="h-4 w-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>View on GitHub</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider> */}
         </div>
       </CardHeader>
 
@@ -173,7 +170,7 @@ export function ProjectStatusCard({
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="space-y-4 pt-2"
+                    className="space-y-4"
                   >
                     <div className="text-foreground flex items-center justify-between text-sm">
                       {expandible && (
@@ -201,7 +198,6 @@ export function ProjectStatusCard({
                         </a>
                       )}
                     </div>
-
                     {contributors && contributors.length > 0 && (
                       <div className="space-y-2">
                         <h4 className="flex items-center text-sm font-medium">
@@ -217,6 +213,14 @@ export function ProjectStatusCard({
                           </div>
                         ))}
                       </div>
+                    )}
+                    {total && from === 'tustreams' ? (
+                      <div className="text-foreground flex items-center justify-between text-sm">
+                        <span className="fileName">Total:</span>
+                        <span className="text-lg">{total}</span>
+                      </div>
+                    ) : (
+                      <></>
                     )}
                     {/* Deliverables/Assets Section */}
                     {(assets ||
@@ -390,6 +394,7 @@ export function ProjectStatusCard({
                         <p className="text-sm">{summary}</p>
                       </div>
                     )}
+                    {renderDetailComponent()}{' '}
                   </motion.div>
                 )}
               </AnimatePresence>

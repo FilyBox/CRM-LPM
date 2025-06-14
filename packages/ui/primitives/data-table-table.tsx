@@ -13,6 +13,7 @@ import { Toaster } from 'sonner';
 import { StackAvatarsArtistWithTooltip } from '../components/lpm/stack-avatars-artist-with-tooltip';
 import { useMediaQuery } from '../lib/use-media-query';
 import { cn } from '../lib/utils';
+import type { LpmData } from '../types/tables-types';
 import {
   ContextMenu,
   ContextMenuContent,
@@ -20,7 +21,7 @@ import {
   ContextMenuTrigger,
 } from './context-menu';
 import { DataTablePagination } from './data-table-pagination-pagination';
-import { ProjectStatusCard } from './expandable-card';
+import { ExpandibleCard } from './expandable-card';
 import { Skeleton } from './skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tooltip';
@@ -34,7 +35,7 @@ interface DataTableProps<TData> extends React.ComponentProps<'div'> {
   onEdit?: (data: TData) => void;
   onNavegate?: (data: TData) => void;
   onDelete?: (data: TData) => void;
-
+  from?: string;
   onMultipleDelete?: (ids: number[]) => void;
   isMultipleDelete?: boolean;
   setIsMultipleDelete?: (value: boolean) => void;
@@ -75,6 +76,7 @@ export function DataTable<TData>({
   isMultipleDelete = false,
   setIsMultipleDelete,
   error,
+  from,
   onEdit,
   onRetry,
   onDelete,
@@ -118,6 +120,8 @@ export function DataTable<TData>({
     status?: string;
     title?: string;
     fileName?: string;
+    productTitle?: string;
+    total?: number;
     startDate?: Date;
     endDate?: Date;
     artists?: string;
@@ -135,6 +139,8 @@ export function DataTable<TData>({
     release?: string;
     uploaded?: string;
     streamingLink?: string;
+    trackPlayLink?: string;
+    type?: string;
     assets?: boolean;
     canvas?: boolean;
     cover?: boolean;
@@ -146,6 +152,8 @@ export function DataTable<TData>({
     trackName?: string;
     WebSiteUpdates?: boolean;
     Biography?: boolean;
+    label?: string;
+    UPC?: string;
     userId?: number;
     teamId?: number;
     license?: string;
@@ -153,6 +161,7 @@ export function DataTable<TData>({
     isrc?: string;
     createdAt?: Date;
     updatedAt?: Date;
+    submissionStatus?: string;
   };
 
   const isDesktop = useMediaQuery('(min-width: 640px)');
@@ -160,15 +169,18 @@ export function DataTable<TData>({
   const prepareCardData = (row: TData) => {
     const typedRow = row as HasId & HasOptionalFields;
 
-    // Extract and prepare status elements
+    const lpmData = row as LpmData;
     const statusElements = [
-      typedRow.status || typedRow.duration,
+      typedRow.status || typedRow.type || typedRow.duration,
       typedRow.license || typedRow.typeOfRelease,
       typedRow.release,
+      typedRow.label,
+
+      typedRow.submissionStatus,
     ].filter((item): item is string => item !== undefined);
 
-    const title: string | undefined = typedRow.title || typedRow.lanzamiento;
-
+    const title: string | undefined =
+      typedRow.title || typedRow.lanzamiento || typedRow.productTitle || typedRow.trackName;
     // Prepare contributors/artists data
     let contributors: { name: string }[] = [];
     if (typedRow.artists) {
@@ -181,32 +193,27 @@ export function DataTable<TData>({
       contributors = typedRow.isrcArtists.map((artist: enhancedArtists) => ({
         name: artist.artistName || 'Unknown',
       }));
-    } else if (typedRow.lpmArtists) {
-      contributors = typedRow.lpmArtists.map((artist: enhancedArtists) => ({
-        name: artist.artistName || 'Unknown',
-      }));
     } else if (typedRow.tuStreamsArtists) {
-      contributors = typedRow.tuStreamsArtists.map((artist: enhancedAssignees) => ({
+      contributors = typedRow.tuStreamsArtists.map((artist: enhancedArtists) => ({
         name: artist.artistName || 'Unknown',
       }));
     }
 
-    // Prepare card properties with defaults
     return {
       status: statusElements,
       title: title || 'Untitled',
-      fileName: typedRow.fileName || typedRow.trackName || '',
+      fileName: typedRow.fileName,
       startDate: typedRow.startDate || typedRow.date || null,
       endDate: typedRow.endDate,
       contributors,
       expandible: typedRow.isPossibleToExpand || '',
       extensionTime: typedRow.possibleExtensionTime || '',
       summary: typedRow.summary || '',
-      link: typedRow.streamingLink || '',
+      link: typedRow.streamingLink || '' || typedRow.trackPlayLink || '',
       githubStars: 128,
       openIssues: 5,
-      isrc: typedRow.isrc || '',
-      // All boolean flags with defaults
+      LpmData: lpmData,
+      isrc: typedRow.isrc || typedRow.UPC || '',
       assets: Boolean(typedRow.assets),
       canvas: Boolean(typedRow.canvas),
       cover: Boolean(typedRow.cover),
@@ -217,6 +224,8 @@ export function DataTable<TData>({
       EPKUpdates: Boolean(typedRow.EPKUpdates),
       WebSiteUpdates: Boolean(typedRow.WebSiteUpdates),
       Biography: Boolean(typedRow.Biography),
+      total: typedRow.total || 0,
+      from: from || '',
     };
   };
 
@@ -438,12 +447,16 @@ export function DataTable<TData>({
         ) : (
           <div className="flex flex-col gap-5">
             <Toaster richColors />
-            {data && data.length > 0 ? (
+            {skeleton?.enable ? (
+              <div className="flex flex-col gap-2">
+                <Skeleton className="h-56 w-full" />
+                <Skeleton className="h-56 w-full" />
+                <Skeleton className="h-56 w-full" />
+              </div>
+            ) : (data && data.length) > 0 ? (
               data.map((row, index) => {
-                const typedRow = row as HasId & HasOptionalFields;
-
                 return (
-                  <ProjectStatusCard
+                  <ExpandibleCard
                     key={index}
                     {...prepareCardData(row)}
                     {...(onNavegate && { onNavegate: () => onNavegate(row) })}
