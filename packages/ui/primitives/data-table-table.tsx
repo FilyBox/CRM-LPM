@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { Trans } from '@lingui/react/macro';
+import { TeamMemberRole } from '@prisma/client';
 import {
   type Table as TanstackTable,
   type VisibilityState,
@@ -9,6 +10,8 @@ import {
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale/es';
 import { Toaster } from 'sonner';
+import { toast as sonnertoast } from 'sonner';
+import { match } from 'ts-pattern';
 
 import { StackAvatarsArtistWithTooltip } from '../components/lpm/stack-avatars-artist-with-tooltip';
 import { useMediaQuery } from '../lib/use-media-query';
@@ -56,6 +59,7 @@ interface DataTableProps<TData> extends React.ComponentProps<'div'> {
     enable: boolean;
     component?: React.ReactNode;
   };
+  currentTeamMemberRole?: TeamMemberRole;
 }
 
 export type DataTableChildren<TData> = (_table: TanstackTable<TData>) => React.ReactNode;
@@ -76,6 +80,7 @@ export function DataTable<TData>({
   isMultipleDelete = false,
   setIsMultipleDelete,
   error,
+  currentTeamMemberRole,
   from,
   onEdit,
   onRetry,
@@ -229,12 +234,17 @@ export function DataTable<TData>({
     };
   };
 
+  const canEditDelete = match(currentTeamMemberRole)
+    .with(TeamMemberRole.ADMIN, () => true)
+    .with(TeamMemberRole.MANAGER, () => true)
+    .with(TeamMemberRole.MEMBER, () => false)
+    .otherwise(() => true);
+
   return (
     <div className={cn('flex w-full flex-col gap-2.5 overflow-auto', className)} {...props}>
       {children}
       <div className="overflow-hidden rounded-md">
         <Toaster richColors />
-
         {isDesktop ? (
           <Table>
             <TableHeader>
@@ -353,7 +363,7 @@ export function DataTable<TData>({
                       </TableRow>
                     </ContextMenuTrigger>
                     <ContextMenuContent className="w-64">
-                      {onEdit && (
+                      {onEdit && canEditDelete && (
                         <ContextMenuItem
                           onClick={() => {
                             onEdit(row.original);
@@ -397,10 +407,16 @@ export function DataTable<TData>({
                         </ContextMenuItem>
                       )}
 
-                      {onDelete && (
+                      {onDelete && canEditDelete && (
                         <ContextMenuItem
                           onClick={() => {
-                            onDelete(row.original);
+                            sonnertoast.warning('Esta acción sera permanente', {
+                              description: 'Estas seguro que quieres eliminar este elemento?',
+                              action: {
+                                label: 'Eliminar',
+                                onClick: () => onDelete(row.original),
+                              },
+                            });
                           }}
                           inset
                         >
@@ -446,7 +462,6 @@ export function DataTable<TData>({
           </Table>
         ) : (
           <div className="flex flex-col gap-5">
-            <Toaster richColors />
             {skeleton?.enable ? (
               <div className="flex flex-col gap-2">
                 <Skeleton className="h-64 w-full" />

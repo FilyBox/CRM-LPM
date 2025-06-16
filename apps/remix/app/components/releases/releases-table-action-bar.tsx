@@ -1,9 +1,11 @@
 // import { type Task, tasks } from "@/db/schema";
 import * as React from 'react';
 
+import { TeamMemberRole } from '@prisma/client';
 import type { Table } from '@tanstack/react-table';
 import { Download, Trash2 } from 'lucide-react';
 import { toast as sonnertoast } from 'sonner';
+import { match } from 'ts-pattern';
 
 import { trpc } from '@documenso/trpc/react';
 import type { TFindReleaseResponse } from '@documenso/trpc/server/releases-router/schema';
@@ -23,9 +25,13 @@ type ReleaseTableRow = TFindReleaseResponse['data'][number];
 
 interface ReleasesTableActionBarProps {
   table: Table<ReleaseTableRow>;
+  currentTeamMemberRole?: TeamMemberRole;
 }
 
-export function ReleasesTableActionBar({ table }: ReleasesTableActionBarProps) {
+export function ReleasesTableActionBar({
+  table,
+  currentTeamMemberRole,
+}: ReleasesTableActionBarProps) {
   const { toast } = useToast();
   const rows = table.getFilteredSelectedRowModel().rows;
   const [isPending, startTransition] = React.useTransition();
@@ -66,23 +72,11 @@ export function ReleasesTableActionBar({ table }: ReleasesTableActionBarProps) {
     });
   }, [table]);
 
-  // const onTaskDelete = React.useCallback(() => {
-  //   setCurrentAction("delete");
-  //   startTransition(async () => {
-  //     const { error } = await deleteTasks({
-  //       ids: rows.map((row) => row.original.id),
-  //     });
-
-  //     if (error) {
-  //       toast({
-  //         description: `${error} `,
-  //         variant: "destructive",
-  //       });
-  //       return;
-  //     }
-  //     table.toggleAllRowsSelected(false);
-  //   });
-  // }, [rows, table]);
+  const canEditDelete = match(currentTeamMemberRole)
+    .with(TeamMemberRole.ADMIN, () => true)
+    .with(TeamMemberRole.MANAGER, () => true)
+    .with(TeamMemberRole.MEMBER, () => false)
+    .otherwise(() => true);
 
   return (
     <DataTableActionBar table={table} visible={rows.length > 0}>
@@ -116,22 +110,24 @@ export function ReleasesTableActionBar({ table }: ReleasesTableActionBarProps) {
             </SelectGroup>
           </SelectContent>
         </Select> */}
-        <DataTableActionBarAction
-          size="icon"
-          tooltip="Delete"
-          isPending={isPending || currentAction === 'delete'}
-          onClick={() => {
-            sonnertoast.warning('Esta acción sera permanente', {
-              description: 'Estas seguro que quieres eliminar este elemento?',
-              action: {
-                label: 'Eliminar',
-                onClick: () => handleMultipleDelete(),
-              },
-            });
-          }}
-        >
-          <Trash2 />
-        </DataTableActionBarAction>
+        {canEditDelete && (
+          <DataTableActionBarAction
+            size="icon"
+            tooltip="Delete"
+            isPending={isPending || currentAction === 'delete'}
+            onClick={() => {
+              sonnertoast.warning('Esta acción sera permanente', {
+                description: 'Estas seguro que quieres eliminar este elemento?',
+                action: {
+                  label: 'Eliminar',
+                  onClick: () => handleMultipleDelete(),
+                },
+              });
+            }}
+          >
+            <Trash2 />
+          </DataTableActionBarAction>
+        )}
 
         <DataTableActionBarAction
           size="icon"

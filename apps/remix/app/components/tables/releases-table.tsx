@@ -445,6 +445,7 @@ export const ReleasesTable = ({
         isMultipleDelete={isMultipleDelete}
         onDelete={onDelete}
         onEdit={onEdit}
+        currentTeamMemberRole={team?.currentTeamMember?.role}
         data={results.data}
         onMultipleDelete={onMultipleDelete}
         perPage={results.perPage}
@@ -469,7 +470,12 @@ export const ReleasesTable = ({
           ),
         }}
         table={table}
-        actionBar={<ReleasesTableActionBar table={table} />}
+        actionBar={
+          <ReleasesTableActionBar
+            table={table}
+            currentTeamMemberRole={team?.currentTeamMember?.role}
+          />
+        }
       >
         {/* actionBar={<ReleasesTableActionBar table={table as any} />} */}
 

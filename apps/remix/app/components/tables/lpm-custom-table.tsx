@@ -2,6 +2,7 @@ import { useTransition } from 'react';
 
 import { msg } from '@lingui/macro';
 import { useLingui } from '@lingui/react';
+import type { TeamMemberRole } from '@prisma/client';
 import type { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
@@ -27,6 +28,8 @@ interface DataTableProps<TData, TValue> {
   isLoadingError?: boolean;
   onAdd: () => void;
   onEdit?: (data: DocumentsTableRow) => void;
+  currentTeamMemberRole?: TeamMemberRole;
+
   onDelete?: (data: DocumentsTableRow) => void;
   onMultipleDelete: (ids: number[]) => void;
   isMultipleDelete?: boolean;
@@ -40,6 +43,8 @@ export const LpmTable = ({
   isLoading,
   isLoadingError,
   onAdd,
+  currentTeamMemberRole,
+
   onEdit,
   onDelete,
   isMultipleDelete = false,
@@ -715,6 +720,7 @@ export const LpmTable = ({
       isMultipleDelete={isMultipleDelete}
       onDelete={onDelete}
       onEdit={onEdit}
+      currentTeamMemberRole={team?.currentTeamMember?.role}
       data={results.data}
       onMultipleDelete={onMultipleDelete}
       perPage={results.perPage}
@@ -739,7 +745,9 @@ export const LpmTable = ({
         ),
       }}
       table={table}
-      actionBar={<LpmTableActionBar table={table} />}
+      actionBar={
+        <LpmTableActionBar table={table} currentTeamMemberRole={team?.currentTeamMember?.role} />
+      }
     >
       <DataTableAdvancedToolbar loading={isLoading || false} table={table}>
         <DataTableSortList table={table} align="start" loading={isLoading || false} />

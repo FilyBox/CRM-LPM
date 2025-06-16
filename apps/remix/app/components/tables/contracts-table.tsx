@@ -2,14 +2,13 @@ import { useTransition } from 'react';
 import * as React from 'react';
 
 import { useLingui } from '@lingui/react';
+import type { TeamMemberRole } from '@prisma/client';
 import type { ColumnDef } from '@tanstack/react-table';
-import { Loader } from 'lucide-react';
 
 import { useUpdateSearchParams } from '@documenso/lib/client-only/hooks/use-update-search-params';
 import type { TFindContractsResponse } from '@documenso/trpc/server/contracts-router/schema';
 import { useDataTable } from '@documenso/ui/lib/use-data-table';
 import { Checkbox } from '@documenso/ui/primitives/checkbox';
-import { DataTablePagination } from '@documenso/ui/primitives/data-table-pagination-pagination';
 import { DataTable } from '@documenso/ui/primitives/data-table-table';
 
 import { useOptionalCurrentTeam } from '~/providers/team';
@@ -18,10 +17,8 @@ import { TasksTableActionBar } from '../contracts/contracts-table-action-bar';
 import { DataTableAdvancedToolbar } from './data-table-advanced-toolbar';
 import { DataTableColumnHeader } from './data-table-column-header';
 import { DataTableFilterList } from './data-table-filter-list';
-import { DataTableFilterMenu } from './data-table-filter-menu';
 import { DataTableSkeleton } from './data-table-skeleton';
 import { DataTableSortList } from './data-table-sort-list';
-import { DataTableToolbar } from './data-table-toolbar';
 
 // export type DocumentsTableProps = {
 //   data?: TFindReleaseResponse;
@@ -39,6 +36,7 @@ interface DataTableProps<TData, TValue> {
   isLoadingError?: boolean;
   onAdd: () => void;
   onRetry?: (data: DocumentsTableRow) => void;
+  currentTeamMemberRole?: TeamMemberRole;
 
   onEdit?: (data: DocumentsTableRow) => void;
   onMultipleDelete: (ids: number[]) => void;
@@ -58,6 +56,7 @@ export const ContractsTable = ({
   onRetry,
   onAdd,
   onEdit,
+  currentTeamMemberRole,
   isMultipleDelete = false,
   setIsMultipleDelete,
   onNavegate,
@@ -221,6 +220,7 @@ export const ContractsTable = ({
         isMultipleDelete={isMultipleDelete}
         onDelete={onDelete}
         onEdit={onEdit}
+        currentTeamMemberRole={team?.currentTeamMember?.role}
         onRetry={onRetry}
         onNavegate={onNavegate}
         data={results.data}
@@ -248,7 +248,9 @@ export const ContractsTable = ({
           ),
         }}
         table={table}
-        actionBar={<TasksTableActionBar table={table} />}
+        actionBar={
+          <TasksTableActionBar table={table} currentTeamMemberRole={currentTeamMemberRole} />
+        }
       >
         {/* <DataTableToolbar table={table}>
           <DataTableSortList table={table} align="end" />
@@ -288,7 +290,7 @@ export const ContractsTable = ({
   // isMultipleDelete={isMultipleDelete}
   // columns={columns}
   // onDelete={onDelete}
-  // onEdit={onEdit}
+  // onEdit={onEdit}  currentTeamMemberRole={team?.currentTeamMember?.role}
   // onRetry={onRetry}
   // onNavegate={onNavegate}
   // data={results.data}

@@ -1,8 +1,11 @@
 // import { type Task, tasks } from "@/db/schema";
 import * as React from 'react';
 
+import { TeamMemberRole } from '@prisma/client';
 import type { Table } from '@tanstack/react-table';
 import { Download, Trash2 } from 'lucide-react';
+import { toast as sonnertoast } from 'sonner';
+import { match } from 'ts-pattern';
 
 import { trpc } from '@documenso/trpc/react';
 import type { TFindTuStreamsResponse } from '@documenso/trpc/server/tustreams-router/schema';
@@ -22,10 +25,17 @@ type TableRow = TFindTuStreamsResponse['data'][number];
 
 interface TableActionBarProps {
   table: Table<TableRow>;
+  currentTeamMemberRole?: TeamMemberRole;
 }
 
-export function TableActionBar({ table }: TableActionBarProps) {
+export function TableActionBar({ table, currentTeamMemberRole }: TableActionBarProps) {
   const { toast } = useToast();
+
+  const canEditDelete = match(currentTeamMemberRole)
+    .with(TeamMemberRole.ADMIN, () => true)
+    .with(TeamMemberRole.MANAGER, () => true)
+    .with(TeamMemberRole.MEMBER, () => false)
+    .otherwise(() => true);
   const rows = table.getFilteredSelectedRowModel().rows;
   const [isPending, startTransition] = React.useTransition();
   const [currentAction, setCurrentAction] = React.useState<Action | null>(null);
@@ -73,14 +83,24 @@ export function TableActionBar({ table }: TableActionBarProps) {
         className="hidden data-[orientation=vertical]:h-5 sm:block"
       />
       <div className="flex items-center gap-1.5">
-        <DataTableActionBarAction
-          size="icon"
-          tooltip="Delete"
-          isPending={isPending || currentAction === 'delete'}
-          onClick={handleMultipleDelete}
-        >
-          <Trash2 />
-        </DataTableActionBarAction>
+        {canEditDelete && (
+          <DataTableActionBarAction
+            size="icon"
+            tooltip="Delete"
+            isPending={isPending || currentAction === 'delete'}
+            onClick={() => {
+              sonnertoast.warning('Esta acción sera permanente', {
+                description: 'Estas seguro que quieres eliminar este elemento?',
+                action: {
+                  label: 'Eliminar',
+                  onClick: () => handleMultipleDelete(),
+                },
+              });
+            }}
+          >
+            <Trash2 />
+          </DataTableActionBarAction>
+        )}
 
         <DataTableActionBarAction
           size="icon"

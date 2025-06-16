@@ -2,8 +2,11 @@
 import * as React from 'react';
 
 import { type Contract } from '@prisma/client';
+import { TeamMemberRole } from '@prisma/client';
 import type { Table } from '@tanstack/react-table';
 import { Download, Trash2 } from 'lucide-react';
+import { toast as sonnertoast } from 'sonner';
+import { match } from 'ts-pattern';
 
 import { trpc } from '@documenso/trpc/react';
 import { exportTableToCSV } from '@documenso/ui/lib/export';
@@ -21,9 +24,10 @@ type Action = (typeof actions)[number];
 
 interface TasksTableActionBarProps {
   table: Table<Contract>;
+  currentTeamMemberRole?: TeamMemberRole;
 }
 
-export function TasksTableActionBar({ table }: TasksTableActionBarProps) {
+export function TasksTableActionBar({ table, currentTeamMemberRole }: TasksTableActionBarProps) {
   const { toast } = useToast();
   const rows = table.getFilteredSelectedRowModel().rows;
   const [isPending, startTransition] = React.useTransition();
@@ -53,7 +57,7 @@ export function TasksTableActionBar({ table }: TasksTableActionBarProps) {
   //   [rows],
   // );
 
-  const handleMultipleDelete = async () => {
+  const handleMultipleDelete = () => {
     setCurrentAction('delete');
     try {
       const ids = rows.map((row) => row.original.id);
@@ -82,6 +86,12 @@ export function TasksTableActionBar({ table }: TasksTableActionBarProps) {
       });
     });
   }, [table]);
+
+  const canEditDelete = match(currentTeamMemberRole)
+    .with(TeamMemberRole.ADMIN, () => true)
+    .with(TeamMemberRole.MANAGER, () => true)
+    .with(TeamMemberRole.MEMBER, () => false)
+    .otherwise(() => true);
 
   // const onTaskDelete = React.useCallback(() => {
   //   setCurrentAction("delete");
@@ -133,14 +143,24 @@ export function TasksTableActionBar({ table }: TasksTableActionBarProps) {
             </SelectGroup>
           </SelectContent>
         </Select> */}
-        <DataTableActionBarAction
-          size="icon"
-          tooltip="Delete"
-          isPending={isPending || currentAction === 'delete'}
-          onClick={handleMultipleDelete}
-        >
-          <Trash2 />
-        </DataTableActionBarAction>
+        {canEditDelete && (
+          <DataTableActionBarAction
+            size="icon"
+            tooltip="Delete"
+            isPending={isPending || currentAction === 'delete'}
+            onClick={() => {
+              sonnertoast.warning('Esta acción sera permanente', {
+                description: 'Estas seguro que quieres eliminar este elemento?',
+                action: {
+                  label: 'Eliminar',
+                  onClick: () => handleMultipleDelete(),
+                },
+              });
+            }}
+          >
+            <Trash2 />
+          </DataTableActionBarAction>
+        )}
 
         <DataTableActionBarAction
           size="icon"

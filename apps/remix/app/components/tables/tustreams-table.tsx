@@ -182,6 +182,7 @@ export const TuStreamsTable = ({
         isMultipleDelete={isMultipleDelete}
         onDelete={onDelete}
         onEdit={onEdit}
+        currentTeamMemberRole={team?.currentTeamMember?.role}
         data={results.data}
         onMultipleDelete={onMultipleDelete}
         perPage={results.perPage}
@@ -207,7 +208,9 @@ export const TuStreamsTable = ({
           ),
         }}
         table={table}
-        actionBar={<TableActionBar table={table} />}
+        actionBar={
+          <TableActionBar table={table} currentTeamMemberRole={team?.currentTeamMember?.role} />
+        }
       >
         <DataTableAdvancedToolbar loading={isLoading || false} table={table}>
           <DataTableSortList table={table} align="start" loading={isLoading || false} />
