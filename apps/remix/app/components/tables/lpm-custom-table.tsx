@@ -741,12 +741,13 @@ export const LpmTable = ({
       table={table}
       actionBar={<LpmTableActionBar table={table} />}
     >
-      <DataTableAdvancedToolbar table={table}>
-        <DataTableSortList table={table} align="start" />
+      <DataTableAdvancedToolbar loading={isLoading || false} table={table}>
+        <DataTableSortList table={table} align="start" loading={isLoading || false} />
         <DataTableFilterList
           table={table}
           shallow={shallow}
           debounceMs={debounceMs}
+          loading={isLoading || false}
           throttleMs={throttleMs}
           align="start"
         />

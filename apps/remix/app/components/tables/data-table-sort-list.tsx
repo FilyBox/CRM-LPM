@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@documenso/ui/primitives/select';
+import { Skeleton } from '@documenso/ui/primitives/skeleton';
 import {
   Sortable,
   SortableContent,
@@ -38,9 +39,14 @@ const REMOVE_SORT_SHORTCUTS = ['backspace', 'delete'];
 
 interface DataTableSortListProps<TData> extends React.ComponentProps<typeof PopoverContent> {
   table: Table<TData>;
+  loading: boolean;
 }
 
-export function DataTableSortList<TData>({ table, ...props }: DataTableSortListProps<TData>) {
+export function DataTableSortList<TData>({
+  table,
+  loading,
+  ...props
+}: DataTableSortListProps<TData>) {
   const id = React.useId();
   const labelId = React.useId();
   const descriptionId = React.useId();

@@ -197,9 +197,10 @@ export const IsrcTable = ({
         table={table}
         actionBar={<TableActionBar table={table} />}
       >
-        <DataTableAdvancedToolbar table={table}>
-          <DataTableSortList table={table} align="start" />
+        <DataTableAdvancedToolbar loading={isLoading || false} table={table}>
+          <DataTableSortList table={table} align="start" loading={isLoading || false} />
           <DataTableFilterList
+            loading={isLoading || false}
             table={table}
             shallow={shallow}
             debounceMs={debounceMs}

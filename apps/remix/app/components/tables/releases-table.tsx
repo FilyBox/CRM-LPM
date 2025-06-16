@@ -477,9 +477,10 @@ export const ReleasesTable = ({
           <DataTableSortList table={table} align="end" />
         </DataTableToolbar> */}
 
-        <DataTableAdvancedToolbar table={table}>
-          <DataTableSortList table={table} align="start" />
+        <DataTableAdvancedToolbar loading={isLoading || false} table={table}>
+          <DataTableSortList table={table} align="start" loading={isLoading || false} />
           <DataTableFilterList
+            loading={isLoading || false}
             table={table}
             shallow={shallow}
             debounceMs={debounceMs}

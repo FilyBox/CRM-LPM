@@ -449,9 +449,9 @@ export function DataTable<TData>({
             <Toaster richColors />
             {skeleton?.enable ? (
               <div className="flex flex-col gap-2">
-                <Skeleton className="h-56 w-full" />
-                <Skeleton className="h-56 w-full" />
-                <Skeleton className="h-56 w-full" />
+                <Skeleton className="h-64 w-full" />
+                {/* <Skeleton className="h-56 w-full" />
+                <Skeleton className="h-56 w-full" /> */}
               </div>
             ) : (data && data.length) > 0 ? (
               data.map((row, index) => {
@@ -472,7 +472,7 @@ export function DataTable<TData>({
         )}
       </div>
       <div className="flex flex-col gap-2.5">
-        <DataTablePagination table={table} />
+        <DataTablePagination loading={skeleton?.enable || false} table={table} />
         {actionBar && table.getFilteredSelectedRowModel().rows.length > 0 && actionBar}
       </div>
     </div>

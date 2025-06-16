@@ -3,6 +3,7 @@ import * as React from 'react';
 
 import type { Table } from '@tanstack/react-table';
 import { Download, Trash2 } from 'lucide-react';
+import { toast as sonnertoast } from 'sonner';
 
 import { trpc } from '@documenso/trpc/react';
 import type { TFindIsrcSongsResponse } from '@documenso/trpc/server/isrcsong-router/schema';
@@ -78,7 +79,15 @@ export function TableActionBar({ table }: TableActionBarProps) {
           size="icon"
           tooltip="Delete"
           isPending={isPending || currentAction === 'delete'}
-          onClick={handleMultipleDelete}
+          onClick={() => {
+            sonnertoast.warning('Esta acción sera permanente', {
+              description: 'Estas seguro que quieres eliminar este elemento?',
+              action: {
+                label: 'Eliminar',
+                onClick: () => handleMultipleDelete(),
+              },
+            });
+          }}
         >
           <Trash2 />
         </DataTableActionBarAction>
@@ -86,7 +95,7 @@ export function TableActionBar({ table }: TableActionBarProps) {
         <DataTableActionBarAction
           size="icon"
           tooltip="Export"
-          isPending={getIsActionPending('export')}
+          isPending={isPending || currentAction === 'delete' || currentAction === 'export'}
           onClick={onTaskExport}
         >
           <Download />
