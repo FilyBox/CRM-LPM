@@ -29,7 +29,7 @@ const getFileFromBytes64 = (data: string) => {
   return binaryData;
 };
 
-const getFileFromS3 = async (key: string) => {
+export const getFileFromS3 = async (key: string) => {
   const getPresignedUrlResponse = await fetch(`/api/files/presigned-get-url`, {
     method: 'POST',
     headers: {

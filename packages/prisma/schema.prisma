@@ -585,6 +585,8 @@ model PasswordResetToken {
   expiry    DateTime
   userId    Int
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  buyerId   String
+  buyer     Buyer    @relation(fields: [buyerId], references: [id], onDelete: Cascade)
 }
 
 model Passkey {
@@ -621,6 +623,8 @@ model VerificationToken {
   createdAt   DateTime @default(now())
   userId      Int
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  buyerId     String?
+  buyer       Buyer?   @relation(fields: [buyerId], references: [id], onDelete: Cascade)
 }
 
 enum WebhookTriggerEvents {
@@ -711,6 +715,7 @@ model Subscription {
 model Account {
   id                String  @id @default(cuid())
   userId            Int
+  buyerId           String?
   type              String
   provider          String
   providerAccountId String
@@ -727,7 +732,8 @@ model Account {
   session_state     String?
   password          String?
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  buyer Buyer? @relation(fields: [buyerId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -1595,40 +1601,93 @@ model Suggestion {
 
 // Events table
 model Event {
-  id          Int       @id @default(autoincrement())
-  name        String    @db.VarChar(300)
-  description String?   @db.VarChar(200)
-  image       String?   @db.Text
-  teamId      Int?
-  venue       String?   @db.VarChar(300)
-  artists     Artist[]
-  beginning   DateTime  @default(now())
-  end         DateTime  @default(now())
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  deletedAt   DateTime?
-
+  id           Int           @id @default(autoincrement())
+  name         String        @db.VarChar(300)
+  description  String?       @db.VarChar(200)
+  image        String?       @db.Text
+  teamId       Int?
+  venue        String?       @db.VarChar(300)
+  artists      Artist[]
+  beginning    DateTime      @default(now())
+  end          DateTime      @default(now())
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  deletedAt    DateTime?
+  queues       Queue[]
   team         Team?         @relation(fields: [teamId], references: [id])
   ticketTypes  TicketType[]
   ticketBuyers TicketBuyer[]
 }
 
+enum BuyerRole {
+  ADMIN
+  USER
+}
+
+model SessionBuyers {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  buyerId      String
+  expires      DateTime
+  buyer        Buyer    @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+
+  @@index([buyerId])
+  @@map(name: "sessions")
+}
+
 // Buyers table
 model Buyer {
-  id               String    @id @default(cuid())
-  password         String?
-  uid              String?
-  rfc              String?   @unique @db.VarChar(13)
-  fullname         String    @db.VarChar(250)
-  email            String    @unique @db.VarChar(250)
-  image            String?   @db.Text
-  emailVerified    DateTime?
-  phoneNumber      String?   @db.VarChar(20)
-  stripeCustomerId String    @unique @db.VarChar(255)
-  createdAt        DateTime  @default(now())
-  deletedAt        DateTime?
+  id            String    @id @default(cuid())
+  password      String?
+  uid           String?   @unique
+  name          String?
+  rfc           String?
+  email         String?   @unique
+  emailVerified DateTime?
+  phoneNumber   String?   @db.VarChar(20)
+  image         String?
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
+  updatedAt     DateTime  @default(now()) @map(name: "updated_at")
+  role          BuyerRole @default(USER)
 
-  ticketBuyers TicketBuyer[]
+  accounts              Account[]
+  sessionBuyers         SessionBuyers[]
+  ticketBuyers          TicketBuyer[]
+  verificationTokens    VerificationToken[]
+  queues                Queue[]
+  isTwoFactorEnabled    Boolean                @default(false)
+  twoFactorConfirmation TwoFactorConfirmation?
+
+  stripeCustomerId       String?              @unique @map(name: "stripe_customer_id")
+  stripeSubscriptionId   String?              @unique @map(name: "stripe_subscription_id")
+  stripePriceId          String?              @map(name: "stripe_price_id")
+  stripeCurrentPeriodEnd DateTime?            @map(name: "stripe_current_period_end")
+  PasswordResetToken     PasswordResetToken[]
+
+  @@map(name: "buyers")
+}
+
+model TwoFactorConfirmation {
+  id String @id @default(cuid())
+
+  buyerId String
+  buyer   Buyer  @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+
+  @@unique([buyerId])
+}
+
+model Queue {
+  id        String   @id @default(cuid())
+  buyerId   String
+  eventId   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status    String   @default("pending")
+  buyer     Buyer    @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([buyerId])
+  @@index([eventId])
 }
 
 // Ticket types table

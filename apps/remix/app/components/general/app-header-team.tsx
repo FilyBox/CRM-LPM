@@ -1,18 +1,17 @@
 import { type HTMLAttributes, useEffect, useState } from 'react';
 
-import { MenuIcon, SearchIcon } from 'lucide-react';
-import { Link, useLocation, useParams } from 'react-router';
+import { MenuIcon } from 'lucide-react';
+import { useLocation, useParams } from 'react-router';
 
 import type { SessionUser } from '@documenso/auth/server/lib/session/session';
 import type { TGetTeamsResponse } from '@documenso/lib/server-only/team/get-teams';
-import { getRootHref } from '@documenso/lib/utils/params';
 import { cn } from '@documenso/ui/lib/utils';
-
-import { BrandingLogo } from '~/components/general/branding-logo';
+import { Button } from '@documenso/ui/primitives/button';
 
 import { AppCommandMenu } from './app-command-menu';
 import { AppNavDesktopTeams } from './app-nav-desktop-team';
 import { AppNavMobileTeam } from './app-nav-mobile-team';
+import { Dropmemu } from './dropdown-menu';
 import { MenuSwitcher } from './menu-switcher';
 
 export type HeaderProps = HTMLAttributes<HTMLDivElement> & {
@@ -20,10 +19,12 @@ export type HeaderProps = HTMLAttributes<HTMLDivElement> & {
   teams: TGetTeamsResponse;
 };
 
+export type AppNavDesktopProps = HTMLAttributes<HTMLDivElement> & {
+  setIsCommandMenuOpen: (value: boolean) => void;
+};
 export const HeaderTeams = ({ className, user, teams, ...props }: HeaderProps) => {
   const params = useParams();
   const { pathname } = useLocation();
-
   const [isCommandMenuOpen, setIsCommandMenuOpen] = useState(false);
   const [isHamburgerMenuOpen, setIsHamburgerMenuOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
@@ -58,34 +59,26 @@ export const HeaderTeams = ({ className, user, teams, ...props }: HeaderProps) =
       {...props}
     >
       <div className="mx-auto flex w-full max-w-screen-xl items-center justify-between gap-x-4 px-4 md:justify-normal md:px-0">
-        {/* <Link
-          to={`${getRootHref(params, { returnEmptyRootString: true })}/documents`}
-          className="focus-visible:ring-ring ring-offset-background hidden rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 md:inline"
-        >
-          <BrandingLogo className="h-6 w-auto" />
-        </Link> */}
         <AppNavDesktopTeams setIsCommandMenuOpen={setIsCommandMenuOpen} />
-
+        <Dropmemu />
         <div className="flex gap-x-4" title={selectedTeam ? selectedTeam.name : (user.name ?? '')}>
           <MenuSwitcher user={user} teams={teams} />
         </div>
 
-        <div className="flex flex-row items-center space-x-4 md:hidden">
-          <button onClick={() => setIsCommandMenuOpen(true)}>
-            <SearchIcon className="text-muted-foreground h-6 w-6" />
-          </button>
+        {/* <SearchIcon className="text-muted-foreground h-6 w-6" /> */}
 
-          <button onClick={() => setIsHamburgerMenuOpen(true)}>
-            <MenuIcon className="text-muted-foreground h-6 w-6" />
-          </button>
-
-          <AppCommandMenu open={isCommandMenuOpen} onOpenChange={setIsCommandMenuOpen} />
-
-          <AppNavMobileTeam
-            isMenuOpen={isHamburgerMenuOpen}
-            onMenuOpenChange={setIsHamburgerMenuOpen}
-          />
-        </div>
+        <Button
+          variant="outline"
+          className="text-muted-foreground flex w-full max-w-44 items-center justify-between rounded-lg md:hidden"
+          onClick={() => setIsHamburgerMenuOpen(true)}
+        >
+          <MenuIcon className="text-muted-foreground h-6 w-6" />
+        </Button>
+        <AppCommandMenu open={isCommandMenuOpen} onOpenChange={setIsCommandMenuOpen} />
+        <AppNavMobileTeam
+          isMenuOpen={isHamburgerMenuOpen}
+          onMenuOpenChange={setIsHamburgerMenuOpen}
+        />
       </div>
     </header>
   );

@@ -175,6 +175,14 @@ export const artistRouter = router({
         throw error;
       }
     }),
+  findArtistsAll: authenticatedProcedure.query(async () => {
+    const artists = await prisma.artist.findMany({
+      orderBy: {
+        id: 'asc',
+      },
+    });
+    return artists;
+  }),
 
   deleteArtist: authenticatedProcedure
     .input(z.object({ artistId: z.number() }))
