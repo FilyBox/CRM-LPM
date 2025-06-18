@@ -139,7 +139,7 @@ export const DocumentDropZoneWrapper = ({ children, className }: DocumentDropZon
   });
 
   return (
-    <div {...getRootProps()} className={cn('relative min-h-screen', className)}>
+    <div {...getRootProps()} className={cn('relative min-h-[85vh]', className)}>
       <input {...getInputProps()} />
       {children}
 

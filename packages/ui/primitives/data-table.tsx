@@ -193,6 +193,7 @@ export function DataTable<TData, TValue>({
 
   const onhandleMultipleDelete = () => {
     const ids = rows.map((row) => (row.original as { id: unknown }).id);
+    console.log('onhandleMultipleDelete', ids);
     setIsMultipleDelete?.(true);
     onMultipleDelete?.(ids as number[]);
   };

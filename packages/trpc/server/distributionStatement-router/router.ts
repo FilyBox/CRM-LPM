@@ -4,7 +4,6 @@ import { DateTime } from 'luxon';
 import { z } from 'zod';
 
 import { findDistribution } from '@documenso/lib/server-only/document/find-distribution';
-import { type GetStatsInput } from '@documenso/lib/server-only/document/get-priority';
 // import { jobs } from '@documenso/lib/jobs/client';
 // import { getTemplateById } from '@documenso/lib/server-only/template/get-template-by-id';
 import { prisma } from '@documenso/prisma';
@@ -305,14 +304,83 @@ export const distributionRouter = router({
   findDistribution: authenticatedProcedure
     .input(
       z.object({
-        // userId: z.number(),
         query: z.string().optional(),
         page: z.number().optional(),
         perPage: z.number().optional(),
         period: z.enum(['7d', '14d', '30d']).optional(),
-        orderBy: z.enum(['createdAt', 'updatedAt']).optional(),
+        orderBy: z
+          .enum([
+            'id',
+            'codigoDelTerritorio',
+            'copyright',
+            'costoCarga',
+            'costoDistribucion',
+            'cuotaAdministracion',
+            'ingresosRecibidos',
+            'isrc',
+            'localProductNumber',
+            'marketingOwner',
+            'nombreDelTerritorio',
+            'mesReportado',
+            'nombreDistribucion',
+            'teamId',
+            'userId',
+            'numeroDeCatalogo',
+            'otrosCostos',
+            'ppd',
+            'proyecto',
+            'rbp',
+            'regaliasArtisticas',
+            'rtl',
+            'territorio',
+            'tipoDeCambio',
+            'tipoDeIngreso',
+            'tipoDePrecio',
+            'tituloCatalogo',
+            'upc',
+            'updatedAt',
+            'valorRecibido',
+            'venta',
+            'createdAt',
+          ])
+          .optional(),
         orderByDirection: z.enum(['asc', 'desc']).optional().default('desc'),
-        orderByColumn: z.enum(['id']).optional(),
+        orderByColumn: z
+          .enum([
+            'id',
+            'codigoDelTerritorio',
+            'copyright',
+            'costoCarga',
+            'costoDistribucion',
+            'cuotaAdministracion',
+            'ingresosRecibidos',
+            'isrc',
+            'localProductNumber',
+            'marketingOwner',
+            'nombreDelTerritorio',
+            'mesReportado',
+            'nombreDistribucion',
+            'teamId',
+            'userId',
+            'numeroDeCatalogo',
+            'otrosCostos',
+            'ppd',
+            'proyecto',
+            'rbp',
+            'regaliasArtisticas',
+            'rtl',
+            'territorio',
+            'tipoDeCambio',
+            'tipoDeIngreso',
+            'tipoDePrecio',
+            'tituloCatalogo',
+            'upc',
+            'updatedAt',
+            'valorRecibido',
+            'venta',
+            'createdAt',
+          ])
+          .optional(),
         artistIds: z.array(z.number()).optional(),
         platformIds: z.array(z.number()).optional(),
         territoryIds: z.array(z.number()).optional(),
@@ -340,23 +408,6 @@ export const distributionRouter = router({
           OR: [{ nombreDistribucion: { contains: query, mode: 'insensitive' } }],
         }),
       };
-
-      const getStatOptions: GetStatsInput = {
-        user,
-        period,
-        search: query,
-      };
-
-      // if (teamId) {
-      //   const team = await getTeamById({ userId: user.id, teamId });
-      //   getStatOptions.team = {
-      //     teamId: team.id,
-      //     teamEmail: team.teamEmail?.email,
-      //     currentTeamMemberRole: team.currentTeamMember?.role,
-      //     currentUserEmail: user.email,
-      //     userId: user.id,
-      //   };
-      // }
 
       let createdAt: Prisma.DistributionStatementWhereInput['createdAt'];
 

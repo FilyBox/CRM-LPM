@@ -44,7 +44,6 @@ export const generateQuery = async (
     //   query += ' AND "userId" = ' + userId;
     // }
 
-    console.log('Generated query:', query);
     return query;
   } catch (e: unknown) {
     console.error(e);

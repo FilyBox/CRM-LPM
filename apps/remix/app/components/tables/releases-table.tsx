@@ -445,6 +445,7 @@ export const ReleasesTable = ({
         isMultipleDelete={isMultipleDelete}
         onDelete={onDelete}
         onEdit={onEdit}
+        currentTeamMemberRole={team?.currentTeamMember?.role}
         data={results.data}
         onMultipleDelete={onMultipleDelete}
         perPage={results.perPage}
@@ -469,7 +470,12 @@ export const ReleasesTable = ({
           ),
         }}
         table={table}
-        actionBar={<ReleasesTableActionBar table={table} />}
+        actionBar={
+          <ReleasesTableActionBar
+            table={table}
+            currentTeamMemberRole={team?.currentTeamMember?.role}
+          />
+        }
       >
         {/* actionBar={<ReleasesTableActionBar table={table as any} />} */}
 
@@ -477,9 +483,10 @@ export const ReleasesTable = ({
           <DataTableSortList table={table} align="end" />
         </DataTableToolbar> */}
 
-        <DataTableAdvancedToolbar table={table}>
-          <DataTableSortList table={table} align="start" />
+        <DataTableAdvancedToolbar loading={isLoading || false} table={table}>
+          <DataTableSortList table={table} align="start" loading={isLoading || false} />
           <DataTableFilterList
+            loading={isLoading || false}
             table={table}
             shallow={shallow}
             debounceMs={debounceMs}
@@ -488,66 +495,8 @@ export const ReleasesTable = ({
           />
         </DataTableAdvancedToolbar>
       </DataTable>
-      {/* <UpdateTaskSheet
-        open={rowAction?.variant === "update"}
-        onOpenChange={() => setRowAction(null)}
-        task={rowAction?.row.original ?? null}
-      />
-      <DeleteTasksDialog
-        open={rowAction?.variant === "delete"}
-        onOpenChange={() => setRowAction(null)}
-        tasks={rowAction?.row.original ? [rowAction?.row.original] : []}
-        showTrigger={false}
-        onSuccess={() => rowAction?.row.toggleSelected(false)}
-      /> */}
     </>
   );
-
-  // return (
-  //   <div className="relative">
-  //     <DataTable
-  // setIsMultipleDelete={setIsMultipleDelete}
-  // isMultipleDelete={isMultipleDelete}
-  // columns={columns}
-  // onDelete={onDelete}
-  // onEdit={onEdit}
-  // onRetry={onRetry}
-  // onNavegate={onNavegate}
-  // data={results.data}
-  // onMultipleDelete={onMultipleDelete}
-  // perPage={results.perPage}
-  // currentPage={results.currentPage}
-  // totalPages={results.totalPages}
-  // onPaginationChange={onPaginationChange}
-  // onMoveDocument={onMoveDocument}
-  // columnVisibility={{
-  //   sender: team !== undefined,
-  // }}
-  // error={{
-  //   enable: isLoadingError || false,
-  // }}
-  // skeleton={{
-  //   enable: isLoading || false,
-  //   rows: 5,
-  //   component: (
-  //     <DataTableSkeleton
-  //       columnCount={columns.length}
-  //       cellWidths={['10rem', '30rem', '10rem', '10rem', '6rem', '6rem', '6rem']}
-  //       shrinkZero
-  //     />
-  //   ),
-  // }}
-  //     >
-  //       {(table) => <DataTablePagination additionalInformation="VisibleCount" table={table} />}
-  //     </DataTable>
-
-  //     {isPending && (
-  //       <div className="bg-background/50 absolute inset-0 flex items-center justify-center">
-  //         <Loader className="text-muted-foreground h-8 w-8 animate-spin" />
-  //       </div>
-  //     )}
-  //   </div>
-  // );
 };
 
 type DataTableTitleProps = {

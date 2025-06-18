@@ -2,16 +2,21 @@ import { useTransition } from 'react';
 
 import { useLingui } from '@lingui/react';
 import type { ColumnDef } from '@tanstack/react-table';
-import { Loader } from 'lucide-react';
 
 import { useUpdateSearchParams } from '@documenso/lib/client-only/hooks/use-update-search-params';
 import type { TFindIsrcSongsResponse } from '@documenso/trpc/server/isrcsong-router/schema';
+import { useDataTable } from '@documenso/ui/lib/use-data-table';
 import { Checkbox } from '@documenso/ui/primitives/checkbox';
-import { DataTable } from '@documenso/ui/primitives/data-table';
-import { DataTablePagination } from '@documenso/ui/primitives/data-table-pagination';
+import { DataTable } from '@documenso/ui/primitives/data-table-table';
 
-import { DataTableSkeleton } from '~/components/tables/data-table-skeleton';
 import { useOptionalCurrentTeam } from '~/providers/team';
+
+import { TableActionBar } from '../isrc/isrc-table-action-bar';
+import { DataTableAdvancedToolbar } from './data-table-advanced-toolbar';
+import { DataTableColumnHeader } from './data-table-column-header';
+import { DataTableFilterList } from './data-table-filter-list';
+import { DataTableSkeleton } from './data-table-skeleton';
+import { DataTableSortList } from './data-table-sort-list';
 
 interface DataTableProps<TData, TValue> {
   data?: TFindIsrcSongsResponse;
@@ -73,53 +78,82 @@ export const IsrcTable = ({
         size: 40,
       },
       {
+        header: ({ column }) => <DataTableColumnHeader column={column} title={'ID'} />,
+        enableColumnFilter: true,
         accessorKey: 'id',
-        header: 'ID',
-        enableHiding: true,
       },
       {
+        header: ({ column }) => <DataTableColumnHeader column={column} title={'Date'} />,
+        enableColumnFilter: true,
         accessorKey: 'date',
-        header: 'Date',
         enableHiding: true,
       },
       {
+        header: 'Artists',
+        enableColumnFilter: true,
         accessorKey: 'isrcArtists',
-        header: 'Artist',
         enableHiding: true,
       },
       {
+        header: ({ column }) => <DataTableColumnHeader column={column} title={'Track Name'} />,
+        enableColumnFilter: true,
         accessorKey: 'trackName',
-        header: 'Track Name',
         enableHiding: true,
       },
       {
+        header: ({ column }) => <DataTableColumnHeader column={column} title={'ISRC'} />,
+        enableColumnFilter: true,
         accessorKey: 'isrc',
-        header: 'ISRC',
         enableHiding: true,
       },
       {
         accessorKey: 'duration',
-        header: 'Duration',
+        header: ({ column }) => <DataTableColumnHeader column={column} title={'Duration'} />,
+        enableColumnFilter: true,
         enableHiding: true,
       },
       {
         accessorKey: 'title',
-        header: 'Title',
-        enableHiding: true,
+        header: ({ column }) => <DataTableColumnHeader column={column} title={'Title'} />,
+        enableColumnFilter: true,
       },
       {
+        enableHiding: true,
+
+        enableColumnFilter: true,
         accessorKey: 'license',
-        header: 'License',
+        header: ({ column }) => <DataTableColumnHeader column={column} title={'License'} />,
       },
     ];
     return columns;
   };
 
-  interface ColumnActions {
-    onEdit?: (data: DocumentsTableRow) => void;
-    onDelete?: (id: number) => void;
-  }
   const columns = createColumns();
+
+  const { table, shallow, debounceMs, throttleMs } = useDataTable({
+    data: data?.data || [],
+    columns,
+    pageCount: data?.totalPages || 1,
+    enableAdvancedFilter: true,
+    initialState: {
+      sorting: [{ id: 'createdAt', desc: true }],
+      columnPinning: { right: ['actions'] },
+    },
+    defaultColumn: {
+      columns,
+      enableColumnFilter: false,
+    },
+    getRowId: (originalRow) => originalRow.id.toString(),
+    shallow: false,
+    clearOnDefault: true,
+  });
+
+  const results = data ?? {
+    data: [],
+    perPage: 10,
+    currentPage: 1,
+    totalPages: 1,
+  };
 
   const onPaginationChange = (page: number, perPage: number) => {
     startTransition(() => {
@@ -130,23 +164,16 @@ export const IsrcTable = ({
     });
   };
 
-  const results = data ?? {
-    data: [],
-    perPage: 10,
-    currentPage: 1,
-    totalPages: 1,
-  };
-
   return (
     <div className="relative">
       <DataTable
-        columns={columns}
         setIsMultipleDelete={setIsMultipleDelete}
         isMultipleDelete={isMultipleDelete}
-        onMultipleDelete={onMultipleDelete}
         onDelete={onDelete}
         onEdit={onEdit}
+        currentTeamMemberRole={team?.currentTeamMember?.role}
         data={results.data}
+        onMultipleDelete={onMultipleDelete}
         perPage={results.perPage}
         currentPage={results.currentPage}
         totalPages={results.totalPages}
@@ -163,25 +190,28 @@ export const IsrcTable = ({
           component: (
             <DataTableSkeleton
               columnCount={columns.length}
-              cellWidths={['10rem', '30rem', '10rem', '10rem', '6rem', '6rem', '6rem']}
+              cellWidths={['3rem', '3rem', '3rem', '3rem', '2rem', '2rem', '2rem']}
               shrinkZero
             />
           ),
         }}
+        table={table}
+        actionBar={
+          <TableActionBar table={table} currentTeamMemberRole={team?.currentTeamMember?.role} />
+        }
       >
-        {(table) => <DataTablePagination additionalInformation="VisibleCount" table={table} />}
+        <DataTableAdvancedToolbar loading={isLoading || false} table={table}>
+          <DataTableSortList table={table} align="start" loading={isLoading || false} />
+          <DataTableFilterList
+            loading={isLoading || false}
+            table={table}
+            shallow={shallow}
+            debounceMs={debounceMs}
+            throttleMs={throttleMs}
+            align="start"
+          />
+        </DataTableAdvancedToolbar>
       </DataTable>
-
-      {isPending && (
-        <div className="bg-background/50 absolute inset-0 flex items-center justify-center">
-          <Loader className="text-muted-foreground h-8 w-8 animate-spin" />
-        </div>
-      )}
     </div>
   );
-};
-
-type DataTableTitleProps = {
-  row: DocumentsTableRow;
-  teamUrl?: string;
 };

@@ -154,12 +154,11 @@ export const CreateFolderDialogChat = ({ trigger, ...props }: CreateFolderDialog
                 variant="secondary"
                 onClick={() => setIsCreateFolderOpen(false)}
                 disabled={isCreating}
-                loading={isCreating}
               >
                 Cancel
               </Button>
 
-              <Button disabled={isCreating} type="submit">
+              <Button disabled={isCreating} loading={isCreating} type="submit">
                 Create
               </Button>
             </DialogFooter>

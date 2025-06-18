@@ -1,7 +1,7 @@
 import { type HTMLAttributes, useEffect, useState } from 'react';
 
 import { MenuIcon } from 'lucide-react';
-import { useLocation, useParams } from 'react-router';
+import { useLocation } from 'react-router';
 
 import type { SessionUser } from '@documenso/auth/server/lib/session/session';
 import type { TGetTeamsResponse } from '@documenso/lib/server-only/team/get-teams';
@@ -23,7 +23,6 @@ export type AppNavDesktopProps = HTMLAttributes<HTMLDivElement> & {
   setIsCommandMenuOpen: (value: boolean) => void;
 };
 export const HeaderTeams = ({ className, user, teams, ...props }: HeaderProps) => {
-  const params = useParams();
   const { pathname } = useLocation();
   const [isCommandMenuOpen, setIsCommandMenuOpen] = useState(false);
   const [isHamburgerMenuOpen, setIsHamburgerMenuOpen] = useState(false);

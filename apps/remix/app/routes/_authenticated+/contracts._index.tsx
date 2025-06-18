@@ -25,7 +25,7 @@ import ContractForm from '@documenso/ui/primitives/form-contracts';
 import { Tabs, TabsList, TabsTrigger } from '@documenso/ui/primitives/tabs';
 import { useToast } from '@documenso/ui/primitives/use-toast';
 
-import { AdvancedFilterDialog } from '~/components/dialogs/advanced-filte-dialog';
+import { AdvancedFilterDialog } from '~/components/dialogs/advanced-filter-drawer';
 import { CreateFolderDialogContract } from '~/components/dialogs/folder-create-dialog-contracts';
 import { FolderDeleteDialog } from '~/components/dialogs/folder-delete-dialog';
 import { FolderMoveDialog } from '~/components/dialogs/folder-move-dialog';
@@ -513,6 +513,9 @@ export default function ContractsPage() {
         </div>
 
         <div className="flex gap-4 sm:flex-row sm:justify-end">
+          <Button className="w-1/2" onClick={openCreateDialog}>
+            Add Item
+          </Button>
           <CreateFolderDialogContract />
         </div>
       </div>
@@ -643,9 +646,6 @@ export default function ContractsPage() {
               </TabsList>
             </Tabs>
 
-            <Button className="w-full sm:w-fit" onClick={openCreateDialog}>
-              Add Item
-            </Button>
             <AdvancedFilterDialog tableToConsult="Contracts" />
             <div className="flex w-full flex-wrap items-center justify-between gap-x-2 gap-y-4 sm:w-48">
               <DocumentSearch initialValue={findDocumentSearchParams.query} />

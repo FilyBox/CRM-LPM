@@ -25,7 +25,7 @@ export type FindTuStreamsOptions = {
   artistIds?: number[];
   perPage?: number;
   orderBy?: {
-    column: keyof Omit<tuStreams, 'type'>;
+    column: keyof tuStreams;
     direction: 'asc' | 'desc';
   };
   type?: ExtendedTuStreamsType;

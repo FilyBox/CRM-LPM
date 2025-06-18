@@ -1,7 +1,6 @@
 // import { type Task, tasks } from "@/db/schema";
 import * as React from 'react';
 
-import { type Contract } from '@prisma/client';
 import { TeamMemberRole } from '@prisma/client';
 import type { Table } from '@tanstack/react-table';
 import { Download, Trash2 } from 'lucide-react';
@@ -9,6 +8,7 @@ import { toast as sonnertoast } from 'sonner';
 import { match } from 'ts-pattern';
 
 import { trpc } from '@documenso/trpc/react';
+import type { TFindDistributionResponse } from '@documenso/trpc/server/distributionStatement-router/schema';
 import { exportTableToCSV } from '@documenso/ui/lib/export';
 import {
   DataTableActionBar,
@@ -21,48 +21,31 @@ import { useToast } from '@documenso/ui/primitives/use-toast';
 const actions = ['update-status', 'update-priority', 'export', 'delete'] as const;
 
 type Action = (typeof actions)[number];
+type TableRow = TFindDistributionResponse['data'][number];
 
-interface TasksTableActionBarProps {
-  table: Table<Contract>;
+interface TableActionBarProps {
+  table: Table<TableRow>;
   currentTeamMemberRole?: TeamMemberRole;
 }
 
-export function TasksTableActionBar({ table, currentTeamMemberRole }: TasksTableActionBarProps) {
+export function TableActionBar({ table, currentTeamMemberRole }: TableActionBarProps) {
   const { toast } = useToast();
   const rows = table.getFilteredSelectedRowModel().rows;
   const [isPending, startTransition] = React.useTransition();
   const [currentAction, setCurrentAction] = React.useState<Action | null>(null);
-  const deleteMultipleContractsMutation = trpc.contracts.deleteMultipleContractsByIds.useMutation();
+  const deleteMultipleMutation = trpc.distribution.deleteMultipleByIds.useMutation();
   const getIsActionPending = React.useCallback(
     (action: Action) => isPending && currentAction === action,
     [isPending, currentAction],
   );
 
-  // const onTaskUpdate = React.useCallback(
-  //   ({ field, value }: { field: 'status'; value: Contract['status'] }) => {
-  //     setCurrentAction(field === 'status' ? 'update-status' : 'update-priority');
-  //     // startTransition(async () => {
-  //     //   const { error } = await updateTasks({
-  //     //     ids: rows.map((row) => row.original.id),
-  //     //     [field]: value,
-  //     //   });
-
-  //     //   if (error) {
-  //     //     toast.error(error);
-  //     //     return;
-  //     //   }
-  //     //   toast.success("Tasks updated");
-  //     // });
-  //   },
-  //   [rows],
-  // );
-
   const handleMultipleDelete = () => {
     setCurrentAction('delete');
     try {
       const ids = rows.map((row) => row.original.id);
+      console.log('Deleting IDs:', ids);
       startTransition(async () => {
-        const eo = await deleteMultipleContractsMutation.mutateAsync({ ids: ids });
+        await deleteMultipleMutation.mutateAsync({ ids: ids });
 
         toast({
           description: `${ids.length} deleted successfully`,
@@ -92,25 +75,6 @@ export function TasksTableActionBar({ table, currentTeamMemberRole }: TasksTable
     .with(TeamMemberRole.MANAGER, () => true)
     .with(TeamMemberRole.MEMBER, () => false)
     .otherwise(() => true);
-
-  // const onTaskDelete = React.useCallback(() => {
-  //   setCurrentAction("delete");
-  //   startTransition(async () => {
-  //     const { error } = await deleteTasks({
-  //       ids: rows.map((row) => row.original.id),
-  //     });
-
-  //     if (error) {
-  //       toast({
-  //         description: `${error} `,
-  //         variant: "destructive",
-  //       });
-  //       return;
-  //     }
-  //     table.toggleAllRowsSelected(false);
-  //   });
-  // }, [rows, table]);
-
   return (
     <DataTableActionBar table={table} visible={rows.length > 0}>
       <DataTableActionBarSelection table={table} />
@@ -119,30 +83,6 @@ export function TasksTableActionBar({ table, currentTeamMemberRole }: TasksTable
         className="hidden data-[orientation=vertical]:h-5 sm:block"
       />
       <div className="flex items-center gap-1.5">
-        {/* <Select
-          onValueChange={(value: string) =>
-            onTaskUpdate({ field: 'status', value: value as ContractStatus })
-          }
-        >
-          <SelectTrigger asChild>
-            <DataTableActionBarAction
-              size="icon"
-              tooltip="Update status"
-              isPending={getIsActionPending('update-status')}
-            >
-              <CheckCircle2 />
-            </DataTableActionBarAction>
-          </SelectTrigger>
-          <SelectContent align="center">
-            <SelectGroup>
-              {Object.values(ContractStatus).map((status) => (
-                <SelectItem key={status} value={status} className="capitalize">
-                  {status}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select> */}
         {canEditDelete && (
           <DataTableActionBarAction
             size="icon"
@@ -170,14 +110,6 @@ export function TasksTableActionBar({ table, currentTeamMemberRole }: TasksTable
         >
           <Download />
         </DataTableActionBarAction>
-        {/* <DataTableActionBarAction
-          size="icon"
-          tooltip="Delete"
-          isPending={getIsActionPending("delete")}
-          onClick={onTaskDelete}
-        >
-          <Trash2 />
-        </DataTableActionBarAction> */}
       </div>
     </DataTableActionBar>
   );

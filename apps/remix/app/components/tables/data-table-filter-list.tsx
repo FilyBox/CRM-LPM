@@ -51,6 +51,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@documenso/ui/primitives/select';
+import { Skeleton } from '@documenso/ui/primitives/skeleton';
 import {
   Sortable,
   SortableContent,
@@ -78,11 +79,13 @@ interface DataTableFilterListProps<TData> extends React.ComponentProps<typeof Po
   debounceMs?: number;
   throttleMs?: number;
   shallow?: boolean;
+  loading: boolean;
 }
 
 export function DataTableFilterList<TData>({
   table,
   debounceMs = DEBOUNCE_MS,
+  loading,
   throttleMs = THROTTLE_MS,
   shallow = true,
   ...props
@@ -201,6 +204,10 @@ export function DataTableFilterList<TData>({
     [filters, onFilterRemove],
   );
 
+  if (loading) {
+    return <Skeleton className="h-9 w-[85px] rounded-md" />;
+  }
+
   return (
     <Sortable value={filters} onValueChange={setFilters} getItemValue={(item) => item.filterId}>
       <Popover open={open} onOpenChange={setOpen}>
@@ -317,13 +324,13 @@ function DataTableFilterItem<TData>({
   const [showValueSelector, setShowValueSelector] = React.useState(false);
 
   const column = columns.find((column) => column.id === filter.id);
-  if (!column) return null;
+
   const joinOperatorListboxId = `${filterItemId}-join-operator-listbox`;
   const fieldListboxId = `${filterItemId}-field-listbox`;
   const operatorListboxId = `${filterItemId}-operator-listbox`;
   const inputId = `${filterItemId}-input`;
 
-  const columnMeta = column.columnDef.meta;
+  const columnMeta = column?.columnDef.meta;
   const filterOperators = getFilterOperators(filter.variant);
 
   const onItemKeyDown = React.useCallback(
@@ -343,6 +350,8 @@ function DataTableFilterItem<TData>({
     },
     [filter.filterId, showFieldSelector, showOperatorSelector, showValueSelector, onFilterRemove],
   );
+
+  if (!column) return null;
 
   return (
     <SortableItem value={filter.filterId} asChild>

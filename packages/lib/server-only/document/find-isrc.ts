@@ -1,4 +1,4 @@
-import type { Prisma, Releases } from '@prisma/client';
+import type { IsrcSongs, Prisma } from '@prisma/client';
 import { DateTime } from 'luxon';
 
 import { prisma } from '@documenso/prisma';
@@ -13,7 +13,7 @@ export type FindReleaseOptions = {
   page?: number;
   perPage?: number;
   orderBy?: {
-    column: keyof Omit<Releases, 'release'>;
+    column: keyof Omit<IsrcSongs, 'teamId' | 'userId'>;
     direction: 'asc' | 'desc';
   };
   where?: Prisma.IsrcSongsWhereInput;

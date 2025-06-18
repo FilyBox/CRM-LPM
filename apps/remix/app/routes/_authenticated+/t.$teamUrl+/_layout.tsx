@@ -96,7 +96,7 @@ export default function Layout({ params }: Route.ComponentProps) {
             )}
 
           <NuqsAdapter>
-            <main className="mt-8 pb-8 md:mt-12 md:pb-12">
+            <main className="mt-4 h-fit">
               <Outlet />
             </main>
           </NuqsAdapter>
