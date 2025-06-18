@@ -247,7 +247,7 @@ export default function DocumentPage() {
     }
   };
   return (
-    <div className="mx-auto -mt-4 w-full px-4 md:px-8">
+    <div className="mx-auto -mt-4 w-full overflow-y-hidden px-4 md:px-8">
       {document.status === DocumentStatus.PENDING && (
         <DocumentRecipientLinkCopyDialog recipients={recipients} />
       )}

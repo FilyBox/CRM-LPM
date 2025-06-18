@@ -18,7 +18,7 @@ import MyForm from '@documenso/ui/primitives/form-custom';
 import { Input } from '@documenso/ui/primitives/input';
 import { useToast } from '@documenso/ui/primitives/use-toast';
 
-import { AdvancedFilterDialog } from '~/components/dialogs/advanced-filte-dialog';
+import { AdvancedFilterDialog } from '~/components/dialogs/advanced-filter-drawer';
 import { ArtistCreateDialog } from '~/components/dialogs/artist-create-dialog';
 import { DocumentSearch } from '~/components/general/document/document-search';
 import { GeneralTableEmptyState } from '~/components/tables/general-table-empty-state';
@@ -37,6 +37,79 @@ const ZSearchParamsSchema = ZFindLpmInternalRequestSchema.pick({
 }).extend({
   artistIds: z.string().transform(parseToIntegerArray).optional().catch([]),
 });
+const sortColumns = z
+  .enum([
+    'id',
+    'productId',
+    'productType',
+    'productTitle',
+    'productVersion',
+    'productDisplayArtist',
+    'parentLabel',
+    'label',
+    'originalReleaseDate',
+    'releaseDate',
+    'upc',
+    'catalog',
+    'productPriceTier',
+    'productGenre',
+    'submissionStatus',
+    'productCLine',
+    'productPLine',
+    'preOrderDate',
+    'exclusives',
+    'explicitLyrics',
+    'additionalContributorsNonPerforming',
+    'additionalContributorsPerforming',
+    'albumOnly',
+    'audioLanguage',
+    'compilation',
+    'continuousMix',
+    'createdBy',
+    'duration',
+    'importDate',
+    'explicitLyricsTrack',
+    'instantGratificationDate',
+    'lastModified',
+    'lastProcessDate',
+    'linerNotes',
+    'isrc',
+    'lyrics',
+    'producers',
+    'sampleStartTime',
+    'trackCLine',
+    'trackId',
+    'trackGenre',
+    'trackName',
+    'trackNumber',
+    'trackPLine',
+    'trackPriceTier',
+    'trackType',
+    'trackVolume',
+    'writersComposers',
+    'timedReleaseDate',
+    'timedReleaseMusicServices',
+    'pdfBooklet',
+    'preOrderType',
+    'submittedAt',
+    'productPlayLink',
+    'publishersCollectionSocieties',
+    'trackDisplayArtist',
+    'submittedBy',
+    'continuouslyMixedIndividualSong',
+    'primaryMetadataLanguage',
+    'trackVersion',
+    'vevoChannel',
+    'trackPlayLink',
+    'withholdMechanicals',
+    'teamId',
+    'userId',
+  ])
+  .optional();
+export const TypeSearchParams = z.record(
+  z.string(),
+  z.union([z.string(), z.array(z.string()), z.undefined()]),
+);
 
 export function meta() {
   return appMetaTags('Music');
@@ -44,18 +117,60 @@ export function meta() {
 
 export default function TablePage() {
   const [searchParams] = useSearchParams();
+
+  const sort = useMemo(
+    () => TypeSearchParams.safeParse(Object.fromEntries(searchParams.entries())).data || {},
+    [searchParams],
+  );
+
+  const columnOrder = useMemo(() => {
+    if (sort.sort) {
+      try {
+        const parsedSort = JSON.parse(sort.sort as string);
+        if (Array.isArray(parsedSort) && parsedSort.length > 0) {
+          const { id } = parsedSort[0];
+          const isValidColumn = sortColumns.safeParse(id);
+          return isValidColumn.success ? id : undefined;
+        }
+      } catch (error) {
+        console.error('Error parsing sort parameter:', error);
+        return 'id';
+      }
+    }
+    return 'id';
+  }, [sort]);
+
+  const columnDirection = useMemo(() => {
+    if (sort.sort) {
+      try {
+        const parsedSort = JSON.parse(sort.sort as string);
+        if (Array.isArray(parsedSort) && parsedSort.length > 0) {
+          const { desc } = parsedSort[0];
+          return desc ? 'desc' : 'asc';
+        }
+      } catch (error) {
+        console.error('Error parsing sort parameter:', error);
+        return 'asc';
+      }
+    }
+    return 'asc';
+  }, [sort]);
+
   const [csvFile, setCsvFile] = useState<File | null>(null);
 
   const findDocumentSearchParams = useMemo(
     () => ZSearchParamsSchema.safeParse(Object.fromEntries(searchParams.entries())).data || {},
     [searchParams],
   );
+
   const { data, isLoading, isLoadingError, refetch } = trpc.lpm.findLpm.useQuery({
     query: findDocumentSearchParams.query,
     artistIds: findDocumentSearchParams.artistIds,
     period: findDocumentSearchParams.period,
     page: findDocumentSearchParams.page,
     perPage: findDocumentSearchParams.perPage,
+    orderByColumn: columnOrder,
+    orderByDirection: columnDirection,
   });
 
   const { data: artistData, isLoading: artistDataloading } =
@@ -455,7 +570,7 @@ export default function TablePage() {
   };
   return (
     <div className="mx-auto flex max-w-screen-xl flex-col gap-y-8 px-4 md:px-8">
-      <div className="mt-12 flex flex-wrap items-center justify-between gap-x-4 gap-y-8">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-8">
         <div className="flex flex-row items-center">
           {team && (
             <Avatar className="dark:border-border mr-3 h-12 w-12 border-2 border-solid border-white">
@@ -483,9 +598,12 @@ export default function TablePage() {
             </div>
             <TableArtistFilter artistData={artistData} isLoading={artistDataloading} />
 
-            <Button onClick={openCreateDialog}>Add Item</Button>
             <AdvancedFilterDialog tableToConsult="Virgin" />
             <ArtistCreateDialog />
+
+            <Button className="w-full sm:w-fit" onClick={openCreateDialog}>
+              Add Item
+            </Button>
           </div>
         </div>
       </div>

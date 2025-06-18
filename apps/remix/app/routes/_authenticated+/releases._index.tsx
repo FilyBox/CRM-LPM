@@ -34,7 +34,7 @@ import { Input } from '@documenso/ui/primitives/input';
 import { Tabs, TabsList, TabsTrigger } from '@documenso/ui/primitives/tabs';
 import { useToast } from '@documenso/ui/primitives/use-toast';
 
-import { AdvancedFilterDialog } from '~/components/dialogs/advanced-filte-dialog';
+import { AdvancedFilterDialog } from '~/components/dialogs/advanced-filter-drawer';
 import { DocumentSearch } from '~/components/general/document/document-search';
 import { PeriodSelector } from '~/components/general/period-selector';
 import { ReleaseType } from '~/components/general/task/release-type';
@@ -278,10 +278,8 @@ export default function TasksPage() {
       const csvData = await parseCsvFile(csvFile);
 
       const validatedData = csvData.map((item) => {
-        console.log('CSV Item:', item);
         const parsedDate = parseSpanishDate(item['Fecha'] || '');
-        console.log("item['Fecha']:", item['Fecha']);
-        console.log('Parsed Date:', parsedDate);
+
         const formattedDate = formatDate(parsedDate);
 
         // Validate typeOfRelease to ensure it's one of the allowed values
@@ -378,7 +376,6 @@ export default function TasksPage() {
         WebSiteUpdates: newRecord.WebSiteUpdates || undefined,
         Biography: newRecord.Biography || undefined,
       });
-      console.log('Created Record ID:', id);
       setIsDialogOpen(false);
       toast({
         description: 'Data added successfully',
@@ -392,15 +389,12 @@ export default function TasksPage() {
     } finally {
       await refetch();
     }
-    console.log('New Record:', newRecord);
     // const record = { ...newRecord, id: Number(dataIntial?.releases?.length ?? 0) + 1 };
 
     setIsDialogOpen(false);
   };
 
   const handleUpdate = async (updated: Releases) => {
-    console.log('Updated User:', updated);
-    console.log('id', updated.id);
     try {
       const { id } = await updateMutation.mutateAsync({
         id: updated.id,
@@ -411,39 +405,30 @@ export default function TasksPage() {
         release: updated.release || undefined,
         uploaded: updated.uploaded || undefined,
         streamingLink: updated.streamingLink || undefined,
-        assets: updated.assets || undefined,
-        canvas: updated.canvas || undefined,
-        cover: updated.cover || undefined,
-        audioWAV: updated.audioWAV || undefined,
-        video: updated.video || undefined,
-        banners: updated.banners || undefined,
-        pitch: updated.pitch || undefined,
-        EPKUpdates: updated.EPKUpdates || undefined,
-        WebSiteUpdates: updated.WebSiteUpdates || undefined,
-        Biography: updated.Biography || undefined,
+        assets: updated.assets,
+        canvas: updated.canvas,
+        cover: updated.cover,
+        audioWAV: updated.audioWAV,
+        video: updated.video,
+        banners: updated.banners,
+        pitch: updated.pitch,
+        EPKUpdates: updated.EPKUpdates,
+        WebSiteUpdates: updated.WebSiteUpdates,
+        Biography: updated.Biography,
       });
 
       console.log('Updated Record ID:', id);
-
-      // if (dataIntial) {
-      //   setData({
-      //     ...dataIntial,
-      //     data: dataIntial.data.map((record) => (record.id === updated.id ? updated : record)),
-      //   });
-      // }
-      setIsDialogOpen(false);
-      setEditingUser(null);
       toast({
         description: 'Data updated successfully',
       });
+      setIsDialogOpen(false);
+      setEditingUser(null);
     } catch (error) {
       toast({
         variant: 'destructive',
         description: 'Error updating data',
       });
       console.error('Error updating record:', error);
-    } finally {
-      await refetch();
     }
   };
 
@@ -480,7 +465,6 @@ export default function TasksPage() {
       toast({
         description: `${ids.length} deleted successfully`,
       });
-      await refetch();
     } catch (error) {
       toast({
         variant: 'destructive',

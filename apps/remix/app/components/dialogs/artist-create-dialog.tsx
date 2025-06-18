@@ -109,7 +109,7 @@ export const ArtistCreateDialog = ({ teamId: _teamId }: ArtistCreateDialogProps)
       onOpenChange={(value) => !isCreatingArtist && setShowArtistCreateDialog(value)}
     >
       <DialogTrigger asChild>
-        <Button className="cursor-pointer" disabled={!user.emailVerified}>
+        <Button className="w-full cursor-pointer sm:w-fit" disabled={!user.emailVerified}>
           <FilePlus className="-ml-1 mr-2 h-4 w-4" />
           <Trans>New Artist</Trans>
         </Button>
@@ -143,19 +143,6 @@ export const ArtistCreateDialog = ({ teamId: _teamId }: ArtistCreateDialogProps)
             />
           </div>
 
-          <div>
-            <label htmlFor="url" className="block text-sm font-medium text-gray-100">
-              <Trans>URL</Trans>
-            </label>
-            <Input
-              disabled={isCreatingArtist}
-              id="url"
-              name="url"
-              value={artistData.url}
-              onChange={handleInputChange}
-              className="mt-1"
-            />
-          </div>
           {/* <div>
             <label htmlFor="role" className="block text-sm font-medium text-gray-100">
               <Trans>Role</Trans>

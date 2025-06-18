@@ -21,7 +21,7 @@ import DistributionForm from '@documenso/ui/primitives/form-distribution';
 import { Input } from '@documenso/ui/primitives/input';
 import { useToast } from '@documenso/ui/primitives/use-toast';
 
-import { AdvancedFilterDialog } from '~/components/dialogs/advanced-filte-dialog';
+import { AdvancedFilterDialog } from '~/components/dialogs/advanced-filter-drawer';
 import { DocumentSearch } from '~/components/general/document/document-search';
 import { PeriodSelector } from '~/components/general/period-selector';
 import { DistributionTable } from '~/components/tables/distribution-table';
@@ -40,6 +40,47 @@ export function meta() {
   return appMetaTags('distribution');
 }
 
+const sortColumns = z
+  .enum([
+    'id',
+    'codigoDelTerritorio',
+    'copyright',
+    'costoCarga',
+    'costoDistribucion',
+    'cuotaAdministracion',
+    'ingresosRecibidos',
+    'isrc',
+    'localProductNumber',
+    'marketingOwner',
+    'nombreDelTerritorio',
+    'mesReportado',
+    'nombreDistribucion',
+    'teamId',
+    'userId',
+    'numeroDeCatalogo',
+    'otrosCostos',
+    'ppd',
+    'proyecto',
+    'rbp',
+    'regaliasArtisticas',
+    'rtl',
+    'territorio',
+    'tipoDeCambio',
+    'tipoDeIngreso',
+    'tipoDePrecio',
+    'tituloCatalogo',
+    'upc',
+    'updatedAt',
+    'valorRecibido',
+    'venta',
+    'createdAt',
+  ])
+  .optional();
+export const TypeSearchParams = z.record(
+  z.string(),
+  z.union([z.string(), z.array(z.string()), z.undefined()]),
+);
+
 const ZSearchParamsSchema = ZFindDistributionInternalRequestSchema.pick({
   period: true,
   page: true,
@@ -52,6 +93,45 @@ const ZSearchParamsSchema = ZFindDistributionInternalRequestSchema.pick({
 
 export default function DistributionPage() {
   const [searchParams] = useSearchParams();
+
+  const sort = useMemo(
+    () => TypeSearchParams.safeParse(Object.fromEntries(searchParams.entries())).data || {},
+    [searchParams],
+  );
+
+  const columnOrder = useMemo(() => {
+    if (sort.sort) {
+      try {
+        const parsedSort = JSON.parse(sort.sort as string);
+        if (Array.isArray(parsedSort) && parsedSort.length > 0) {
+          const { id } = parsedSort[0];
+          const isValidColumn = sortColumns.safeParse(id);
+          return isValidColumn.success ? id : undefined;
+        }
+      } catch (error) {
+        console.error('Error parsing sort parameter:', error);
+        return 'id';
+      }
+    }
+    return 'id';
+  }, [sort]);
+
+  const columnDirection = useMemo(() => {
+    if (sort.sort) {
+      try {
+        const parsedSort = JSON.parse(sort.sort as string);
+        if (Array.isArray(parsedSort) && parsedSort.length > 0) {
+          const { desc } = parsedSort[0];
+          return desc ? 'desc' : 'asc';
+        }
+      } catch (error) {
+        console.error('Error parsing sort parameter:', error);
+        return 'asc';
+      }
+    }
+    return 'asc';
+  }, [sort]);
+
   const findDocumentSearchParams = useMemo(
     () => ZSearchParamsSchema.safeParse(Object.fromEntries(searchParams.entries())).data || {},
     [searchParams],
@@ -68,6 +148,8 @@ export default function DistributionPage() {
     perPage: findDocumentSearchParams.perPage,
     platformIds: findDocumentSearchParams.platformIds,
     territoryIds: findDocumentSearchParams.territoryIds,
+    orderByColumn: columnOrder,
+    orderByDirection: columnDirection,
   });
 
   const { data: territoryData, isLoading: territoryLoading } =
@@ -417,7 +499,7 @@ export default function DistributionPage() {
     <div className="mx-auto max-w-screen-xl gap-y-8 px-4 md:px-8">
       {/* <CardsChat /> */}
 
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-8">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-8 pt-1">
         <div className="flex flex-row items-center">
           {team && (
             <Avatar className="dark:border-border mr-3 h-12 w-12 border-2 border-solid border-white">
@@ -434,7 +516,7 @@ export default function DistributionPage() {
         </div>
 
         <div className="-m-1 flex flex-wrap gap-x-4 gap-y-6 overflow-hidden p-1">
-          <div className="flex items-center gap-x-2">
+          <div className="flex w-full items-center justify-between gap-x-2 sm:w-80">
             <Input type="file" accept=".csv" onChange={handleFileChange} className="max-w-sm" />
             <Button onClick={handleCsvUpload} disabled={!csvFile || isSubmitting}>
               {isSubmitting ? 'Procesando...' : 'Cargar CSV'}
@@ -445,11 +527,13 @@ export default function DistributionPage() {
           <TablePlatformFilter platformData={platformData} isLoading={platformLoading} />
 
           <PeriodSelector />
-          <div className="flex w-48 flex-wrap items-center justify-between gap-x-2">
+          <div className="flex w-full flex-wrap items-center justify-between gap-x-2 sm:w-48">
             <DocumentSearch initialValue={findDocumentSearchParams.query} />
           </div>
           <AdvancedFilterDialog tableToConsult="Distribution" />
-          <Button onClick={openCreateDialog}>Add Item</Button>
+          <Button className="w-full sm:w-fit" onClick={openCreateDialog}>
+            Add Item
+          </Button>
         </div>
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

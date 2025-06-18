@@ -33,7 +33,7 @@ import FormTuStreams from '@documenso/ui/primitives/form-tustreams';
 import { Tabs, TabsList, TabsTrigger } from '@documenso/ui/primitives/tabs';
 import { useToast } from '@documenso/ui/primitives/use-toast';
 
-import { AdvancedFilterDialog } from '~/components/dialogs/advanced-filte-dialog';
+import { AdvancedFilterDialog } from '~/components/dialogs/advanced-filter-drawer';
 import { ArtistCreateDialog } from '~/components/dialogs/artist-create-dialog';
 import { DocumentSearch } from '~/components/general/document/document-search';
 import { PeriodSelector } from '~/components/general/period-selector';
@@ -62,6 +62,14 @@ export function meta() {
   return appMetaTags('TuStreams');
 }
 
+const sortColumns = z
+  .enum(['id', 'date', 'artist', 'title', 'UPC', 'createdAt', 'type', 'total', 'teamId', 'userId'])
+  .optional();
+export const TypeSearchParams = z.record(
+  z.string(),
+  z.union([z.string(), z.array(z.string()), z.undefined()]),
+);
+
 const ZSearchParamsSchema = ZFindTuStreamsInternalRequestSchema.pick({
   type: true,
   period: true,
@@ -73,24 +81,50 @@ const ZSearchParamsSchema = ZFindTuStreamsInternalRequestSchema.pick({
 });
 export default function TuStreamsPage() {
   const [searchParams] = useSearchParams();
+  const sort = useMemo(
+    () => TypeSearchParams.safeParse(Object.fromEntries(searchParams.entries())).data || {},
+    [searchParams],
+  );
+
+  const columnOrder = useMemo(() => {
+    if (sort.sort) {
+      try {
+        const parsedSort = JSON.parse(sort.sort as string);
+        if (Array.isArray(parsedSort) && parsedSort.length > 0) {
+          const { id } = parsedSort[0];
+          const isValidColumn = sortColumns.safeParse(id);
+          return isValidColumn.success ? id : undefined;
+        }
+      } catch (error) {
+        console.error('Error parsing sort parameter:', error);
+        return 'date';
+      }
+    }
+    return 'date';
+  }, [sort]);
+
+  const columnDirection = useMemo(() => {
+    if (sort.sort) {
+      try {
+        const parsedSort = JSON.parse(sort.sort as string);
+        if (Array.isArray(parsedSort) && parsedSort.length > 0) {
+          const { desc } = parsedSort[0];
+          return desc ? 'desc' : 'asc';
+        }
+      } catch (error) {
+        console.error('Error parsing sort parameter:', error);
+        return 'asc';
+      }
+    }
+    return 'asc';
+  }, [sort]);
 
   const findDocumentSearchParams = useMemo(() => {
     const searchParamsObject = Object.fromEntries(searchParams.entries());
 
-    // Add special handling for the 'type' parameter
-    if (
-      searchParamsObject.type &&
-      ['EP', 'Album', 'Sencillo', 'Single', 'ALL'].includes(searchParamsObject.type)
-    ) {
-      // Ensure the type exactly matches one of the valid enum values
-      // This handles any case sensitivity issues
-      // searchParamsObject.type = searchParamsObject.type;
-    }
-
     const result = ZSearchParamsSchema.safeParse(searchParamsObject);
 
     if (!result.success) {
-      // Return a default object with manually extracted values from URL
       return {
         type: ['EP', 'Album', 'Sencillo', 'Single', 'ALL'].includes(searchParamsObject.type)
           ? (searchParamsObject.type as ExtendedTuStreamsType)
@@ -105,11 +139,6 @@ export default function TuStreamsPage() {
     return result.data;
   }, [searchParams]);
 
-  // const findDocumentSearchParams = useMemo(
-  //   () => ZSearchParamsSchema.safeParse(Object.fromEntries(searchParams.entries())).data || {},
-  //   [searchParams],
-  // );
-
   const navigate = useNavigate();
   const team = useOptionalCurrentTeam();
   const releasesRootPath = formTuStreamsPath(team?.url);
@@ -121,6 +150,8 @@ export default function TuStreamsPage() {
     page: findDocumentSearchParams.page,
     perPage: findDocumentSearchParams.perPage,
     artistIds: findDocumentSearchParams.artistIds,
+    orderByColumn: columnOrder,
+    orderByDirection: columnDirection,
   });
 
   const { data: artistData, isLoading: artistDataloading } =
@@ -225,7 +256,6 @@ export default function TuStreamsPage() {
     }
   }
 
-  // Format date to ISO string or in a custom format
   function formatDate(date: Date | null): string {
     if (!date) return '';
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
@@ -420,31 +450,7 @@ export default function TuStreamsPage() {
 
   return (
     <div className="mx-auto max-w-screen-xl gap-y-8 px-4 md:px-8">
-      {/* <CardsChat /> */}
-
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>{editingUser ? 'Edit' : 'Create New'}</DialogTitle>
-            <DialogDescription>
-              Please fill out the form below to{' '}
-              {editingUser ? 'update the data' : 'create a new data'}.
-            </DialogDescription>
-          </DialogHeader>
-          <div>
-            <FormTuStreams
-              // onSubmit={editingUser ? handleUpdate : handleCreate}
-              // initialData={editingUser}
-              artistData={allArtistData}
-              // isSubmitting={isSubmitting}
-              onSubmit={editingUser ? handleUpdate : handleCreate}
-              initialData={editingUser}
-            />
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-8 pt-1">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-8">
         <div className="flex flex-row items-center">
           {team && (
             <Avatar className="dark:border-border mr-3 h-12 w-12 border-2 border-solid border-white">
@@ -500,16 +506,17 @@ export default function TuStreamsPage() {
               {isSubmitting ? 'Procesando...' : 'Cargar CSV'}
             </Button>
           </div> */}
-          <div className="flex w-48 flex-wrap items-center justify-between">
+          <div className="flex w-full flex-wrap items-center justify-between sm:w-48">
             <DocumentSearch initialValue={findDocumentSearchParams.query} />
-          </div>
-          <div className="flex w-fit flex-wrap items-center justify-between">
-            <Button onClick={openCreateDialog}>Create TuStream</Button>
           </div>
 
           <AdvancedFilterDialog tableToConsult="TuStreams" />
 
           <ArtistCreateDialog />
+
+          <Button className="w-full sm:w-fit" onClick={openCreateDialog}>
+            Add item
+          </Button>
 
           {/* <div className="flex w-auto flex-wrap items-center justify-between gap-x-2 gap-y-4">
             <Button
@@ -522,11 +529,29 @@ export default function TuStreamsPage() {
           </div> */}
         </div>
 
-        <div className="mt w-full">
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="sm:max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>{editingUser ? 'Edit' : 'Create New'}</DialogTitle>
+              <DialogDescription>
+                Please fill out the form below to{' '}
+                {editingUser ? 'update the data' : 'create a new data'}.
+              </DialogDescription>
+            </DialogHeader>
+            <div>
+              <FormTuStreams
+                artistData={allArtistData}
+                onSubmit={editingUser ? handleUpdate : handleCreate}
+                initialData={editingUser}
+              />
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        <div className="w-full">
           {data && (!data?.tuStreams.data.length || data?.tuStreams.data.length === 0) ? (
             <GeneralTableEmptyState status={'ALL'} />
           ) : (
-            // <p>sin data</p>
             <TuStreamsTable
               onMultipleDelete={handleMultipleDelete}
               isMultipleDelete={isMultipleDelete}

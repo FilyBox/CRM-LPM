@@ -51,6 +51,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@documenso/ui/primitives/select';
+import { Skeleton } from '@documenso/ui/primitives/skeleton';
 import {
   Sortable,
   SortableContent,
@@ -78,11 +79,13 @@ interface DataTableFilterListProps<TData> extends React.ComponentProps<typeof Po
   debounceMs?: number;
   throttleMs?: number;
   shallow?: boolean;
+  loading: boolean;
 }
 
 export function DataTableFilterList<TData>({
   table,
   debounceMs = DEBOUNCE_MS,
+  loading,
   throttleMs = THROTTLE_MS,
   shallow = true,
   ...props
@@ -200,6 +203,10 @@ export function DataTableFilterList<TData>({
     },
     [filters, onFilterRemove],
   );
+
+  if (loading) {
+    return <Skeleton className="h-9 w-[85px] rounded-md" />;
+  }
 
   return (
     <Sortable value={filters} onValueChange={setFilters} getItemValue={(item) => item.filterId}>

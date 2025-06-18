@@ -264,7 +264,8 @@ export default function ContractsPage() {
 
       try {
         // Asume formato MM/dd/yyyy
-        let [month, day, year] = dateString.split('/');
+        let [month, day] = dateString.split('/');
+        const year = dateString.split('/')[2];
         if (!month || !day || !year) return undefined;
 
         // if ( day > '31' || year.length !== 4) {
@@ -667,6 +668,7 @@ export default function ContractsPage() {
               isLoadingError={isLoadingError}
               onAdd={openCreateDialog}
               onEdit={handleEdit}
+              currentTeamMemberRole={team?.currentTeamMember?.role}
               onNavegate={hanleOnNavegate}
               onDelete={handleDelete}
               onMoveDocument={(row: Contract) => {

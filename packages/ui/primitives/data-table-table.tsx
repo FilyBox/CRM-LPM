@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { Trans } from '@lingui/react/macro';
+import { TeamMemberRole } from '@prisma/client';
 import {
   type Table as TanstackTable,
   type VisibilityState,
@@ -8,11 +9,14 @@ import {
 } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale/es';
+import { Toaster } from 'sonner';
+import { toast as sonnertoast } from 'sonner';
+import { match } from 'ts-pattern';
 
 import { StackAvatarsArtistWithTooltip } from '../components/lpm/stack-avatars-artist-with-tooltip';
-// import { getCommonPinningStyles } from '../lib/data-table';
 import { useMediaQuery } from '../lib/use-media-query';
 import { cn } from '../lib/utils';
+import type { LpmData } from '../types/tables-types';
 import {
   ContextMenu,
   ContextMenuContent,
@@ -20,7 +24,7 @@ import {
   ContextMenuTrigger,
 } from './context-menu';
 import { DataTablePagination } from './data-table-pagination-pagination';
-import { ProjectStatusCard } from './expandable-card';
+import { ExpandibleCard } from './expandable-card';
 import { Skeleton } from './skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './table';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tooltip';
@@ -34,7 +38,7 @@ interface DataTableProps<TData> extends React.ComponentProps<'div'> {
   onEdit?: (data: TData) => void;
   onNavegate?: (data: TData) => void;
   onDelete?: (data: TData) => void;
-
+  from?: string;
   onMultipleDelete?: (ids: number[]) => void;
   isMultipleDelete?: boolean;
   setIsMultipleDelete?: (value: boolean) => void;
@@ -55,6 +59,7 @@ interface DataTableProps<TData> extends React.ComponentProps<'div'> {
     enable: boolean;
     component?: React.ReactNode;
   };
+  currentTeamMemberRole?: TeamMemberRole;
 }
 
 export type DataTableChildren<TData> = (_table: TanstackTable<TData>) => React.ReactNode;
@@ -75,6 +80,8 @@ export function DataTable<TData>({
   isMultipleDelete = false,
   setIsMultipleDelete,
   error,
+  currentTeamMemberRole,
+  from,
   onEdit,
   onRetry,
   onDelete,
@@ -90,6 +97,7 @@ export function DataTable<TData>({
   children,
   ...props
 }: DataTableProps<TData>) {
+  // console.log('data', data);
   const dateColumnIds = [
     'releaseDate',
     'originalReleaseDate',
@@ -117,6 +125,8 @@ export function DataTable<TData>({
     status?: string;
     title?: string;
     fileName?: string;
+    productTitle?: string;
+    total?: number;
     startDate?: Date;
     endDate?: Date;
     artists?: string;
@@ -126,11 +136,16 @@ export function DataTable<TData>({
     date?: Date;
 
     releasesArtists?: enhancedArtists[];
+    isrcArtists?: enhancedArtists[];
+    lpmArtists?: enhancedArtists[];
+    tuStreamsArtists?: enhancedAssignees[];
     lanzamiento?: string;
     typeOfRelease?: string;
     release?: string;
     uploaded?: string;
     streamingLink?: string;
+    trackPlayLink?: string;
+    type?: string;
     assets?: boolean;
     canvas?: boolean;
     cover?: boolean;
@@ -139,20 +154,97 @@ export function DataTable<TData>({
     banners?: boolean;
     pitch?: boolean;
     EPKUpdates?: boolean;
+    trackName?: string;
     WebSiteUpdates?: boolean;
     Biography?: boolean;
+    label?: string;
+    UPC?: string;
     userId?: number;
     teamId?: number;
+    license?: string;
+    duration?: string;
+    isrc?: string;
     createdAt?: Date;
     updatedAt?: Date;
+    submissionStatus?: string;
   };
 
   const isDesktop = useMediaQuery('(min-width: 640px)');
+
+  const prepareCardData = (row: TData) => {
+    const typedRow = row as HasId & HasOptionalFields;
+
+    const lpmData = row as LpmData;
+    const statusElements = [
+      typedRow.status || typedRow.type || typedRow.duration,
+      typedRow.license || typedRow.typeOfRelease,
+      typedRow.release,
+      typedRow.label,
+
+      typedRow.submissionStatus,
+    ].filter((item): item is string => item !== undefined);
+
+    const title: string | undefined =
+      typedRow.title || typedRow.lanzamiento || typedRow.productTitle || typedRow.trackName;
+    // Prepare contributors/artists data
+    let contributors: { name: string }[] = [];
+    if (typedRow.artists) {
+      contributors = typedRow.artists.split(',').map((name) => ({ name: name.trim() }));
+    } else if (typedRow.releasesArtists) {
+      contributors = typedRow.releasesArtists.map((artist: enhancedArtists) => ({
+        name: artist.artistName || 'Unknown',
+      }));
+    } else if (typedRow.isrcArtists) {
+      contributors = typedRow.isrcArtists.map((artist: enhancedArtists) => ({
+        name: artist.artistName || 'Unknown',
+      }));
+    } else if (typedRow.tuStreamsArtists) {
+      contributors = typedRow.tuStreamsArtists.map((artist: enhancedArtists) => ({
+        name: artist.artistName || 'Unknown',
+      }));
+    }
+
+    return {
+      status: statusElements,
+      title: title || 'Untitled',
+      fileName: typedRow.fileName,
+      startDate: typedRow.startDate || typedRow.date || null,
+      endDate: typedRow.endDate,
+      contributors,
+      expandible: typedRow.isPossibleToExpand || '',
+      extensionTime: typedRow.possibleExtensionTime || '',
+      summary: typedRow.summary || '',
+      link: typedRow.streamingLink || '' || typedRow.trackPlayLink || '',
+      githubStars: 128,
+      openIssues: 5,
+      LpmData: lpmData,
+      isrc: typedRow.isrc || typedRow.UPC || '',
+      assets: Boolean(typedRow.assets),
+      canvas: Boolean(typedRow.canvas),
+      cover: Boolean(typedRow.cover),
+      audioWAV: Boolean(typedRow.audioWAV),
+      video: Boolean(typedRow.video),
+      banners: Boolean(typedRow.banners),
+      pitch: Boolean(typedRow.pitch),
+      EPKUpdates: Boolean(typedRow.EPKUpdates),
+      WebSiteUpdates: Boolean(typedRow.WebSiteUpdates),
+      Biography: Boolean(typedRow.Biography),
+      total: typedRow.total || 0,
+      from: from || '',
+    };
+  };
+
+  const canEditDelete = match(currentTeamMemberRole)
+    .with(TeamMemberRole.ADMIN, () => true)
+    .with(TeamMemberRole.MANAGER, () => true)
+    .with(TeamMemberRole.MEMBER, () => false)
+    .otherwise(() => true);
 
   return (
     <div className={cn('flex w-full flex-col gap-2.5 overflow-auto', className)} {...props}>
       {children}
       <div className="overflow-hidden rounded-md">
+        <Toaster richColors />
         {isDesktop ? (
           <Table>
             <TableHeader>
@@ -271,7 +363,7 @@ export function DataTable<TData>({
                       </TableRow>
                     </ContextMenuTrigger>
                     <ContextMenuContent className="w-64">
-                      {onEdit && (
+                      {onEdit && canEditDelete && (
                         <ContextMenuItem
                           onClick={() => {
                             onEdit(row.original);
@@ -315,10 +407,16 @@ export function DataTable<TData>({
                         </ContextMenuItem>
                       )}
 
-                      {onDelete && (
+                      {onDelete && canEditDelete && (
                         <ContextMenuItem
                           onClick={() => {
-                            onDelete(row.original);
+                            sonnertoast.warning('Esta acción sera permanente', {
+                              description: 'Estas seguro que quieres eliminar este elemento?',
+                              action: {
+                                label: 'Eliminar',
+                                onClick: () => onDelete(row.original),
+                              },
+                            });
                           }}
                           inset
                         >
@@ -364,49 +462,21 @@ export function DataTable<TData>({
           </Table>
         ) : (
           <div className="flex flex-col gap-5">
-            {data && data.length > 0 ? (
+            {skeleton?.enable ? (
+              <div className="flex flex-col gap-2">
+                <Skeleton className="h-64 w-full" />
+                {/* <Skeleton className="h-56 w-full" />
+                <Skeleton className="h-56 w-full" /> */}
+              </div>
+            ) : (data && data.length) > 0 ? (
               data.map((row, index) => {
-                const typedRow = row as HasId & HasOptionalFields;
-
                 return (
-                  <ProjectStatusCard
-                    key={typedRow.id || index}
-                    {...(onNavegate && {
-                      onNavigate: () => onNavegate?.(row),
-                    })}
-                    status={[typedRow.status || typedRow.typeOfRelease, typedRow.release].filter(
-                      (item): item is string => item !== undefined,
-                    )}
-                    title={typedRow.title || typedRow.lanzamiento || 'Untitled'}
-                    fileName={typedRow.fileName || ''}
-                    startDate={typedRow.startDate || typedRow.date || null}
-                    endDate={typedRow.endDate}
-                    contributors={
-                      typedRow.artists
-                        ? typedRow.artists.split(',').map((name) => ({ name: name.trim() }))
-                        : typedRow.releasesArtists
-                          ? typedRow.releasesArtists.map((artist: enhancedArtists) => ({
-                              name: artist.artistName || 'Unknown',
-                              id: artist.id,
-                            }))
-                          : []
-                    }
-                    expandible={typedRow.isPossibleToExpand || ''}
-                    extensionTime={typedRow.possibleExtensionTime || ''}
-                    summary={typedRow.summary || ''}
-                    link={typedRow.streamingLink || ''}
-                    githubStars={128}
-                    openIssues={5}
-                    assets={typedRow.assets || false}
-                    canvas={typedRow.canvas || false}
-                    cover={typedRow.cover || false}
-                    audioWAV={typedRow.audioWAV || false}
-                    video={typedRow.video || false}
-                    banners={typedRow.banners || false}
-                    pitch={typedRow.pitch || false}
-                    EPKUpdates={typedRow.EPKUpdates || false}
-                    WebSiteUpdates={typedRow.WebSiteUpdates || false}
-                    Biography={typedRow.Biography || false}
+                  <ExpandibleCard
+                    key={index}
+                    {...prepareCardData(row)}
+                    {...(onNavegate && { onNavegate: () => onNavegate(row) })}
+                    {...(onEdit && { onEdit: () => onEdit(row) })}
+                    {...(onDelete && { onDelete: () => onDelete(row) })}
                   />
                 );
               })
@@ -417,7 +487,7 @@ export function DataTable<TData>({
         )}
       </div>
       <div className="flex flex-col gap-2.5">
-        <DataTablePagination table={table} />
+        <DataTablePagination loading={skeleton?.enable || false} table={table} />
         {actionBar && table.getFilteredSelectedRowModel().rows.length > 0 && actionBar}
       </div>
     </div>

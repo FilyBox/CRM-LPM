@@ -1,7 +1,6 @@
 // import { type Task, tasks } from "@/db/schema";
 import * as React from 'react';
 
-import { type Contract } from '@prisma/client';
 import { TeamMemberRole } from '@prisma/client';
 import type { Table } from '@tanstack/react-table';
 import { Download, Trash2 } from 'lucide-react';
@@ -9,6 +8,7 @@ import { toast as sonnertoast } from 'sonner';
 import { match } from 'ts-pattern';
 
 import { trpc } from '@documenso/trpc/react';
+import type { TFindLpmResponse } from '@documenso/trpc/server/lpm-router/schema';
 import { exportTableToCSV } from '@documenso/ui/lib/export';
 import {
   DataTableActionBar,
@@ -21,48 +21,35 @@ import { useToast } from '@documenso/ui/primitives/use-toast';
 const actions = ['update-status', 'update-priority', 'export', 'delete'] as const;
 
 type Action = (typeof actions)[number];
+type TableRow = TFindLpmResponse['data'][number];
 
-interface TasksTableActionBarProps {
-  table: Table<Contract>;
+interface TableActionBarProps {
+  table: Table<TableRow>;
   currentTeamMemberRole?: TeamMemberRole;
 }
 
-export function TasksTableActionBar({ table, currentTeamMemberRole }: TasksTableActionBarProps) {
+export function LpmTableActionBar({ table, currentTeamMemberRole }: TableActionBarProps) {
   const { toast } = useToast();
+  const canEditDelete = match(currentTeamMemberRole)
+    .with(TeamMemberRole.ADMIN, () => true)
+    .with(TeamMemberRole.MANAGER, () => true)
+    .with(TeamMemberRole.MEMBER, () => false)
+    .otherwise(() => true);
   const rows = table.getFilteredSelectedRowModel().rows;
   const [isPending, startTransition] = React.useTransition();
   const [currentAction, setCurrentAction] = React.useState<Action | null>(null);
-  const deleteMultipleContractsMutation = trpc.contracts.deleteMultipleContractsByIds.useMutation();
+  const deleteMultipleContractsMutation = trpc.lpm.deleteMultipleByIds.useMutation();
   const getIsActionPending = React.useCallback(
     (action: Action) => isPending && currentAction === action,
     [isPending, currentAction],
   );
-
-  // const onTaskUpdate = React.useCallback(
-  //   ({ field, value }: { field: 'status'; value: Contract['status'] }) => {
-  //     setCurrentAction(field === 'status' ? 'update-status' : 'update-priority');
-  //     // startTransition(async () => {
-  //     //   const { error } = await updateTasks({
-  //     //     ids: rows.map((row) => row.original.id),
-  //     //     [field]: value,
-  //     //   });
-
-  //     //   if (error) {
-  //     //     toast.error(error);
-  //     //     return;
-  //     //   }
-  //     //   toast.success("Tasks updated");
-  //     // });
-  //   },
-  //   [rows],
-  // );
 
   const handleMultipleDelete = () => {
     setCurrentAction('delete');
     try {
       const ids = rows.map((row) => row.original.id);
       startTransition(async () => {
-        const eo = await deleteMultipleContractsMutation.mutateAsync({ ids: ids });
+        await deleteMultipleContractsMutation.mutateAsync({ ids: ids });
 
         toast({
           description: `${ids.length} deleted successfully`,
@@ -86,12 +73,6 @@ export function TasksTableActionBar({ table, currentTeamMemberRole }: TasksTable
       });
     });
   }, [table]);
-
-  const canEditDelete = match(currentTeamMemberRole)
-    .with(TeamMemberRole.ADMIN, () => true)
-    .with(TeamMemberRole.MANAGER, () => true)
-    .with(TeamMemberRole.MEMBER, () => false)
-    .otherwise(() => true);
 
   // const onTaskDelete = React.useCallback(() => {
   //   setCurrentAction("delete");
@@ -119,30 +100,6 @@ export function TasksTableActionBar({ table, currentTeamMemberRole }: TasksTable
         className="hidden data-[orientation=vertical]:h-5 sm:block"
       />
       <div className="flex items-center gap-1.5">
-        {/* <Select
-          onValueChange={(value: string) =>
-            onTaskUpdate({ field: 'status', value: value as ContractStatus })
-          }
-        >
-          <SelectTrigger asChild>
-            <DataTableActionBarAction
-              size="icon"
-              tooltip="Update status"
-              isPending={getIsActionPending('update-status')}
-            >
-              <CheckCircle2 />
-            </DataTableActionBarAction>
-          </SelectTrigger>
-          <SelectContent align="center">
-            <SelectGroup>
-              {Object.values(ContractStatus).map((status) => (
-                <SelectItem key={status} value={status} className="capitalize">
-                  {status}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select> */}
         {canEditDelete && (
           <DataTableActionBarAction
             size="icon"
@@ -165,7 +122,7 @@ export function TasksTableActionBar({ table, currentTeamMemberRole }: TasksTable
         <DataTableActionBarAction
           size="icon"
           tooltip="Export"
-          isPending={getIsActionPending('export')}
+          isPending={isPending || currentAction === 'export' || currentAction === 'delete'}
           onClick={onTaskExport}
         >
           <Download />
