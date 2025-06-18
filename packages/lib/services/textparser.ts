@@ -115,6 +115,7 @@ export const extractText = async (
   fileKey: string,
   buffer: Buffer | null,
   fileUrl?: string,
+  type?: string,
 ): Promise<string | null> => {
   const extension = fileKey.split('.').pop()?.toLowerCase();
   console.log('Extensión del archivo:', extension); // Depuración
@@ -149,7 +150,9 @@ export const extractText = async (
         return await extractTextFromXML(buffer);
 
       default:
-        return 'Formato no soportado.';
+        if (!fileUrl) return 'Error: Se necesita un buffer o una URL.';
+
+        return await extractTextFromScannedPDF(fileUrl);
     }
   } catch (error) {
     console.error('Error al extraer texto:', error);

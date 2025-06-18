@@ -24,6 +24,10 @@ const navigationLinks = [
     label: msg`Templates`,
   },
   {
+    href: '/files',
+    label: msg`Files`,
+  },
+  {
     href: '/music',
     label: msg`Virgin`,
   },

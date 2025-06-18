@@ -3,6 +3,7 @@ import { TeamMemberRole } from '@prisma/client';
 import { task } from '@trigger.dev/sdk/v3';
 // Usa la versión asíncrona
 import fetch from 'node-fetch';
+import { PDFDocument } from 'pdf-lib';
 // Asegúrate de instalarlo con `pnpm add node-fetch`
 import { match } from 'ts-pattern';
 
@@ -113,7 +114,7 @@ export const extractBodyContractTask = task({
       console.log('documentWhereClause', documentWhereClause);
 
       const document = await prisma.document.findFirst({
-        where: documentWhereClause,
+        where: { id: documentId },
       });
 
       console.log('document', document);
@@ -132,15 +133,32 @@ export const extractBodyContractTask = task({
         console.log('documentBody.body', documentBody.body);
         if (documentBody.body === 'Formato no soportado.') {
           const response = await fetch(pdfUrl);
-
           if (!response.ok) {
             console.log(`⚠️ Error al obtener ${pdfUrl}, código HTTP: ${response.status}`);
             throw new Error(`Error al obtener ${pdfUrl}, código HTTP: ${response.status}`);
           }
 
-          const buffer = Buffer.from(await response.arrayBuffer());
+          const arrayBuffer = await response.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer);
+
+          const pdf = await PDFDocument.load(arrayBuffer).catch((e) => {
+            console.error(`PDF upload parse error: ${e.message}`);
+            throw new Error('INVALID_DOCUMENT_FILE');
+          });
+
+          console.log(`PDF : ${pdf}`);
+          if (pdf.isEncrypted) {
+            console.log(`⚠️ El PDF está encriptado y no se puede procesar: ${pdfUrl}`);
+            throw new Error(`El PDF está encriptado y no se puede procesar: ${pdfUrl}`);
+          }
+
           console.log(`✅ PDF descargado con éxito, tamaño: ${buffer.length} bytes`);
-          extractedText = await extractText(fileName ?? 'archivo_desconocido', buffer, pdfUrl);
+          extractedText = await extractText(
+            fileName ?? 'archivo_desconocido',
+            buffer,
+            pdfUrl,
+            'pdf',
+          );
         } else {
           extractedText = documentBody.body;
         }
@@ -284,9 +302,9 @@ este es el contrato: ${extractedText}
                   },
 
                   nombreGrupo: { type: Type.STRING },
-                  fechaInicio: { type: Type.STRING },
+                  fechaInicio: { type: Type.STRING, format: 'date-time' },
 
-                  fechaFin: { type: Type.STRING },
+                  fechaFin: { type: Type.STRING, format: 'date-time' },
                   esPosibleExpandirlo: {
                     type: Type.STRING,
                     enum: ['SI', 'NO', 'NO_ESPECIFICADO'],
@@ -357,15 +375,19 @@ este es el contrato: ${extractedText}
                 .map((artist: { nombre: string }) => artist.nombre)
                 .join(', '),
               endDate:
-                parsedResponse.fechaFin === 'NO ESPECIFICADO' ||
-                parsedResponse.fechaFin === 'NO_ESPECIFICADO'
-                  ? null
-                  : parsedResponse.fechaFin,
+                parsedResponse.fechaFin &&
+                parsedResponse.fechaFin !== 'NO ESPECIFICADO' &&
+                parsedResponse.fechaFin !== 'NO_ESPECIFICADO' &&
+                /^\d{2}\/\d{2}\/\d{4}$/.test(parsedResponse.fechaFin)
+                  ? parsedResponse.fechaFin
+                  : null,
               startDate:
-                parsedResponse.fechaInicio === 'NO ESPECIFICADO' ||
-                parsedResponse.fechaInicio === 'NO_ESPECIFICADO'
-                  ? null
-                  : parsedResponse.fechaInicio,
+                parsedResponse.fechaInicio &&
+                parsedResponse.fechaInicio !== 'NO ESPECIFICADO' &&
+                parsedResponse.fechaInicio !== 'NO_ESPECIFICADO' &&
+                /^\d{2}\/\d{2}\/\d{4}$/.test(parsedResponse.fechaInicio)
+                  ? parsedResponse.fechaInicio
+                  : null,
               status: parsedResponse.estatusContrato,
               teamId: teamId,
               userId: userId,
@@ -459,6 +481,7 @@ este es el contrato: ${extractedText}
         where: { id: documentId },
         data: { status: 'ERROR' },
       });
+      console.log('documentId', documentId);
     }
   },
 });
@@ -658,14 +681,19 @@ este es el contrato: ${extractedText}
 
         console.log('prompt', prompt);
 
-        await prisma.documentBodyExtracted.update({
+        const documentBodyExtracted = await prisma.documentBodyExtracted.update({
           where: { id: documentBody.id },
           data: { status: 'COMPLETE', body: extractedText },
         });
-        await prisma.document.update({
+
+        console.log('documentBodyExtracted', documentBodyExtracted);
+
+        const document = await prisma.document.update({
           where: { id: documentId },
           data: { status: 'COMPLETED' },
         });
+
+        console.log('document updated', document);
 
         const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY });
         // const responses = await ai.models.generateContent({
@@ -866,13 +894,22 @@ este es el contrato: ${extractedText}
 
         return contractsTable;
       }
+
+      const pepe = await prisma.document.update({
+        where: { id: documentId },
+        data: { status: 'COMPLETED' },
+      });
+
+      console.log('pepe', pepe);
+      console.log(`✅ Documento ${documentId} procesado con éxito`);
     } catch (error) {
-      console.log('Error procesando el PDF:', error);
-      console.error('Error procesando el PDF:', error);
       await prisma.document.update({
         where: { id: documentId },
         data: { status: 'ERROR' },
       });
+      console.log('documentId', documentId);
+      console.log('Error procesando el PDF:', error);
+      console.error('Error procesando el PDF:', error);
     }
   },
 });

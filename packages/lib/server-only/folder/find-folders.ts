@@ -100,7 +100,7 @@ export const findFolders = async ({ userId, teamId, parentId, type }: FindFolder
                 createdAt: 'desc',
               },
             }),
-            (() => {
+            (async () => {
               switch (folder.type as TFolderType) {
                 case 'DOCUMENT':
                   return prisma.document.count({
@@ -110,6 +110,13 @@ export const findFolders = async ({ userId, teamId, parentId, type }: FindFolder
                   });
                 case 'CONTRACT':
                   return prisma.contract.count({
+                    where: {
+                      folderId: folder.id,
+                    },
+                  });
+
+                case 'FILE':
+                  return prisma.files.count({
                     where: {
                       folderId: folder.id,
                     },
