@@ -15,7 +15,17 @@ export const forgotPassword = async ({ email }: { email: string }) => {
     },
   });
 
-  if (!user) {
+  const buyer = await prisma.buyer.findFirst({
+    where: {
+      email: {
+        equals: email,
+        mode: 'insensitive',
+      },
+    },
+  });
+
+  if (!user && !buyer) {
+    console.error(`No user or buyer found with email: ${email}`);
     return;
   }
 
@@ -38,15 +48,22 @@ export const forgotPassword = async ({ email }: { email: string }) => {
 
   const token = crypto.randomBytes(18).toString('hex');
 
+  if (!user?.id || !buyer?.id) {
+    throw new Error('No se encontró userId o buyerId para crear el token');
+  }
   await prisma.passwordResetToken.create({
     data: {
+      createdAt: new Date(),
       token,
       expiry: new Date(Date.now() + ONE_DAY),
       userId: user.id,
+      buyerId: buyer.id,
     },
   });
 
-  await sendForgotPassword({
-    userId: user.id,
-  }).catch((err) => console.error(err));
+  if (user?.id !== undefined) {
+    await sendForgotPassword({
+      userId: user.id,
+    }).catch((err) => console.error(err));
+  }
 };

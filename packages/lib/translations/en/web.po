@@ -667,8 +667,8 @@ msgstr "Action"
 msgid "Actions"
 msgstr "Actions"
 
-#: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings._index.tsx
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.members.tsx
+#: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings._index.tsx
 #: apps/remix/app/components/tables/user-settings-teams-page-table.tsx
 msgid "Active"
 msgstr "Active"
@@ -676,6 +676,10 @@ msgstr "Active"
 #: apps/remix/app/routes/_authenticated+/admin+/stats.tsx
 msgid "Active Subscriptions"
 msgstr "Active Subscriptions"
+
+#: apps/remix/app/components/dialogs/event-update-dialog.tsx
+msgid "Actualizar"
+msgstr "Actualizar"
 
 #: apps/remix/app/components/dialogs/team-email-add-dialog.tsx
 msgid "Add"
@@ -1253,6 +1257,11 @@ msgstr "Artist"
 msgid "Artist created successfully"
 msgstr "Artist created successfully"
 
+#: apps/remix/app/components/dialogs/event-update-dialog.tsx
+#: apps/remix/app/components/dialogs/event-create-dialog.tsx
+msgid "Artists"
+msgstr "Artists"
+
 #: apps/remix/app/components/general/task/tasks-list.tsx
 msgid "Asignados"
 msgstr "Asignados"
@@ -1325,6 +1334,10 @@ msgstr "Authentication Level"
 msgid "Authentication required"
 msgstr "Authentication required"
 
+#: apps/remix/app/components/dialogs/ticket-type-create-dialog.tsx
+msgid "Available"
+msgstr "Available"
+
 #: apps/remix/app/components/forms/avatar-image.tsx
 msgid "Avatar"
 msgstr "Avatar"
@@ -1374,6 +1387,11 @@ msgstr "Banners"
 msgid "Basic details"
 msgstr "Basic details"
 
+#: apps/remix/app/components/dialogs/event-update-dialog.tsx
+#: apps/remix/app/components/dialogs/event-create-dialog.tsx
+msgid "Beginning"
+msgstr "Beginning"
+
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.billing.tsx
 #: apps/remix/app/routes/_authenticated+/settings+/billing.tsx
 #: apps/remix/app/components/general/settings-nav-mobile.tsx
@@ -1403,6 +1421,10 @@ msgstr "Blue"
 #: packages/ui/primitives/document-flow/field-items-advanced-settings/text-field.tsx
 msgid "Bold Text"
 msgstr "Bold Text"
+
+#: apps/remix/app/routes/_authenticated+/event._index.tsx
+msgid "Borrar"
+msgstr "Borrar"
 
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings.preferences.tsx
 msgid "Branding Preferences"
@@ -1493,6 +1515,7 @@ msgstr "Can prepare"
 #: apps/remix/app/components/dialogs/webhook-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/webhook-create-dialog.tsx
 #: apps/remix/app/components/dialogs/token-delete-dialog.tsx
+#: apps/remix/app/components/dialogs/ticket-type-create-dialog.tsx
 #: apps/remix/app/components/dialogs/template-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/template-move-dialog.tsx
 #: apps/remix/app/components/dialogs/template-duplicate-dialog.tsx
@@ -1514,6 +1537,8 @@ msgstr "Can prepare"
 #: apps/remix/app/components/dialogs/public-profile-template-manage-dialog.tsx
 #: apps/remix/app/components/dialogs/passkey-create-dialog.tsx
 #: apps/remix/app/components/dialogs/move-to-folder-dialog.tsx
+#: apps/remix/app/components/dialogs/event-update-dialog.tsx
+#: apps/remix/app/components/dialogs/event-create-dialog.tsx
 #: apps/remix/app/components/dialogs/document-resend-dialog.tsx
 #: apps/remix/app/components/dialogs/document-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/document-move-dialog.tsx
@@ -1575,6 +1600,7 @@ msgid "Charts"
 msgstr "Charts"
 
 #: apps/remix/app/components/tables/chatspace-table-action-button.tsx
+#: apps/remix/app/components/general/dropdown-menu.tsx
 #: apps/remix/app/components/general/app-nav-mobile-team.tsx
 #: apps/remix/app/components/general/app-nav-desktop.tsx
 #: apps/remix/app/components/general/app-nav-desktop-team.tsx
@@ -1886,10 +1912,11 @@ msgstr "Continue by viewing the document."
 msgid "Continue to login"
 msgstr "Continue to login"
 
-#: apps/remix/app/routes/_authenticated+/contracts._index.tsx
 #: apps/remix/app/routes/_authenticated+/contracts.f.$folderId._index.tsx
+#: apps/remix/app/routes/_authenticated+/contracts._index.tsx
 #: apps/remix/app/routes/_authenticated+/contracts.$id._index.tsx
 #: apps/remix/app/routes/_authenticated+/contracts.$id.$runId.$publicAccessToken.retry.tsx
+#: apps/remix/app/components/general/dropdown-menu.tsx
 #: apps/remix/app/components/general/app-nav-mobile-team.tsx
 #: apps/remix/app/components/general/app-nav-desktop-team.tsx
 #: apps/remix/app/components/general/app-command-menu.tsx
@@ -1997,9 +2024,18 @@ msgstr "Create a new account"
 msgid "Create a new artist with details like name, roles, events, songs, and url."
 msgstr "Create a new artist with details like name, roles, events, songs, and url."
 
+#: apps/remix/app/components/dialogs/event-update-dialog.tsx
+#: apps/remix/app/components/dialogs/event-create-dialog.tsx
+msgid "Create a new Event with details like name, roles, events, songs, and url."
+msgstr "Create a new Event with details like name, roles, events, songs, and url."
+
 #: apps/remix/app/components/dialogs/task-create-dialog.tsx
 msgid "Create a new task with details like title, description, priority and due date."
 msgstr "Create a new task with details like title, description, priority and due date."
+
+#: apps/remix/app/components/dialogs/ticket-type-create-dialog.tsx
+msgid "Create a new ticket type with details like name, price, and description."
+msgstr "Create a new ticket type with details like name, price, and description."
 
 #: apps/remix/app/components/dialogs/team-create-dialog.tsx
 msgid "Create a team to collaborate with your team members."
@@ -2039,13 +2075,27 @@ msgstr "Create Direct Signing Link"
 msgid "Create document from template"
 msgstr "Create document from template"
 
+#: apps/remix/app/components/dialogs/event-update-dialog.tsx
+#: apps/remix/app/components/dialogs/event-create-dialog.tsx
+msgid "Create Event"
+msgstr "Create Event"
+
 #: apps/remix/app/components/dialogs/artist-create-dialog.tsx
 msgid "Create New Artist"
 msgstr "Create New Artist"
 
+#: apps/remix/app/components/dialogs/event-update-dialog.tsx
+#: apps/remix/app/components/dialogs/event-create-dialog.tsx
+msgid "Create New Event"
+msgstr "Create New Event"
+
 #: apps/remix/app/components/dialogs/task-create-dialog.tsx
 msgid "Create New Task"
 msgstr "Create New Task"
+
+#: apps/remix/app/components/dialogs/ticket-type-create-dialog.tsx
+msgid "Create New Ticket Type"
+msgstr "Create New Ticket Type"
 
 #: apps/remix/app/routes/_profile+/_layout.tsx
 msgid "Create now"
@@ -2077,6 +2127,10 @@ msgstr "Create Team"
 #: apps/remix/app/components/dialogs/template-use-dialog.tsx
 msgid "Create the document as pending and ready to sign."
 msgstr "Create the document as pending and ready to sign."
+
+#: apps/remix/app/components/dialogs/ticket-type-create-dialog.tsx
+msgid "Create Ticket Type"
+msgstr "Create Ticket Type"
 
 #: apps/remix/app/components/forms/token.tsx
 #: apps/remix/app/components/forms/token.tsx
@@ -2311,7 +2365,10 @@ msgstr "Deleted"
 msgid "Deleting account..."
 msgstr "Deleting account..."
 
+#: apps/remix/app/components/dialogs/ticket-type-create-dialog.tsx
 #: apps/remix/app/components/dialogs/task-create-dialog.tsx
+#: apps/remix/app/components/dialogs/event-update-dialog.tsx
+#: apps/remix/app/components/dialogs/event-create-dialog.tsx
 msgid "Description"
 msgstr "Description"
 
@@ -2732,17 +2789,17 @@ msgid "Document will be permanently deleted"
 msgstr "Document will be permanently deleted"
 
 #: apps/remix/app/routes/_profile+/p.$url.tsx
-#: apps/remix/app/routes/_authenticated+/documents._index.tsx
 #: apps/remix/app/routes/_authenticated+/documents.f.$folderId._index.tsx
-#: apps/remix/app/routes/_authenticated+/documents.f.$folderId.$id._index.tsx
 #: apps/remix/app/routes/_authenticated+/documents.f.$folderId.$id.edit.tsx
-#: apps/remix/app/routes/_authenticated+/documents.$id._index.tsx
+#: apps/remix/app/routes/_authenticated+/documents.f.$folderId.$id._index.tsx
+#: apps/remix/app/routes/_authenticated+/documents._index.tsx
 #: apps/remix/app/routes/_authenticated+/documents.$id.edit.tsx
+#: apps/remix/app/routes/_authenticated+/documents.$id._index.tsx
 #: apps/remix/app/routes/_authenticated+/chatspace.f.$folderId._index.tsx
-#: apps/remix/app/routes/_authenticated+/chatspace.f.$folderId.$id._index.tsx
 #: apps/remix/app/routes/_authenticated+/chatspace.f.$folderId.$id.edit.tsx
-#: apps/remix/app/routes/_authenticated+/chatspace.$id._index.tsx
+#: apps/remix/app/routes/_authenticated+/chatspace.f.$folderId.$id._index.tsx
 #: apps/remix/app/routes/_authenticated+/chatspace.$id.edit.tsx
+#: apps/remix/app/routes/_authenticated+/chatspace.$id._index.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/_layout.tsx
 #: apps/remix/app/components/tables/admin-dashboard-users-table.tsx
 #: apps/remix/app/components/general/user-profile-timur.tsx
@@ -3041,6 +3098,11 @@ msgstr "Enabling the account results in the user being able to use the account a
 msgid "Enclosed Document"
 msgstr "Enclosed Document"
 
+#: apps/remix/app/components/dialogs/event-update-dialog.tsx
+#: apps/remix/app/components/dialogs/event-create-dialog.tsx
+msgid "End"
+msgstr "End"
+
 #: apps/remix/app/routes/_authenticated+/admin+/subscriptions.tsx
 msgid "Ends On"
 msgstr "Ends On"
@@ -3077,12 +3139,12 @@ msgstr "EP"
 msgid "EPK"
 msgstr "EPK"
 
+#: apps/remix/app/routes/embed+/v1+/authoring+/template.edit.$id.tsx
+#: apps/remix/app/routes/embed+/v1+/authoring+/template.edit.$id.tsx
+#: apps/remix/app/routes/embed+/v1+/authoring+/document.edit.$id.tsx
+#: apps/remix/app/routes/embed+/v1+/authoring+/document.edit.$id.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/users.$id.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/documents.$id.tsx
-#: apps/remix/app/routes/embed+/v1+/authoring+/template.edit.$id.tsx
-#: apps/remix/app/routes/embed+/v1+/authoring+/template.edit.$id.tsx
-#: apps/remix/app/routes/embed+/v1+/authoring+/document.edit.$id.tsx
-#: apps/remix/app/routes/embed+/v1+/authoring+/document.edit.$id.tsx
 #: apps/remix/app/components/general/verify-email-banner.tsx
 #: apps/remix/app/components/general/template/template-edit-form.tsx
 #: apps/remix/app/components/general/template/template-edit-form.tsx
@@ -3146,6 +3208,14 @@ msgstr "Error"
 msgid "Error al cargar las tareas"
 msgstr "Error al cargar las tareas"
 
+#: apps/remix/app/routes/_authenticated+/event._index.tsx
+msgid "Error al cargar los eventos"
+msgstr "Error al cargar los eventos"
+
+#: apps/remix/app/components/dialogs/ticket-type-create-dialog.tsx
+msgid "Error creating ticket type"
+msgstr "Error creating ticket type"
+
 #: apps/remix/app/components/embed/authoring/configure-document-upload.tsx
 msgid "Error uploading file"
 msgstr "Error uploading file"
@@ -3153,6 +3223,15 @@ msgstr "Error uploading file"
 #: apps/remix/app/components/general/task/tasks-list.tsx
 msgid "Estado"
 msgstr "Estado"
+
+#: apps/remix/app/routes/_authenticated+/event._index.tsx
+msgid "Eventos"
+msgstr "Eventos"
+
+#: apps/remix/app/components/general/dropdown-menu.tsx
+#: apps/remix/app/components/dialogs/ticket-type-create-dialog.tsx
+msgid "Events"
+msgstr "Events"
 
 #: apps/remix/app/components/forms/team-document-preferences-form.tsx
 msgid "Everyone can access and view the document"
@@ -3381,8 +3460,8 @@ msgstr "Go Back"
 msgid "Go back home"
 msgstr "Go back home"
 
-#: apps/remix/app/routes/_recipient+/sign.$token+/_index.tsx
 #: apps/remix/app/routes/_recipient+/sign.$token+/complete.tsx
+#: apps/remix/app/routes/_recipient+/sign.$token+/_index.tsx
 msgid "Go Back Home"
 msgstr "Go Back Home"
 
@@ -3630,6 +3709,7 @@ msgid "Isrc"
 msgstr "Isrc"
 
 #: apps/remix/app/components/tables/distribution-table.tsx
+#: apps/remix/app/components/general/dropdown-menu.tsx
 #: apps/remix/app/components/general/app-nav-mobile-team.tsx
 #: apps/remix/app/components/general/app-nav-desktop-team.tsx
 msgid "ISRC"
@@ -3898,6 +3978,10 @@ msgstr "MAU (had document completed)"
 msgid "Max"
 msgstr "Max"
 
+#: apps/remix/app/components/dialogs/ticket-type-create-dialog.tsx
+msgid "Max quantity per user"
+msgstr "Max quantity per user"
+
 #: apps/remix/app/components/dialogs/template-bulk-send-dialog.tsx
 msgid "Maximum file size: 4MB. Maximum 100 rows per upload. Blank values will use template defaults."
 msgstr "Maximum file size: 4MB. Maximum 100 rows per upload. Blank values will use template defaults."
@@ -4019,10 +4103,13 @@ msgstr "My templates"
 #: apps/remix/app/components/general/document-signing/document-signing-complete-dialog.tsx
 #: apps/remix/app/components/embed/authoring/configure-document-recipients.tsx
 #: apps/remix/app/components/embed/authoring/configure-document-recipients.tsx
+#: apps/remix/app/components/dialogs/ticket-type-create-dialog.tsx
 #: apps/remix/app/components/dialogs/template-use-dialog.tsx
 #: apps/remix/app/components/dialogs/template-use-dialog.tsx
 #: apps/remix/app/components/dialogs/team-email-update-dialog.tsx
 #: apps/remix/app/components/dialogs/team-email-add-dialog.tsx
+#: apps/remix/app/components/dialogs/event-update-dialog.tsx
+#: apps/remix/app/components/dialogs/event-create-dialog.tsx
 #: apps/remix/app/components/dialogs/assistant-confirmation-dialog.tsx
 #: apps/remix/app/components/dialogs/artist-create-dialog.tsx
 #: packages/ui/primitives/template-flow/add-template-placeholder-recipients.tsx
@@ -4063,6 +4150,10 @@ msgstr "Never expire"
 msgid "New Artist"
 msgstr "New Artist"
 
+#: apps/remix/app/components/dialogs/event-create-dialog.tsx
+msgid "New Event"
+msgstr "New Event"
+
 #: apps/remix/app/components/forms/password.tsx
 msgid "New Password"
 msgstr "New Password"
@@ -4079,6 +4170,10 @@ msgstr "New team owner"
 #: apps/remix/app/components/dialogs/template-create-dialog.tsx
 msgid "New Template"
 msgstr "New Template"
+
+#: apps/remix/app/components/dialogs/ticket-type-create-dialog.tsx
+msgid "New Ticket Type"
+msgstr "New Ticket Type"
 
 #: apps/remix/app/components/forms/signup.tsx
 #: apps/remix/app/components/embed/embed-document-signing-page.tsx
@@ -4110,9 +4205,17 @@ msgstr "No Especificado  "
 msgid "No further action is required from you at this time."
 msgstr "No further action is required from you at this time."
 
+#: apps/remix/app/routes/_authenticated+/event._index.tsx
+msgid "No has creado ninguna eventos todavía. Crea una nuevo evento para comenzar."
+msgstr "No has creado ninguna eventos todavía. Crea una nuevo evento para comenzar."
+
 #: apps/remix/app/routes/_authenticated+/tasks._index.tsx
 msgid "No has creado ninguna tarea todavía. Crea una nueva tarea para comenzar."
 msgstr "No has creado ninguna tarea todavía. Crea una nueva tarea para comenzar."
+
+#: apps/remix/app/routes/_authenticated+/event._index.tsx
+msgid "No hay eventos"
+msgstr "No hay eventos"
 
 #: apps/remix/app/routes/_authenticated+/tasks._index.tsx
 msgid "No hay tareas"
@@ -4375,8 +4478,8 @@ msgstr "Passkey name"
 msgid "Passkey Re-Authentication"
 msgstr "Passkey Re-Authentication"
 
-#: apps/remix/app/routes/_authenticated+/settings+/security._index.tsx
 #: apps/remix/app/routes/_authenticated+/settings+/security.passkeys.tsx
+#: apps/remix/app/routes/_authenticated+/settings+/security._index.tsx
 msgid "Passkeys"
 msgstr "Passkeys"
 
@@ -4630,6 +4733,10 @@ msgstr "Preview"
 msgid "Preview and configure template."
 msgstr "Preview and configure template."
 
+#: apps/remix/app/components/dialogs/ticket-type-create-dialog.tsx
+msgid "Price"
+msgstr "Price"
+
 #: apps/remix/app/components/general/task/tasks-list.tsx
 msgid "Prioridad"
 msgstr "Prioridad"
@@ -4699,6 +4806,10 @@ msgstr "Public profile username"
 #: apps/remix/app/components/tables/templates-table.tsx
 msgid "Public templates are connected to your public profile. Any modifications to public templates will also appear in your public profile."
 msgstr "Public templates are connected to your public profile. Any modifications to public templates will also appear in your public profile."
+
+#: apps/remix/app/components/dialogs/ticket-type-create-dialog.tsx
+msgid "Quantity"
+msgstr "Quantity"
 
 #: packages/ui/primitives/document-flow/types.ts
 msgid "Radio"
@@ -5107,6 +5218,10 @@ msgstr "Search languages..."
 #: apps/remix/app/components/general/document/document-search.tsx
 msgid "Search..."
 msgstr "Search..."
+
+#: apps/remix/app/components/dialogs/ticket-type-create-dialog.tsx
+msgid "Seat Number"
+msgstr "Seat Number"
 
 #: apps/remix/app/routes/_authenticated+/settings+/webhooks.$id.tsx
 #: apps/remix/app/components/dialogs/webhook-create-dialog.tsx
@@ -5520,8 +5635,8 @@ msgstr "Single"
 msgid "Site Banner"
 msgstr "Site Banner"
 
-#: apps/remix/app/routes/_authenticated+/admin+/_layout.tsx
 #: apps/remix/app/routes/_authenticated+/admin+/site-settings.tsx
+#: apps/remix/app/routes/_authenticated+/admin+/_layout.tsx
 msgid "Site Settings"
 msgstr "Site Settings"
 
@@ -5677,9 +5792,9 @@ msgstr "Subscribe"
 msgid "Subscription"
 msgstr "Subscription"
 
-#: apps/remix/app/routes/_authenticated+/admin+/documents.$id.tsx
 #: apps/remix/app/routes/embed+/v1+/authoring+/template.edit.$id.tsx
 #: apps/remix/app/routes/embed+/v1+/authoring+/document.edit.$id.tsx
+#: apps/remix/app/routes/_authenticated+/admin+/documents.$id.tsx
 #: apps/remix/app/components/tables/user-settings-pending-teams-table-actions.tsx
 #: apps/remix/app/components/tables/team-settings-member-invites-table.tsx
 #: apps/remix/app/components/tables/team-settings-member-invites-table.tsx
@@ -5886,10 +6001,10 @@ msgstr "Teams"
 msgid "Teams restricted"
 msgstr "Teams restricted"
 
-#: apps/remix/app/routes/_authenticated+/templates.f.$folderId.$id._index.tsx
 #: apps/remix/app/routes/_authenticated+/templates.f.$folderId.$id.edit.tsx
-#: apps/remix/app/routes/_authenticated+/templates.$id._index.tsx
+#: apps/remix/app/routes/_authenticated+/templates.f.$folderId.$id._index.tsx
 #: apps/remix/app/routes/_authenticated+/templates.$id.edit.tsx
+#: apps/remix/app/routes/_authenticated+/templates.$id._index.tsx
 #: apps/remix/app/components/general/template/template-page-view-documents-table.tsx
 #: apps/remix/app/components/general/template/template-page-view-documents-table.tsx
 #: apps/remix/app/components/general/template/template-page-view-documents-table.tsx
@@ -5947,9 +6062,9 @@ msgstr "Template title"
 msgid "Template updated successfully"
 msgstr "Template updated successfully"
 
-#: apps/remix/app/routes/_authenticated+/templates._index.tsx
 #: apps/remix/app/routes/_authenticated+/templates.f.$folderId._index.tsx
 #: apps/remix/app/routes/_authenticated+/templates.f.$folderId.$id._index.tsx
+#: apps/remix/app/routes/_authenticated+/templates._index.tsx
 #: apps/remix/app/routes/_authenticated+/templates.$id._index.tsx
 #: apps/remix/app/components/general/app-nav-mobile.tsx
 #: apps/remix/app/components/general/app-nav-mobile-team.tsx
@@ -6286,6 +6401,10 @@ msgstr "There are no active drafts at the current moment. You can upload a docum
 msgid "There are no completed documents yet. Documents that you have created or received will appear here once completed."
 msgstr "There are no completed documents yet. Documents that you have created or received will appear here once completed."
 
+#: apps/remix/app/components/dialogs/ticket-type-create-dialog.tsx
+msgid "There was an error creating your ticket type. Please try again."
+msgstr "There was an error creating your ticket type. Please try again."
+
 #: apps/remix/app/components/embed/authoring/configure-document-upload.tsx
 msgid "There was an error uploading your file. Please try again."
 msgstr "There was an error uploading your file. Please try again."
@@ -6506,6 +6625,10 @@ msgstr "This will delete <0>all of your documents</0>, along with all of your co
 #: packages/ui/components/recipient/recipient-action-auth-select.tsx
 msgid "This will override any global settings."
 msgstr "This will override any global settings."
+
+#: apps/remix/app/components/dialogs/ticket-type-create-dialog.tsx
+msgid "Ticket type created successfully"
+msgstr "Ticket type created successfully"
 
 #: apps/remix/app/components/tables/internal-audit-log-table.tsx
 #: apps/remix/app/components/tables/document-logs-table.tsx
@@ -7116,6 +7239,11 @@ msgstr "Value"
 msgid "Venta"
 msgstr "Venta"
 
+#: apps/remix/app/components/dialogs/event-update-dialog.tsx
+#: apps/remix/app/components/dialogs/event-create-dialog.tsx
+msgid "Venue"
+msgstr "Venue"
+
 #: apps/remix/app/components/general/task/tasks-list.tsx
 msgid "Ver detalles"
 msgstr "Ver detalles"
@@ -7512,8 +7640,8 @@ msgstr "We will generate signing links for you, which you can send to the recipi
 msgid "We won't send anything to notify recipients."
 msgstr "We won't send anything to notify recipients."
 
-#: apps/remix/app/routes/_authenticated+/templates._index.tsx
 #: apps/remix/app/routes/_authenticated+/templates.f.$folderId._index.tsx
+#: apps/remix/app/routes/_authenticated+/templates._index.tsx
 #: apps/remix/app/components/tables/releases-table-empty-state.tsx
 #: apps/remix/app/components/tables/general-table-empty-state.tsx
 #: apps/remix/app/components/tables/documents-table-empty-state.tsx
@@ -7798,8 +7926,8 @@ msgstr "You have initiated the document {0} that requires you to {recipientActio
 msgid "You have no webhooks yet. Your webhooks will be shown here once you create them."
 msgstr "You have no webhooks yet. Your webhooks will be shown here once you create them."
 
-#: apps/remix/app/routes/_authenticated+/templates._index.tsx
 #: apps/remix/app/routes/_authenticated+/templates.f.$folderId._index.tsx
+#: apps/remix/app/routes/_authenticated+/templates._index.tsx
 msgid "You have not yet created any templates. To create a template please upload one."
 msgstr "You have not yet created any templates. To create a template please upload one."
 
@@ -8108,6 +8236,10 @@ msgstr "Your template will be duplicated."
 #: apps/remix/app/components/general/template/template-edit-form.tsx
 msgid "Your templates has been saved successfully."
 msgstr "Your templates has been saved successfully."
+
+#: apps/remix/app/components/dialogs/ticket-type-create-dialog.tsx
+msgid "Your ticket type has been created."
+msgstr "Your ticket type has been created."
 
 #: apps/remix/app/routes/_unauthenticated+/verify-email.$token.tsx
 msgid "Your token has expired!"
