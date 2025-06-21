@@ -43,6 +43,7 @@ import {
   FacetedTrigger,
 } from '@documenso/ui/primitives/faceted';
 import { Input } from '@documenso/ui/primitives/input';
+import { Label } from '@documenso/ui/primitives/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@documenso/ui/primitives/popover';
 import {
   Select,
@@ -110,6 +111,15 @@ export function DataTableFilterList<TData>({
         throttleMs,
       }),
   );
+
+  const [applyFilters, setApplyFilters] = useQueryState(
+    'applyFilters',
+    parseAsStringEnum(['true', 'false']).withOptions({
+      clearOnDefault: true,
+      shallow,
+    }),
+  );
+
   const debouncedSetFilters = useDebouncedCallback(setFilters, debounceMs);
 
   const [joinOperator, setJoinOperator] = useQueryState(
@@ -122,9 +132,9 @@ export function DataTableFilterList<TData>({
 
   const onFilterAdd = React.useCallback(() => {
     const column = columns[0];
-    console.log('onFilterAdd column', column);
-    if (!column) return;
 
+    if (!column) return;
+    const a = column.id as Extract<keyof TData, string>;
     debouncedSetFilters([
       ...filters,
       {
@@ -135,10 +145,13 @@ export function DataTableFilterList<TData>({
         filterId: generateId({ length: 8 }),
       },
     ]);
+    setApplyFilters('false');
   }, [columns, filters, debouncedSetFilters]);
 
   const onFilterUpdate = React.useCallback(
     (filterId: string, updates: Partial<Omit<ExtendedColumnFilter<TData>, 'filterId'>>) => {
+      setApplyFilters('false');
+
       debouncedSetFilters((prevFilters) => {
         const updatedFilters = prevFilters.map((filter) => {
           if (filter.filterId === filterId) {
@@ -154,6 +167,8 @@ export function DataTableFilterList<TData>({
 
   const onFilterRemove = React.useCallback(
     (filterId: string) => {
+      setApplyFilters('false');
+
       const updatedFilters = filters.filter((filter) => filter.filterId !== filterId);
       void setFilters(updatedFilters);
       requestAnimationFrame(() => {
@@ -174,17 +189,12 @@ export function DataTableFilterList<TData>({
         return;
       }
 
-      if (
-        event.key.toLowerCase() === OPEN_MENU_SHORTCUT &&
-        !event.ctrlKey &&
-        !event.metaKey &&
-        !event.shiftKey
-      ) {
+      if (event.key === OPEN_MENU_SHORTCUT && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
         event.preventDefault();
         setOpen(true);
       }
 
-      if (event.key.toLowerCase() === OPEN_MENU_SHORTCUT && event.shiftKey && filters.length > 0) {
+      if (event.key === OPEN_MENU_SHORTCUT && event.shiftKey && filters.length > 0) {
         event.preventDefault();
         onFilterRemove(filters[filters.length - 1]?.filterId ?? '');
       }
@@ -196,7 +206,7 @@ export function DataTableFilterList<TData>({
 
   const onTriggerKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLButtonElement>) => {
-      if (REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase()) && filters.length > 0) {
+      if (REMOVE_FILTER_SHORTCUTS.includes(event.key) && filters.length > 0) {
         event.preventDefault();
         onFilterRemove(filters[filters.length - 1]?.filterId ?? '');
       }
@@ -213,7 +223,7 @@ export function DataTableFilterList<TData>({
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" size="sm" onKeyDown={onTriggerKeyDown}>
-            <ListFilter />
+            <ListFilter className="size-5" />
             Filter
             {filters.length > 0 && (
               <Badge
@@ -267,7 +277,7 @@ export function DataTableFilterList<TData>({
             <Button
               size="sm"
               className="rounded"
-              disabled={filters.length >= 1}
+              // disabled={filters.length >= 1}
               ref={addButtonRef}
               onClick={onFilterAdd}
             >
@@ -276,6 +286,16 @@ export function DataTableFilterList<TData>({
             {filters.length > 0 ? (
               <Button variant="outline" size="sm" className="rounded" onClick={onFiltersReset}>
                 Reset filters
+              </Button>
+            ) : null}
+            {filters.length > 0 ? (
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded"
+                onClick={() => setApplyFilters('true')}
+              >
+                Apply filters
               </Button>
             ) : null}
           </div>
@@ -287,8 +307,8 @@ export function DataTableFilterList<TData>({
           <div className="bg-primary/10 h-8 w-32 rounded-sm" />
           <div className="bg-primary/10 h-8 w-32 rounded-sm" />
           <div className="bg-primary/10 h-8 min-w-36 flex-1 rounded-sm" />
-          <div className="bg-primary/10 size-8 shrink-0 rounded-sm" />
-          <div className="bg-primary/10 size-8 shrink-0 rounded-sm" />
+          <div className="bg-primary/10 size-4 shrink-0 rounded-sm" />
+          <div className="bg-primary/10 size-4 shrink-0 rounded-sm" />
         </div>
       </SortableOverlay>
     </Sortable>
@@ -323,16 +343,6 @@ function DataTableFilterItem<TData>({
   const [showOperatorSelector, setShowOperatorSelector] = React.useState(false);
   const [showValueSelector, setShowValueSelector] = React.useState(false);
 
-  const column = columns.find((column) => column.id === filter.id);
-  if (!column) return null;
-  const joinOperatorListboxId = `${filterItemId}-join-operator-listbox`;
-  const fieldListboxId = `${filterItemId}-field-listbox`;
-  const operatorListboxId = `${filterItemId}-operator-listbox`;
-  const inputId = `${filterItemId}-input`;
-
-  const columnMeta = column.columnDef.meta;
-  const filterOperators = getFilterOperators(filter.variant);
-
   const onItemKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
       if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
@@ -343,13 +353,24 @@ function DataTableFilterItem<TData>({
         return;
       }
 
-      if (REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase())) {
-        event.preventDefault();
-        onFilterRemove(filter.filterId);
-      }
+      // if (REMOVE_FILTER_SHORTCUTS.includes(event.key)) {
+      //   event.preventDefault();
+      //   (onFilterRemovefilter.filterId);
+      // }
     },
     [filter.filterId, showFieldSelector, showOperatorSelector, showValueSelector, onFilterRemove],
   );
+
+  const column = columns.find((column) => column.id === filter.id);
+  const joinOperatorListboxId = `${filterItemId}-join-operator-listbox`;
+  const fieldListboxId = `${filterItemId}-field-listbox`;
+  const operatorListboxId = `${filterItemId}-operator-listbox`;
+  const inputId = `${filterItemId}-input`;
+  const filterOperators = getFilterOperators(filter.variant);
+
+  if (!column) return null;
+
+  const columnMeta = column.columnDef.meta;
 
   return (
     <SortableItem value={filter.filterId} asChild>
@@ -422,7 +443,7 @@ function DataTableFilterItem<TData>({
                       value={column.id}
                       onSelect={(value) => {
                         onFilterUpdate(filter.filterId, {
-                          id: value as Extract<keyof TData, string>,
+                          id: column.id as Extract<keyof TData, string>,
                           variant: column.columnDef.meta?.variant ?? 'text',
                           operator: getDefaultFilterOperator(
                             column.columnDef.meta?.variant ?? 'text',
@@ -492,13 +513,13 @@ function DataTableFilterItem<TData>({
           aria-controls={filterItemId}
           variant="outline"
           size="icon"
-          className="size-8 rounded"
+          className="size-4 rounded"
           onClick={() => onFilterRemove(filter.filterId)}
         >
-          <Trash2 />
+          <Trash2 className="size-5" />
         </Button>
         <SortableItemHandle asChild>
-          <Button variant="outline" size="icon" className="size-8 rounded">
+          <Button variant="outline" size="icon" className="size-4 rounded">
             <GripVertical />
           </Button>
         </SortableItemHandle>
@@ -654,7 +675,7 @@ function onFilterInputRender<TData>({
           </FacetedTrigger>
           <FacetedContent
             id={inputListboxId}
-            className="w-[200px] origin-[var(--radix-popover-content-transform-origin)]"
+            className="w-[250px] origin-[var(--radix-popover-content-transform-origin)]"
           >
             <FacetedInput
               aria-label={`Search ${columnMeta?.label} options`}
@@ -665,7 +686,7 @@ function onFilterInputRender<TData>({
               <FacetedGroup>
                 {columnMeta?.options?.map((option) => (
                   <FacetedItem key={option.value} value={option.value}>
-                    {option.icon && <option.icon />}
+                    {option.icon && <option.icon className="size-5" />}
                     <span>{option.label}</span>
                     {option.count && (
                       <span className="ml-auto font-mono text-xs">{option.count}</span>
@@ -710,7 +731,7 @@ function onFilterInputRender<TData>({
                 !filter.value && 'text-muted-foreground',
               )}
             >
-              <CalendarIcon />
+              <CalendarIcon className="size-5" />
               <span className="truncate">{displayValue}</span>
             </Button>
           </PopoverTrigger>
@@ -724,6 +745,8 @@ function onFilterInputRender<TData>({
                 aria-label={`Select ${columnMeta?.label} date range`}
                 mode="range"
                 initialFocus
+                captionLayout={'dropdown'}
+                numberOfMonths={2}
                 selected={
                   dateValue.length === 2
                     ? {
@@ -747,17 +770,30 @@ function onFilterInputRender<TData>({
                 }}
               />
             ) : (
-              <Calendar
-                aria-label={`Select ${columnMeta?.label} date`}
-                mode="single"
-                initialFocus
-                selected={dateValue[0] ? new Date(Number(dateValue[0])) : undefined}
-                onSelect={(date) => {
-                  onFilterUpdate(filter.filterId, {
-                    value: (date?.getTime() ?? '').toString(),
-                  });
-                }}
-              />
+              <>
+                <Calendar
+                  aria-label={`Select ${columnMeta?.label} date`}
+                  mode="single"
+                  initialFocus
+                  captionLayout={'dropdown'}
+                  selected={dateValue[0] ? new Date(Number(dateValue[0])) : undefined}
+                  onSelect={(date) => {
+                    onFilterUpdate(filter.filterId, {
+                      value: (date?.getTime() ?? '').toString(),
+                    });
+                  }}
+                />
+                {/* <div className="flex flex-col gap-4">
+                  <Calendar
+                    mode="single"
+                    defaultMonth={date}
+                    selected={date}
+                    onSelect={setDate}
+                    captionLayout={dropdown}
+                    className="rounded-lg border shadow-sm"
+                  />
+                </div> */}
+              </>
             )}
           </PopoverContent>
         </Popover>

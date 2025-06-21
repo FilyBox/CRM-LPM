@@ -10,6 +10,7 @@ import { type GetStatsInput } from '@documenso/lib/server-only/document/get-prio
 import { prisma } from '@documenso/prisma';
 
 import { authenticatedProcedure, router } from '../trpc';
+import { getContractsStats } from '@documenso/lib/server-only/team/get-contracts-stats';
 
 export type GetTaskByIdOptions = {
   id: number;
@@ -273,6 +274,12 @@ export const distributionRouter = router({
         },
       });
     }),
+
+      findDistributionStatsByCurrentTeam: authenticatedProcedure.query(async ({ ctx }) => {
+        const { teamId } = ctx;
+        const contracts = await getContractsStats(teamId);
+        return contracts;
+      }),
 
   deleteMultipleByIds: authenticatedProcedure
     .input(z.object({ ids: z.array(z.number()) }))

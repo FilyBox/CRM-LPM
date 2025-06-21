@@ -2,7 +2,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale/es';
 
 import { StackAvatarsArtistWithTooltip } from '@documenso/ui/components/lpm/stack-avatars-artist-with-tooltip';
-import type { Config, Result, ResultsObject, Unicorn } from '@documenso/ui/lib/types';
+import type { Result, ResultsObject, Unicorn } from '@documenso/ui/lib/types';
 import { useMediaQuery } from '@documenso/ui/lib/use-media-query';
 import { ExpandibleCard } from '@documenso/ui/primitives/expandable-card';
 import { Skeleton } from '@documenso/ui/primitives/skeleton';
@@ -16,9 +16,6 @@ import {
 } from '@documenso/ui/primitives/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@documenso/ui/primitives/tabs';
 import type { LpmData } from '@documenso/ui/types/tables-types';
-
-import { DynamicChart } from './dynamic-chart';
-import { SkeletonCard } from './skeleton-card';
 
 type enhancedArtists = {
   artistName: string | null;
@@ -74,20 +71,16 @@ type HasOptionalFields = {
   submissionStatus?: string;
 };
 
-export const Results = ({
+export const ResultsNoChart = ({
   results,
   columns,
-  chartConfig,
-  isLoading = false,
+  isLoading = true,
   data,
-  from,
 }: {
   results: Result[] | ResultsObject[];
   columns: string[];
   isLoading?: boolean;
-  data?: any;
-  from?: string;
-  chartConfig: Config | null;
+  data: any;
 }) => {
   const isDesktop = useMediaQuery('(min-width: 640px)');
 
@@ -96,30 +89,6 @@ export const Results = ({
       .split('_')
       .map((word, index) => (index === 0 ? word.charAt(0).toUpperCase() + word.slice(1) : word))
       .join(' ');
-  };
-
-  const formatCellValue = (column: string, value: unknown) => {
-    if (column.toLowerCase().includes('valuation')) {
-      const parsedValue = parseFloat(value as string);
-      if (isNaN(parsedValue)) {
-        return '';
-      }
-      const formattedValue = parsedValue.toFixed(2);
-      const trimmedValue = formattedValue.replace(/\.?0+$/, '');
-      return `$${trimmedValue}B`;
-    }
-    if (column.toLowerCase().includes('rate')) {
-      const parsedValue = parseFloat(value as string);
-      if (isNaN(parsedValue)) {
-        return '';
-      }
-      const percentage = (parsedValue * 100).toFixed(2);
-      return `${percentage}%`;
-    }
-    if (value instanceof Date) {
-      return value.toLocaleDateString();
-    }
-    return String(value);
   };
 
   const prepareCardData = (row: HasId & HasOptionalFields) => {
@@ -181,8 +150,32 @@ export const Results = ({
       WebSiteUpdates: Boolean(typedRow.WebSiteUpdates),
       Biography: Boolean(typedRow.Biography),
       total: typedRow.total || 0,
-      from: from || '',
+      from: 'tustreams',
     };
+  };
+
+  const formatCellValue = (column: string, value: unknown) => {
+    if (column.toLowerCase().includes('valuation')) {
+      const parsedValue = parseFloat(value as string);
+      if (isNaN(parsedValue)) {
+        return '';
+      }
+      const formattedValue = parsedValue.toFixed(2);
+      const trimmedValue = formattedValue.replace(/\.?0+$/, '');
+      return `$${trimmedValue}B`;
+    }
+    if (column.toLowerCase().includes('rate')) {
+      const parsedValue = parseFloat(value as string);
+      if (isNaN(parsedValue)) {
+        return '';
+      }
+      const percentage = (parsedValue * 100).toFixed(2);
+      return `${percentage}%`;
+    }
+    if (value instanceof Date) {
+      return value.toLocaleDateString();
+    }
+    return String(value);
   };
 
   return (
@@ -191,13 +184,6 @@ export const Results = ({
         <TabsList className="flex h-fit flex-col">
           <TabsTrigger className="w-full" value="table">
             Table
-          </TabsTrigger>
-          <TabsTrigger
-            className="w-full"
-            value="charts"
-            disabled={Object.keys(results[0] || {}).length <= 1 || results.length < 2}
-          >
-            Chart
           </TabsTrigger>
         </TabsList>
         <TabsContent value="table" className="flex flex-grow">
@@ -251,7 +237,7 @@ export const Results = ({
                   <div className="flex flex-col gap-2">
                     <Skeleton className="h-64 w-full" />
                     {/* <Skeleton className="h-56 w-full" />
-                                         <Skeleton className="h-56 w-full" /> */}
+                              <Skeleton className="h-56 w-full" /> */}
                   </div>
                 ) : (data && data.length) > 0 ? (
                   data.map((row: HasId & HasOptionalFields, index: number) => {
@@ -269,15 +255,6 @@ export const Results = ({
                   <></>
                 )}
               </div>
-            )}
-          </div>
-        </TabsContent>
-        <TabsContent value="charts" className="flex-grow overflow-auto">
-          <div className="mt-4">
-            {chartConfig && results.length > 0 ? (
-              <DynamicChart chartData={results} chartConfig={chartConfig} />
-            ) : (
-              <SkeletonCard />
             )}
           </div>
         </TabsContent>

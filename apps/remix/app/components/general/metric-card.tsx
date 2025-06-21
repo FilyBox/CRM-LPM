@@ -1,3 +1,4 @@
+import NumberFlow, { continuous } from '@number-flow/react';
 import type { LucideIcon } from 'lucide-react/dist/lucide-react';
 
 import { cn } from '@documenso/ui/lib/utils';
@@ -30,9 +31,15 @@ export const CardMetric = ({ icon: Icon, title, value, className }: CardMetricPr
           </h3>
         </div>
 
-        <p className="text-foreground mt-auto text-4xl font-semibold leading-8">
-          {typeof value === 'number' ? value.toLocaleString('en-US') : value}
-        </p>
+        {typeof value === 'number' ? (
+          <NumberFlow
+            plugins={[continuous]}
+            className="text-foreground mt-auto text-4xl font-semibold leading-8"
+            value={value}
+          />
+        ) : (
+          <p className="text-foreground mt-auto text-4xl font-semibold leading-8">{value}</p>
+        )}
       </div>
     </div>
   );

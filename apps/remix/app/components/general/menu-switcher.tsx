@@ -4,7 +4,7 @@ import { msg } from '@lingui/core/macro';
 import { useLingui } from '@lingui/react';
 import { Trans } from '@lingui/react/macro';
 import { motion } from 'framer-motion';
-import { CheckCircle2, ChevronsUpDown, Plus, Settings2 } from 'lucide-react';
+import { BarChartBig, CheckCircle2, ChevronsUpDown, Plus, Settings2 } from 'lucide-react';
 import { Link, useLocation } from 'react-router';
 
 import { authClient } from '@documenso/auth/client';
@@ -60,7 +60,6 @@ export const MenuSwitcher = ({ user, teams: initialTeamsData }: MenuSwitcherProp
   };
 
   const selectedTeam = teams?.find((team) => isPathTeamUrl(team.url));
-
   const formatAvatarFallback = (teamName?: string) => {
     if (teamName !== undefined) {
       return teamName.slice(0, 1).toUpperCase();
@@ -179,6 +178,31 @@ export const MenuSwitcher = ({ user, teams: initialTeamsData }: MenuSwitcherProp
                       <Link to="/settings/teams?action=add-team">
                         <Plus className="h-4 w-4" />
                       </Link>
+                    </Button>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Button
+                      title={_(msg`Team stats`)}
+                      variant="ghost"
+                      className="text-muted-foreground flex h-5 w-5 items-center justify-center p-0"
+                      asChild
+                    >
+                      {selectedTeam ? (
+                        <Link aria-disabled to={`/t/${selectedTeam?.url}/stats`}>
+                          <BarChartBig className="h-4 w-4" />
+                        </Link>
+                      ) : (
+                        <>
+                          <Button
+                            title={_(msg`Team stats`)}
+                            variant="ghost"
+                            className="text-muted-foreground flex h-5 w-5 items-center justify-center p-0"
+                            disabled={true}
+                          >
+                            <BarChartBig className="h-4 w-4" />
+                          </Button>
+                        </>
+                      )}
                     </Button>
                   </DropdownMenuItem>
                 </div>

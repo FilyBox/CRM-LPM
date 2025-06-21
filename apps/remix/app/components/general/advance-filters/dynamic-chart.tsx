@@ -93,8 +93,17 @@ export function DynamicChart({
           </BarChart>
         );
       case 'line':
+        // Convert any Date objects to strings to ensure compatibility with InputDataPoint
+        const processedData = chartData.map((item) => {
+          const newItem: Record<string, string | number> = {};
+          Object.entries(item).forEach(([key, value]) => {
+            newItem[key] = value instanceof Date ? value.toISOString() : value;
+          });
+          return newItem;
+        });
+
         const { data, xAxisField, lineFields } = transformDataForMultiLineChart(
-          chartData,
+          processedData as any,
           chartConfig,
         );
         const useTransformedData =

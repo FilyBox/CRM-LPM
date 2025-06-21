@@ -80,11 +80,12 @@ export async function loader({ params, request }: Route.LoaderArgs) {
   }).catch(() => null);
 
   if (!contract) {
-    ('no contract found');
+    console.log('no contract found');
     throw redirect(documentRootPath);
   }
 
   if (!documentId || Number.isNaN(documentId)) {
+    console.log('no documentId found');
     throw redirect(documentRootPath);
   }
 
@@ -94,12 +95,14 @@ export async function loader({ params, request }: Route.LoaderArgs) {
     teamId: team?.id,
   }).catch(() => null);
   if (document?.teamId && !team?.url) {
+    console.log('no team found for document');
     throw redirect(documentRootPath);
   }
 
-  if (document?.folderId) {
-    throw redirect(documentRootPath);
-  }
+  // if (document?.folderId) {
+  //   console.log('document has folderId, redirecting to root path');
+  //   throw redirect(documentRootPath);
+  // }
 
   const documentVisibility = document?.visibility;
   const currentTeamMemberRole = team?.currentTeamMember?.role;
@@ -118,10 +121,12 @@ export async function loader({ params, request }: Route.LoaderArgs) {
   }
 
   if (!document || !document.documentData || (team && !canAccessDocument)) {
+    console.log('no document found or access denied');
     throw redirect(documentRootPath);
   }
 
   if (team && !canAccessDocument) {
+    console.log('User does not have access to the document');
     throw redirect(documentRootPath);
   }
 

@@ -4,6 +4,7 @@ import * as React from 'react';
 
 import type { ColumnSort, SortDirection, Table } from '@tanstack/react-table';
 import { ArrowDownUp, ChevronsUpDown, GripVertical, Trash2 } from 'lucide-react';
+import { parseAsStringEnum, useQueryState } from 'nuqs';
 
 import { dataTableConfig } from '@documenso/ui/config/data-table';
 import { cn } from '@documenso/ui/lib/utils';
@@ -25,7 +26,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@documenso/ui/primitives/select';
-import { Skeleton } from '@documenso/ui/primitives/skeleton';
 import {
   Sortable,
   SortableContent,
@@ -62,6 +62,7 @@ export function DataTableSortList<TData>({
     const availableColumns: { id: string; label: string }[] = [];
 
     for (const column of table.getAllColumns()) {
+      console.log('column', column, 'canSort:', column.getCanSort());
       if (!column.getCanSort()) continue;
 
       const label = column.columnDef.meta?.label ?? column.id;
@@ -78,15 +79,25 @@ export function DataTableSortList<TData>({
     };
   }, [sorting, table]);
 
+  // const [applyFilters, setApplyFilters] = useQueryState(
+  //   'applySorting',
+  //   parseAsStringEnum(['true', 'false']).withOptions({
+  //     clearOnDefault: true,
+  //   }),
+  // );
+
   const onSortAdd = React.useCallback(() => {
     const firstColumn = columns[0];
     if (!firstColumn) return;
+    // setApplyFilters('false');
 
     onSortingChange((prevSorting) => [...prevSorting, { id: firstColumn.id, desc: false }]);
   }, [columns, onSortingChange]);
 
   const onSortUpdate = React.useCallback(
     (sortId: string, updates: Partial<ColumnSort>) => {
+      // setApplyFilters('false');
+
       onSortingChange((prevSorting) => {
         if (!prevSorting) return prevSorting;
         return prevSorting.map((sort) => (sort.id === sortId ? { ...sort, ...updates } : sort));
@@ -97,6 +108,8 @@ export function DataTableSortList<TData>({
 
   const onSortRemove = React.useCallback(
     (sortId: string) => {
+      // setApplyFilters('false');
+
       onSortingChange((prevSorting) => prevSorting.filter((item) => item.id !== sortId));
     },
     [onSortingChange],
@@ -211,6 +224,17 @@ export function DataTableSortList<TData>({
                 Reset sorting
               </Button>
             )}
+
+            {/* {sorting.length > 0 && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded"
+                onClick={() => setApplyFilters('true')}
+              >
+                Apply Sorting
+              </Button>
+            )} */}
           </div>
         </PopoverContent>
       </Popover>
@@ -304,7 +328,7 @@ function DataTableSortItem({
                     <CommandItem
                       key={column.id}
                       value={column.id}
-                      onSelect={(value) => onSortUpdate(sort.id, { id: value })}
+                      onSelect={(value) => onSortUpdate(sort.id, { id: column.label })}
                     >
                       <span className="truncate">{column.label}</span>
                     </CommandItem>

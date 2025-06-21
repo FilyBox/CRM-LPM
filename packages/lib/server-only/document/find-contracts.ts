@@ -20,7 +20,7 @@ export type FindReleaseOptions = {
   folderId?: string;
   perPage?: number;
   orderBy?: {
-    column: keyof Omit<Contract, 'id'>;
+    column: keyof Contract;
     direction: 'asc' | 'desc';
   };
   where?: Prisma.ContractWhereInput;
@@ -70,6 +70,8 @@ export const findContracts = async ({
 
   const orderByColumn = orderBy?.column ?? 'id';
   const orderByDirection = orderBy?.direction ?? 'asc';
+  console.log('orderByColumn', orderByColumn);
+  console.log('orderByDirection', orderByDirection);
 
   const searchFilter: Prisma.ContractWhereInput = {
     OR: [
@@ -156,9 +158,9 @@ export const findContracts = async ({
 
   const whereAndClause: Prisma.ContractWhereInput['AND'] = [
     // { ...filters },
-    { ...searchFilter },
+    // { ...searchFilter },
     { ...Filter },
-    { ...where },
+    ...(where ? [where] : []),
   ];
 
   const whereClause: Prisma.ContractWhereInput = {

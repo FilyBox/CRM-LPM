@@ -25,7 +25,6 @@ export const getOptionalSession = async (
   c: Context | Request,
 ): Promise<SessionValidationResult> => {
   const sessionId = await getSessionCookie(mapRequestToContextForCookie(c));
-
   if (!sessionId) {
     return {
       isAuthenticated: false,

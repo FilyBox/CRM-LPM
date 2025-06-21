@@ -1,9 +1,10 @@
 import { useTransition } from 'react';
-import * as React from 'react';
 
 import { useLingui } from '@lingui/react';
 import type { TeamMemberRole } from '@prisma/client';
+import { ContractStatus, ExpansionPossibility } from '@prisma/client';
 import type { ColumnDef } from '@tanstack/react-table';
+import { CircleDashed } from 'lucide-react';
 
 import { useUpdateSearchParams } from '@documenso/lib/client-only/hooks/use-update-search-params';
 import type { TFindContractsResponse } from '@documenso/trpc/server/contracts-router/schema';
@@ -19,16 +20,6 @@ import { DataTableColumnHeader } from './data-table-column-header';
 import { DataTableFilterList } from './data-table-filter-list';
 import { DataTableSkeleton } from './data-table-skeleton';
 import { DataTableSortList } from './data-table-sort-list';
-
-// export type DocumentsTableProps = {
-//   data?: TFindReleaseResponse;
-//   isLoading?: boolean;
-//   isLoadingError?: boolean;
-//   onMoveDocument?: (documentId: number) => void;
-//     onAdd: () => void;
-//   onEdit: (data: TData) => void;
-//   onDelete: (data: TData) => void;
-// };
 
 interface DataTableProps<TData, TValue> {
   data?: TFindContractsResponse;
@@ -107,6 +98,7 @@ export const ContractsTable = ({
       {
         accessorKey: 'id',
         header: 'ID',
+        enableSorting: false,
         enableHiding: true,
       },
       {
@@ -125,27 +117,54 @@ export const ContractsTable = ({
         accessorKey: 'artists',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Artists" />,
         enableHiding: true,
+        enableSorting: false,
       },
       {
         accessorKey: 'startDate',
         header: ({ column }) => <DataTableColumnHeader column={column} title="StartDate" />,
         enableHiding: true,
+        enableColumnFilter: true,
+        meta: {
+          label: 'startDate',
+          variant: 'date',
+        },
       },
       {
         accessorKey: 'endDate',
         header: ({ column }) => <DataTableColumnHeader column={column} title="EndDate" />,
         enableHiding: true,
+        enableColumnFilter: true,
+        meta: {
+          label: 'endDate',
+          variant: 'dateRange',
+        },
       },
       {
         accessorKey: 'isPossibleToExpand',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Expandable" />,
         enableHiding: true,
         enableColumnFilter: true,
+        meta: {
+          label: 'isPossibleToExpand',
+          variant: 'multiSelect',
+          options: Object.values(ExpansionPossibility).map((possibility) => ({
+            label: possibility.charAt(0).toUpperCase() + possibility.slice(1),
+            value: possibility,
+            // count: possibilityCounts[possibility], // Assuming you have a way to count these
+            icon: CircleDashed,
+          })),
+        },
       },
       {
         accessorKey: 'possibleExtensionTime',
         header: ({ column }) => <DataTableColumnHeader column={column} title="ExtensionTime" />,
         enableHiding: true,
+        meta: {
+          label: 'posibleExtensionTime',
+          variant: 'boolean',
+
+          icon: CircleDashed,
+        },
       },
 
       {
@@ -153,6 +172,17 @@ export const ContractsTable = ({
         header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
         enableHiding: true,
         enableColumnFilter: true,
+        meta: {
+          label: 'Status',
+          variant: 'multiSelect',
+          options: Object.values(ContractStatus).map((status) => ({
+            label: status.charAt(0).toUpperCase() + status.slice(1),
+            value: status,
+            // count: statusCounts[status],
+            icon: CircleDashed,
+          })),
+          icon: CircleDashed,
+        },
       },
       {
         accessorKey: 'documentId',
@@ -168,15 +198,12 @@ export const ContractsTable = ({
         accessorKey: 'summary',
         header: ({ column }) => <DataTableColumnHeader column={column} title="Summary" />,
         enableHiding: true,
+        enableSorting: false,
       },
     ];
     return columns;
   };
 
-  interface ColumnActions {
-    onEdit?: (data: DocumentsTableRow) => void;
-    onDelete?: (id: number) => void;
-  }
   const columns = createColumns();
 
   const { table, shallow, debounceMs, throttleMs } = useDataTable({
@@ -256,10 +283,10 @@ export const ContractsTable = ({
           <DataTableSortList table={table} align="end" />
         </DataTableToolbar> */}
 
-        <DataTableAdvancedToolbar loading={isLoading || false} table={table}>
-          <DataTableSortList table={table} align="start" loading={isLoading || false} />
+        <DataTableAdvancedToolbar loading={false} table={table}>
+          <DataTableSortList table={table} align="start" loading={false} />
           <DataTableFilterList
-            loading={isLoading || false}
+            loading={false}
             table={table}
             shallow={shallow}
             debounceMs={debounceMs}

@@ -1,14 +1,17 @@
-import { ContractStatus, ExpansionPossibility } from '@prisma/client';
+import { ContractStatus, ExpansionPossibility, Prisma } from '@prisma/client';
+import { join } from '@prisma/client/runtime/library';
 import { z } from 'zod';
 
 import { findContracts } from '@documenso/lib/server-only/document/find-contracts';
 import { getContractStatus } from '@documenso/lib/server-only/document/get-contract-status';
 import { type GetContractsInput } from '@documenso/lib/server-only/document/get-contract-status';
+import { getContractsStats } from '@documenso/lib/server-only/team/get-contracts-stats';
 import { prisma } from '@documenso/prisma';
 import {
   ExtendedContractStatus,
   ExtendedExpansionPossibility,
 } from '@documenso/prisma/types/extended-contracts';
+import { type FilterStructure, filterColumns } from '@documenso/ui/lib/filter-columns';
 
 import { authenticatedProcedure, router } from '../trpc';
 
@@ -142,6 +145,17 @@ export const contractsRouter = router({
             'summary',
           ])
           .optional(),
+        filterStructure: z
+          .array(
+            z
+              .custom<FilterStructure>(
+                (val) => val === null || val === undefined || typeof val === 'object',
+              )
+              .optional()
+              .nullable(),
+          )
+          .optional(),
+        joinOperator: z.enum(['and', 'or']).optional().default('and'),
       }),
     )
     .query(async ({ input, ctx }) => {
@@ -149,7 +163,6 @@ export const contractsRouter = router({
         query,
         page,
         perPage,
-
         status,
         expansion,
         // release,
@@ -157,10 +170,25 @@ export const contractsRouter = router({
         orderByColumn,
         orderByDirection,
         period,
+        filterStructure,
+        joinOperator,
         // orderBy = 'createdAt',
       } = input;
       const { user, teamId } = ctx;
       const userId = user.id;
+      let where: Prisma.ContractWhereInput = {};
+
+      if (filterStructure) {
+        const advancedWhere = filterColumns({
+          filters: filterStructure.filter(
+            (filter): filter is FilterStructure => filter !== null && filter !== undefined,
+          ),
+          joinOperator: joinOperator,
+        });
+
+        where = advancedWhere;
+      }
+
       const getStatOptions: GetContractsInput = {
         user,
         period,
@@ -168,6 +196,7 @@ export const contractsRouter = router({
         folderId,
         search: query,
       };
+
       const [stats] = await Promise.all([getContractStatus(getStatOptions)]);
       const [documents] = await Promise.all([
         findContracts({
@@ -177,6 +206,7 @@ export const contractsRouter = router({
           userId,
           expansion,
           status,
+          where,
           folderId,
           teamId,
           period,
@@ -197,6 +227,12 @@ export const contractsRouter = router({
       });
       return contract;
     }),
+
+  findContractsStatsByCurrentTeam: authenticatedProcedure.query(async ({ ctx }) => {
+    const { teamId } = ctx;
+    const contracts = await getContractsStats(teamId);
+    return contracts;
+  }),
 
   updateContractsById: authenticatedProcedure
     .input(

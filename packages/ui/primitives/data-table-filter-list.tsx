@@ -68,7 +68,7 @@ import { DataTableRangeFilter } from './data-table-range-filter';
 
 const FILTERS_KEY = 'filters';
 const JOIN_OPERATOR_KEY = 'joinOperator';
-const DEBOUNCE_MS = 300;
+const DEBOUNCE_MS = 3000;
 const THROTTLE_MS = 50;
 const OPEN_MENU_SHORTCUT = 'f';
 const REMOVE_FILTER_SHORTCUTS = ['backspace', 'delete'];
@@ -119,7 +119,6 @@ export function DataTableFilterList<TData>({
 
   const onFilterAdd = React.useCallback(() => {
     const column = columns[0];
-    console.log('onFilterAdd column', column);
     if (!column) return;
 
     debouncedSetFilters([
@@ -171,17 +170,12 @@ export function DataTableFilterList<TData>({
         return;
       }
 
-      if (
-        event.key.toLowerCase() === OPEN_MENU_SHORTCUT &&
-        !event.ctrlKey &&
-        !event.metaKey &&
-        !event.shiftKey
-      ) {
+      if (event.key === OPEN_MENU_SHORTCUT && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
         event.preventDefault();
         setOpen(true);
       }
 
-      if (event.key.toLowerCase() === OPEN_MENU_SHORTCUT && event.shiftKey && filters.length > 0) {
+      if (event.key === OPEN_MENU_SHORTCUT && event.shiftKey && filters.length > 0) {
         event.preventDefault();
         onFilterRemove(filters[filters.length - 1]?.filterId ?? '');
       }
@@ -193,7 +187,7 @@ export function DataTableFilterList<TData>({
 
   const onTriggerKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLButtonElement>) => {
-      if (REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase()) && filters.length > 0) {
+      if (REMOVE_FILTER_SHORTCUTS.includes(event.key) && filters.length > 0) {
         event.preventDefault();
         onFilterRemove(filters[filters.length - 1]?.filterId ?? '');
       }
@@ -325,7 +319,7 @@ function DataTableFilterItem<TData>({
         return;
       }
 
-      if (REMOVE_FILTER_SHORTCUTS.includes(event.key.toLowerCase())) {
+      if (REMOVE_FILTER_SHORTCUTS.includes(event.key)) {
         event.preventDefault();
         onFilterRemove(filter.filterId);
       }

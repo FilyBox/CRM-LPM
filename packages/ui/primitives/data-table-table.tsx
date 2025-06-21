@@ -9,6 +9,7 @@ import {
 } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale/es';
+import { Bird } from 'lucide-react';
 import { Toaster } from 'sonner';
 import { toast as sonnertoast } from 'sonner';
 import { match } from 'ts-pattern';
@@ -34,7 +35,7 @@ interface DataTableProps<TData> extends React.ComponentProps<'div'> {
   actionBar?: React.ReactNode;
 
   columnVisibility?: VisibilityState;
-  data: TData[];
+  data?: TData[];
   onEdit?: (data: TData) => void;
   onNavegate?: (data: TData) => void;
   onDelete?: (data: TData) => void;
@@ -170,7 +171,7 @@ export function DataTable<TData>({
   };
 
   const isDesktop = useMediaQuery('(min-width: 640px)');
-
+  const columns = React.useMemo(() => table.getAllColumns().length, [table]);
   const prepareCardData = (row: TData) => {
     const typedRow = row as HasId & HasOptionalFields;
 
@@ -239,6 +240,10 @@ export function DataTable<TData>({
     .with(TeamMemberRole.MANAGER, () => true)
     .with(TeamMemberRole.MEMBER, () => false)
     .otherwise(() => true);
+
+  if (!data) {
+    return <div>No data</div>;
+  }
 
   return (
     <div className={cn('flex w-full flex-col gap-2.5 overflow-auto', className)} {...props}>
@@ -317,18 +322,9 @@ export function DataTable<TData>({
                               (cell.column.id === 'isrcArtists' && cell.getValue()) ||
                               (cell.column.id === 'tuStreamsArtists' && cell.getValue()) ||
                               (cell.column.id === 'releasesArtists' && cell.getValue()) ? (
-                              <>
-                                {/* <TooltipProvider>
-                                       <Tooltip>
-                                         <TooltipTrigger>{cell.getValue() as string}</TooltipTrigger>
-                                         <TooltipContent>{cell.getValue() as string}</TooltipContent>
-                                       </Tooltip>
-                                     </TooltipProvider> */}
-
-                                <StackAvatarsArtistWithTooltip
-                                  enhancedAssignees={cell.getValue() as enhancedAssignees[]}
-                                />
-                              </>
+                              <StackAvatarsArtistWithTooltip
+                                enhancedAssignees={cell.getValue() as enhancedAssignees[]}
+                              />
                             ) : cell.column.id === 'trackPlayLink' && cell.getValue() ? (
                               <a
                                 href={cell.getValue() as string}
@@ -428,11 +424,11 @@ export function DataTable<TData>({
                 ))
               ) : error?.enable ? (
                 <TableRow>
-                  {error.component ?? (
-                    <TableCell colSpan={4} className="h-32 text-center">
+                  {/* {error.component ?? (
+                    <TableCell colSpan={columns} className="h-32 text-center">
                       <Trans>Something went wrong.</Trans>
                     </TableCell>
-                  )}
+                  )} */}
                 </TableRow>
               ) : skeleton?.enable ? (
                 Array.from({ length: skeleton.rows }).map((_, i) => (
@@ -442,7 +438,7 @@ export function DataTable<TData>({
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={4} className="h-32 text-center">
+                  {/* <TableCell colSpan={columns} className="h-32 text-center">
                     <p>
                       <Trans>No results found</Trans>
                     </p>
@@ -455,7 +451,7 @@ export function DataTable<TData>({
                         <Trans>Clear filters</Trans>
                       </button>
                     )}
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               )}
             </TableBody>
@@ -486,6 +482,37 @@ export function DataTable<TData>({
           </div>
         )}
       </div>
+
+      {table.getRowModel().rows?.length < 1 && skeleton?.enable === false ? (
+        <div
+          className="text-muted-foreground/60 flex h-60 flex-col items-center justify-center gap-y-4"
+          data-testid="empty-document-state"
+        >
+          <Bird className="h-12 w-12" strokeWidth={1.5} />
+
+          <div className="text-center">
+            {/* <h3 className="text-lg font-semibold">{_(title)}</h3> */}
+
+            <p className="mt-2 max-w-[60ch]">No data found</p>
+          </div>
+        </div>
+      ) : (
+        error?.enable && (
+          <div
+            className="text-muted-foreground/60 flex h-60 flex-col items-center justify-center gap-y-4"
+            data-testid="empty-document-state"
+          >
+            <Bird className="h-12 w-12" strokeWidth={1.5} />
+
+            <div className="text-center">
+              {/* <h3 className="text-lg font-semibold">{_(title)}</h3> */}
+
+              <p className="mt-2 max-w-[60ch]">Something went wrong</p>
+            </div>
+          </div>
+        )
+      )}
+
       <div className="flex flex-col gap-2.5">
         <DataTablePagination loading={skeleton?.enable || false} table={table} />
         {actionBar && table.getFilteredSelectedRowModel().rows.length > 0 && actionBar}

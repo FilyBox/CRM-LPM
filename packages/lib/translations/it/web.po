@@ -855,6 +855,10 @@ msgstr ""
 msgid "Album Only"
 msgstr ""
 
+#: apps/remix/app/routes/_authenticated+/t.$teamUrl+/stats.tsx
+msgid "Albums"
+msgstr ""
+
 #: apps/remix/app/components/general/task/tustreams-type.tsx
 #: apps/remix/app/components/general/task/tustreams-type.tsx
 #: apps/remix/app/components/general/task/task-status.tsx
@@ -1671,7 +1675,6 @@ msgid "Clear file"
 msgstr "Rimuovi file"
 
 #: packages/ui/primitives/data-table.tsx
-#: packages/ui/primitives/data-table-table.tsx
 msgid "Clear filters"
 msgstr "Cancella filtri"
 
@@ -1938,6 +1941,7 @@ msgstr ""
 #: apps/remix/app/routes/_authenticated+/contracts.f.$folderId._index.tsx
 #: apps/remix/app/routes/_authenticated+/contracts.$id._index.tsx
 #: apps/remix/app/routes/_authenticated+/contracts.$id.$runId.$publicAccessToken.retry.tsx
+#: apps/remix/app/routes/_authenticated+/t.$teamUrl+/stats.tsx
 #: apps/remix/app/components/general/app-nav-mobile-team.tsx
 #: apps/remix/app/components/general/app-nav-desktop-team.tsx
 #: apps/remix/app/components/general/app-command-menu.tsx
@@ -3391,6 +3395,10 @@ msgstr ""
 msgid "Finalizado"
 msgstr ""
 
+#: apps/remix/app/routes/_authenticated+/t.$teamUrl+/stats.tsx
+msgid "Finalized Contracts"
+msgstr ""
+
 #: apps/remix/app/components/dialogs/template-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/files-move-to-folder-dialog.tsx
@@ -4297,7 +4305,6 @@ msgid "No restrictions"
 msgstr "Nessuna restrizione"
 
 #: packages/ui/primitives/data-table.tsx
-#: packages/ui/primitives/data-table-table.tsx
 msgid "No results found"
 msgstr "Nessun risultato trovato"
 
@@ -4423,6 +4430,10 @@ msgstr "Una volta scansionato il codice QR o inserito manualmente il codice, ins
 #: packages/lib/constants/template.ts
 msgid "Once your template is set up, share the link anywhere you want. The person who opens the link will be able to enter their information in the direct link recipient field and complete any other fields assigned to them."
 msgstr "Una volta configurato il tuo modello, condividi il link ovunque tu voglia. La persona che apre il link potrà inserire le proprie informazioni nel campo destinatario del link diretto e completare qualsiasi altro campo assegnato a loro."
+
+#: apps/remix/app/routes/_authenticated+/t.$teamUrl+/stats.tsx
+msgid "Ongoing Contracts"
+msgstr ""
 
 #: apps/remix/app/components/forms/team-document-preferences-form.tsx
 msgid "Only admins can access and view the document"
@@ -5737,6 +5748,10 @@ msgstr "Dal {0}"
 msgid "Single"
 msgstr ""
 
+#: apps/remix/app/routes/_authenticated+/t.$teamUrl+/stats.tsx
+msgid "Singles"
+msgstr ""
+
 #: apps/remix/app/routes/_authenticated+/admin+/site-settings.tsx
 msgid "Site Banner"
 msgstr "Banner del sito"
@@ -5838,7 +5853,6 @@ msgid "Something went wrong!"
 msgstr "Qualcosa è andato storto!"
 
 #: packages/ui/primitives/data-table.tsx
-#: packages/ui/primitives/data-table-table.tsx
 msgid "Something went wrong."
 msgstr "Qualcosa è andato storto."
 
@@ -6089,6 +6103,15 @@ msgstr "Impostazioni del team"
 #: apps/remix/app/routes/_authenticated+/t.$teamUrl+/settings._layout.tsx
 msgid "Team Settings"
 msgstr "Impostazioni del team"
+
+#: apps/remix/app/components/general/menu-switcher.tsx
+#: apps/remix/app/components/general/menu-switcher.tsx
+msgid "Team stats"
+msgstr ""
+
+#: apps/remix/app/routes/_authenticated+/t.$teamUrl+/stats.tsx
+msgid "Team Stats"
+msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/settings+/public-profile.tsx
 msgid "Team templates"
@@ -6908,6 +6931,14 @@ msgstr "Nome del token"
 msgid "total"
 msgstr ""
 
+#: apps/remix/app/routes/_authenticated+/t.$teamUrl+/stats.tsx
+msgid "Total"
+msgstr ""
+
+#: apps/remix/app/routes/_authenticated+/t.$teamUrl+/stats.tsx
+msgid "Total Contracts"
+msgstr ""
+
 #: apps/remix/app/routes/_authenticated+/admin+/stats.tsx
 msgid "Total Documents"
 msgstr "Totale documenti"
@@ -6915,6 +6946,10 @@ msgstr "Totale documenti"
 #: apps/remix/app/routes/_authenticated+/admin+/stats.tsx
 msgid "Total Recipients"
 msgstr "Totale destinatari"
+
+#: apps/remix/app/routes/_authenticated+/t.$teamUrl+/stats.tsx
+msgid "Total Rows TuStreams"
+msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/admin+/stats.tsx
 msgid "Total Signers that Signed Up"
@@ -6997,6 +7032,7 @@ msgid "Triggers"
 msgstr "Trigger"
 
 #: apps/remix/app/routes/_authenticated+/tustreams._index.tsx
+#: apps/remix/app/routes/_authenticated+/t.$teamUrl+/stats.tsx
 #: apps/remix/app/components/general/app-nav-mobile-team.tsx
 #: apps/remix/app/components/general/app-nav-desktop-team.tsx
 msgid "TuStreams"

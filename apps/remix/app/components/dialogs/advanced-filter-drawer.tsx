@@ -30,11 +30,13 @@ import { SuggestedQueries } from '../general/advance-filters/suggested-queries';
 export type AdvancedFiltersDialogProps = {
   trigger?: React.ReactNode;
   tableToConsult: string;
+  from?: string;
 } & Omit<DialogPrimitive.DialogProps, 'children'>;
 
 export const AdvancedFilterDialog = ({
   trigger,
   tableToConsult,
+  from,
   ...props
 }: AdvancedFiltersDialogProps) => {
   const aiQuery = trpc.document.aiConnection.useMutation();
@@ -79,7 +81,6 @@ export const AdvancedFilterDialog = ({
       setActiveQuery(query);
       setLoadingStep(2);
       // const companies = await runGenerateSQLQuery(query);
-      console.log('SQL query results:', companies);
       const columns = companies.length > 0 ? Object.keys(companies[0]) : [];
       setResults(companies);
       setColumns(columns);
@@ -190,7 +191,13 @@ export const AdvancedFilterDialog = ({
                             <p className="text-muted-foreground text-center">No results found.</p>
                           </div>
                         ) : (
-                          <Results results={results} chartConfig={chartConfig} columns={columns} />
+                          <Results
+                            from={from}
+                            results={results}
+                            data={results}
+                            chartConfig={chartConfig}
+                            columns={columns}
+                          />
                         )}
                       </motion.div>
                     )}

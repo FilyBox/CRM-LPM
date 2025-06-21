@@ -830,34 +830,34 @@ este es el contrato: ${extractedText}
           contractsTable = await prisma.contract.update({
             where: { id: existingContract.id },
             data: {
-              documentId: documentId,
-              fileName: fileName,
-              artists: parsedResponse.artistas
-                .map((artist: { nombre: string }) => artist.nombre)
-                .join(', '),
-              endDate:
-                parsedResponse.fechaFin === 'NO ESPECIFICADO' ||
-                parsedResponse.fechaFin === 'NO_ESPECIFICADO'
-                  ? null
-                  : parsedResponse.fechaFin,
-              startDate:
-                parsedResponse.fechaInicio === 'NO ESPECIFICADO' ||
-                parsedResponse.fechaInicio === 'NO_ESPECIFICADO'
-                  ? null
-                  : parsedResponse.fechaInicio,
-              status: parsedResponse.estatusContrato,
-              teamId: teamId,
-              userId: userId,
-              title: parsedResponse.tituloContrato,
-              isPossibleToExpand: parsedResponse.esPosibleExpandirlo,
-              possibleExtensionTime: parsedResponse.tiempoExtensionPosible,
-              contractType: parsedResponse.tipoContrato,
-              collectionPeriod: parsedResponse.periodoColeccion,
-              collectionPeriodDescription: parsedResponse.descripcionPeriodoColeccion,
-              collectionPeriodDuration: parsedResponse.duracionPeriodoColeccion,
-              retentionPeriod: parsedResponse.periodoRetencion,
-              retentionPeriodDescription: parsedResponse.descripcionPeriodoRetencion,
-              retentionPeriodDuration: parsedResponse.duracionPeriodoRetencion,
+              // documentId: documentId,
+              // fileName: fileName,
+              // artists: parsedResponse.artistas
+              //   .map((artist: { nombre: string }) => artist.nombre)
+              //   .join(', '),
+              // endDate:
+              //   parsedResponse.fechaFin === 'NO ESPECIFICADO' ||
+              //   parsedResponse.fechaFin === 'NO_ESPECIFICADO'
+              //     ? null
+              //     : parsedResponse.fechaFin,
+              // startDate:
+              //   parsedResponse.fechaInicio === 'NO ESPECIFICADO' ||
+              //   parsedResponse.fechaInicio === 'NO_ESPECIFICADO'
+              //     ? null
+              //     : parsedResponse.fechaInicio,
+              // status: parsedResponse.estatusContrato,
+              // teamId: teamId,
+              // userId: userId,
+              // title: parsedResponse.tituloContrato,
+              // isPossibleToExpand: parsedResponse.esPosibleExpandirlo,
+              // possibleExtensionTime: parsedResponse.tiempoExtensionPosible,
+              // contractType: parsedResponse.tipoContrato,
+              // collectionPeriod: parsedResponse.periodoColeccion,
+              // collectionPeriodDescription: parsedResponse.descripcionPeriodoColeccion,
+              // collectionPeriodDuration: parsedResponse.duracionPeriodoColeccion,
+              // retentionPeriod: parsedResponse.periodoRetencion,
+              // retentionPeriodDescription: parsedResponse.descripcionPeriodoRetencion,
+              // retentionPeriodDuration: parsedResponse.duracionPeriodoRetencion,
               summary: parsedResponse.resumenGeneral,
             },
           });

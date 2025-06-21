@@ -38,6 +38,7 @@ import { ContractsTable } from '~/components/tables/contracts-table';
 import { GeneralTableEmptyState } from '~/components/tables/general-table-empty-state';
 import { useOptionalCurrentTeam } from '~/providers/team';
 import { appMetaTags } from '~/utils/meta';
+import { useSortParams } from '~/utils/searchParams';
 
 export function meta() {
   return appMetaTags('Contracts');
@@ -49,23 +50,23 @@ const ZSearchParamsSchema = ZFindContractsInternalRequestSchema.pick({
   perPage: true,
   status: true,
   query: true,
+  filters: true,
+  joinOperator: true,
 });
 
-const sortColumns = z
-  .enum([
-    'id',
-    'createdAt',
-    'updatedAt',
-    'status',
-    'title',
-    'fileName',
-    'startDate',
-    'endDate',
-    'isPossibleToExpand',
-    'possibleExtensionTime',
-    'documentId',
-  ])
-  .optional();
+const sortColumns = z.enum([
+  'id',
+  'createdAt',
+  'updatedAt',
+  'status',
+  'title',
+  'fileName',
+  'startDate',
+  'endDate',
+  'isPossibleToExpand',
+  'possibleExtensionTime',
+  'documentId',
+]);
 
 export const TypeSearchParams = z.record(
   z.string(),
@@ -75,43 +76,18 @@ export const TypeSearchParams = z.record(
 export default function ContractsPage() {
   const [searchParams] = useSearchParams();
 
-  const sort = useMemo(
-    () => TypeSearchParams.safeParse(Object.fromEntries(searchParams.entries())).data || {},
-    [searchParams],
-  );
-
-  const columnOrder = useMemo(() => {
-    if (sort.sort) {
-      try {
-        const parsedSort = JSON.parse(sort.sort as string);
-        if (Array.isArray(parsedSort) && parsedSort.length > 0) {
-          const { id } = parsedSort[0];
-          const isValidColumn = sortColumns.safeParse(id);
-          return isValidColumn.success ? id : undefined;
-        }
-      } catch (error) {
-        console.error('Error parsing sort parameter:', error);
-        return 'title';
-      }
-    }
-    return 'title';
-  }, [sort]);
-
-  const columnDirection = useMemo(() => {
-    if (sort.sort) {
-      try {
-        const parsedSort = JSON.parse(sort.sort as string);
-        if (Array.isArray(parsedSort) && parsedSort.length > 0) {
-          const { desc } = parsedSort[0];
-          return desc ? 'desc' : 'asc';
-        }
-      } catch (error) {
-        console.error('Error parsing sort parameter:', error);
-        return 'asc';
-      }
-    }
-    return 'asc';
-  }, [sort]);
+  const {
+    filters,
+    applyFilters,
+    applySorting,
+    perPage,
+    query,
+    page,
+    statusParams,
+    joinOperator,
+    columnOrder,
+    columnDirection,
+  } = useSortParams(sortColumns);
 
   const team = useOptionalCurrentTeam();
   const navigate = useNavigate();
@@ -131,18 +107,22 @@ export default function ContractsPage() {
     [ExtendedContractStatus.FINALIZADO]: 0,
     [ExtendedContractStatus.ALL]: 0,
   });
+
   const findDocumentSearchParams = useMemo(
     () => ZSearchParamsSchema.safeParse(Object.fromEntries(searchParams.entries())).data || {},
     [searchParams],
   );
+
   const { data, isLoading, isLoadingError, refetch } = trpc.contracts.findContracts.useQuery({
-    query: findDocumentSearchParams.query,
+    query: findDocumentSearchParams.query || query,
     period: findDocumentSearchParams.period,
-    page: findDocumentSearchParams.page,
-    perPage: findDocumentSearchParams.perPage,
-    status: findDocumentSearchParams.status,
+    page: page,
+    perPage: perPage,
+    status: statusParams,
     orderByColumn: columnOrder,
-    orderByDirection: columnDirection,
+    orderByDirection: columnDirection as 'asc' | 'desc',
+    filterStructure: applyFilters ? filters : [],
+    joinOperator: joinOperator,
   });
 
   const retryDocument = trpc.document.retryChatDocument.useMutation();
@@ -618,7 +598,7 @@ export default function ContractsPage() {
 
         <div className="-m-1 flex flex-wrap gap-x-4 gap-y-6 overflow-hidden p-1">
           <div className="flex w-full flex-wrap items-center justify-between gap-x-2 gap-y-4">
-            <Tabs value={findDocumentSearchParams.status || 'ALL'} className="overflow-x-auto">
+            <Tabs value={statusParams || 'ALL'} className="overflow-x-auto">
               <TabsList className="flex h-fit flex-wrap sm:flex">
                 {['VIGENTE', 'NO_ESPECIFICADO', 'FINALIZADO', 'ALL'].map((value) => {
                   return (
@@ -647,9 +627,9 @@ export default function ContractsPage() {
             </Tabs>
 
             <AdvancedFilterDialog tableToConsult="Contracts" />
-            <div className="flex w-full flex-wrap items-center justify-between gap-x-2 gap-y-4 sm:w-48">
+            {/* <div className="flex w-full flex-wrap items-center justify-between gap-x-2 gap-y-4 sm:w-48">
               <DocumentSearch initialValue={findDocumentSearchParams.query} />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -672,34 +652,33 @@ export default function ContractsPage() {
           </Button>
         </div> */}
       </Dialog>
-      {data && (!data?.documents.data.length || data?.documents.data.length === 0) ? (
+      {/* {data && (!data?.documents.data.length || data?.documents.data.length === 0) ? (
         <GeneralTableEmptyState status={'ALL'} />
-      ) : (
-        <ContractsTable
-          data={
-            data?.documents ?? {
-              data: [],
-              count: 0,
-              currentPage: 1,
-              perPage: 10,
-              totalPages: 1,
-            }
+      ) : ( */}
+      <ContractsTable
+        data={
+          data?.documents ?? {
+            data: [],
+            count: 0,
+            currentPage: 1,
+            perPage: 10,
+            totalPages: 1,
           }
-          onMultipleDelete={handleMultipleDelete}
-          onRetry={handleRetry}
-          isLoading={isLoading}
-          isMultipleDelete={isMultipleDelete}
-          isLoadingError={isLoadingError}
-          onMoveDocument={(row: Contract) => {
-            setDocumentToMove(row.id);
-            setIsMovingDocument(true);
-          }}
-          onAdd={openCreateDialog}
-          onEdit={handleEdit}
-          onNavegate={hanleOnNavegate}
-          onDelete={handleDelete}
-        />
-      )}
+        }
+        onMultipleDelete={handleMultipleDelete}
+        onRetry={handleRetry}
+        isLoading={isLoading}
+        isMultipleDelete={isMultipleDelete}
+        isLoadingError={isLoadingError}
+        onMoveDocument={(row: Contract) => {
+          setDocumentToMove(row.id);
+          setIsMovingDocument(true);
+        }}
+        onAdd={openCreateDialog}
+        onEdit={handleEdit}
+        onNavegate={hanleOnNavegate}
+        onDelete={handleDelete}
+      />
 
       {documentToMove && (
         <MoveToFolderDialog

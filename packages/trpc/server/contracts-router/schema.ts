@@ -46,6 +46,8 @@ export const ZFindContractsInternalRequestSchema = ZFindContractsRequestSchema.e
     .describe('Filter tasks by how it was created.')
     .optional(),
   retentionAndCollection: z.nativeEnum(RetentionAndCollectionPeriod),
+  filters: z.array(z.string()).optional(),
+  joinOperator: z.string().optional(),
 });
 
 export const ZFindContractsResponseSchema = ZFindResultResponse.extend({

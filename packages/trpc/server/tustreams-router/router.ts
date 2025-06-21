@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { findTuStreams } from '@documenso/lib/server-only/document/find-tuStreams';
 import { type GetTuStreamsType } from '@documenso/lib/server-only/document/get-tustreams-type';
 import { getTuStreamsType } from '@documenso/lib/server-only/document/get-tustreams-type';
+import { getTuStreamsStats } from '@documenso/lib/server-only/team/get-tustreams-stats';
 import { prisma } from '@documenso/prisma';
 
 import { authenticatedProcedure, router } from '../trpc';
@@ -419,6 +420,12 @@ export const tuStreamsRouter = router({
       });
       return { success: true };
     }),
+
+  findTuStreamsStatsByCurrentTeam: authenticatedProcedure.query(async ({ ctx }) => {
+    const { teamId } = ctx;
+    const contracts = await getTuStreamsStats(teamId);
+    return contracts;
+  }),
 
   deleteMultipleByIds: authenticatedProcedure
     .input(z.object({ ids: z.array(z.number()) }))
