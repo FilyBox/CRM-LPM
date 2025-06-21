@@ -5,6 +5,7 @@ export const FolderType = {
   TEMPLATE: 'TEMPLATE',
   CHAT: 'CHAT',
   CONTRACT: 'CONTRACT',
+  FILE: 'FILE',
 } as const;
 
 export const ZFolderTypeSchema = z.enum([
@@ -12,5 +13,6 @@ export const ZFolderTypeSchema = z.enum([
   FolderType.TEMPLATE,
   FolderType.CHAT,
   FolderType.CONTRACT,
+  FolderType.FILE,
 ]);
 export type TFolderType = z.infer<typeof ZFolderTypeSchema>;

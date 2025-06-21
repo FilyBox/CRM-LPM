@@ -49,25 +49,25 @@ enum StatusSongAlbum {
 }
 
 model User {
-  id               Int                @id @default(autoincrement())
-  name             String?
-  customerId       String?            @unique
-  email            String             @unique
-  emailVerified    DateTime?
-  password         String? // Todo: (RR7) Remove after RR7 migration.
-  source           String?
-  signature        String?
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @default(now()) @updatedAt
-  lastSignedIn     DateTime           @default(now())
-  roles            Role[]             @default([USER])
-  identityProvider IdentityProvider   @default(DOCUMENSO) // Todo: (RR7) Remove after RR7 migration.
-  avatarImageId    String?
-  disabled         Boolean            @default(false)
-  releases         Releases[]
-  tuStreams        tuStreams[]
-  tuStreamsArtists tuStreamsArtists[]
-
+  id                                  Int                                   @id @default(autoincrement())
+  name                                String?
+  customerId                          String?                               @unique
+  email                               String                                @unique
+  emailVerified                       DateTime?
+  password                            String? // Todo: (RR7) Remove after RR7 migration.
+  source                              String?
+  signature                           String?
+  createdAt                           DateTime                              @default(now())
+  updatedAt                           DateTime                              @default(now()) @updatedAt
+  lastSignedIn                        DateTime                              @default(now())
+  roles                               Role[]                                @default([USER])
+  identityProvider                    IdentityProvider                      @default(DOCUMENSO) // Todo: (RR7) Remove after RR7 migration.
+  avatarImageId                       String?
+  disabled                            Boolean                               @default(false)
+  releases                            Releases[]
+  tuStreams                           tuStreams[]
+  tuStreamsArtists                    tuStreamsArtists[]
+  files                               Files[]
   territories                         Territories[]
   releasesArtists                     releasesArtists[]
   artists                             Artist[]
@@ -772,20 +772,22 @@ enum FolderType {
   TEMPLATE
   CHAT
   CONTRACT
+  FILE
 }
 
 model Folder {
-  id         String             @id @default(cuid())
-  name       String
-  userId     Int
-  user       User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  teamId     Int?
-  team       Team?              @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  pinned     Boolean            @default(false)
-  parentId   String?
-  parent     Folder?            @relation("FolderToFolder", fields: [parentId], references: [id], onDelete: Cascade)
-  documents  Document[]
-  templates  Template[]
+  id        String     @id @default(cuid())
+  name      String
+  userId    Int
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  teamId    Int?
+  team      Team?      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  pinned    Boolean    @default(false)
+  parentId  String?
+  parent    Folder?    @relation("FolderToFolder", fields: [parentId], references: [id], onDelete: Cascade)
+  documents Document[]
+  templates Template[]
+
   contracts  Contract[]
   createdAt  DateTime           @default(now())
   updatedAt  DateTime           @default(now()) @updatedAt
@@ -793,6 +795,7 @@ model Folder {
   visibility DocumentVisibility @default(EVERYONE)
   type       FolderType
   useToChat  Boolean            @default(false)
+  files      Files[]
 
   @@index([userId])
   @@index([teamId])
@@ -878,6 +881,48 @@ model DocumentData {
   initialData String
   document    Document?
   template    Template?
+  Files       Files?
+}
+
+model FilesShareLink {
+  id        Int      @id @default(autoincrement())
+  email     String
+  slug      String   @unique
+  fileId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  document Files @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@unique([fileId, email])
+}
+
+model Files {
+  id           Int                @id @default(autoincrement())
+  qrToken      String? /// @zod.string.describe("The token for viewing the document using the QR code on the certificate.")
+  userId       Int /// @zod.number.describe("The ID of the user that created this document.")
+  user         User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  visibility   DocumentVisibility @default(EVERYONE)
+  title        String
+  status       DocumentStatus     @default(DRAFT)
+  shareLinks   FilesShareLink[]
+  fileDataId   String
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @default(now()) @updatedAt
+  completedAt  DateTime?
+  deletedAt    DateTime?
+  teamId       Int?
+  useToChat    Boolean            @default(false)
+  documentData DocumentData       @relation(fields: [fileDataId], references: [id], onDelete: Cascade)
+  team         Team?              @relation(fields: [teamId], references: [id])
+
+  folder   Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folderId String?
+
+  @@unique([fileDataId])
+  @@index([userId])
+  @@index([status])
+  @@index([folderId])
 }
 
 enum DocumentBodyExtractedStatus {
@@ -1259,6 +1304,7 @@ model Team {
   contractTemplates        ContractTemplate[]
   lpm                      lpm[]
   lpmProductDisplayArtists lpmProductDisplayArtists[]
+  Files                    Files[]
 }
 
 model TeamPending {

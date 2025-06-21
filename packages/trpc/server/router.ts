@@ -7,6 +7,7 @@ import { distributionRouter } from './distributionStatement-router/router';
 import { documentRouter } from './document-router/router';
 import { embeddingPresignRouter } from './embedding-router/_router';
 import { fieldRouter } from './field-router/router';
+import { filesRouter } from './files-router/router';
 import { folderRouter } from './folder-router/router';
 import { IsrcSongsRouter } from './isrcsong-router/router';
 import { lpmRouter } from './lpm-router/router';
@@ -36,6 +37,7 @@ export const appRouter = router({
   release: releaseRouter,
   contracts: contractsRouter,
   lpm: lpmRouter,
+  files: filesRouter,
   admin: adminRouter,
   shareLink: shareLinkRouter,
   apiToken: apiTokenRouter,

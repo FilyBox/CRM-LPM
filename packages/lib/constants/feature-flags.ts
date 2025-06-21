@@ -1,6 +1,6 @@
 import { env } from '@documenso/lib/utils/env';
 
-import { NEXT_PUBLIC_WEBAPP_URL } from './app';
+import { NEXT_PUBLIC_POSTHOG_HOST } from './app';
 
 const NEXT_PUBLIC_FEATURE_BILLING_ENABLED = () => env('NEXT_PUBLIC_FEATURE_BILLING_ENABLED');
 const NEXT_PUBLIC_POSTHOG_KEY = () => env('NEXT_PUBLIC_POSTHOG_KEY');
@@ -35,7 +35,7 @@ export const LOCAL_FEATURE_FLAGS: Record<string, boolean> = {
  */
 export function extractPostHogConfig(): { key: string; host: string } | null {
   const postHogKey = NEXT_PUBLIC_POSTHOG_KEY();
-  const postHogHost = `${NEXT_PUBLIC_WEBAPP_URL()}/ingest`;
+  const postHogHost = NEXT_PUBLIC_POSTHOG_HOST();
 
   if (!postHogKey || !postHogHost) {
     return null;

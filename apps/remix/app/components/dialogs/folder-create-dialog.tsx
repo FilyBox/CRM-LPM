@@ -44,9 +44,10 @@ type TCreateFolderFormSchema = z.infer<typeof ZCreateFolderFormSchema>;
 
 export type CreateFolderDialogProps = {
   trigger?: React.ReactNode;
+  createFrom?: keyof typeof FolderType;
 } & Omit<DialogPrimitive.DialogProps, 'children'>;
 
-export const CreateFolderDialog = ({ trigger, ...props }: CreateFolderDialogProps) => {
+export const CreateFolderDialog = ({ trigger, createFrom, ...props }: CreateFolderDialogProps) => {
   const { _ } = useLingui();
   const { toast } = useToast();
   const { folderId } = useParams();
@@ -72,7 +73,7 @@ export const CreateFolderDialog = ({ trigger, ...props }: CreateFolderDialogProp
       const newFolder = await createFolder({
         name: data.name,
         parentId: folderId,
-        type: FolderType.DOCUMENT,
+        type: createFrom ? FolderType[createFrom] : FolderType.DOCUMENT,
       });
 
       setIsCreateFolderOpen(false);
@@ -82,8 +83,9 @@ export const CreateFolderDialog = ({ trigger, ...props }: CreateFolderDialogProp
       });
 
       const documentsPath = formatDocumentsPath(team?.url);
-
-      void navigate(`${documentsPath}/f/${newFolder.id}`);
+      if (!createFrom) {
+        void navigate(`${documentsPath}/f/${newFolder.id}`);
+      }
     } catch (err) {
       const error = AppError.parseError(err);
 
@@ -128,7 +130,7 @@ export const CreateFolderDialog = ({ trigger, ...props }: CreateFolderDialogProp
         <DialogHeader>
           <DialogTitle>Create New Folder</DialogTitle>
           <DialogDescription>
-            Enter a name for your new folder. Folders help you organize your documents.
+            Enter a name for your new folder. Folders help you organize your files.
           </DialogDescription>
         </DialogHeader>
 

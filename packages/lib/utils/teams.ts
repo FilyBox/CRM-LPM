@@ -13,6 +13,10 @@ export const formatDocumentsPath = (teamUrl?: string) => {
   return teamUrl ? `/t/${teamUrl}/documents` : '/documents';
 };
 
+export const formatFilesPath = (teamUrl?: string) => {
+  return teamUrl ? `/t/${teamUrl}/files` : '/files';
+};
+
 export const formatChatPath = (teamUrl?: string) => {
   return teamUrl ? `/t/${teamUrl}/chatspace` : '/chatspace';
 };

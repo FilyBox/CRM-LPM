@@ -49,7 +49,7 @@ export const FolderCard = ({
             <div className="mt-1 flex space-x-2 text-xs text-gray-500">
               <span>
                 {formatFolderCount(
-                  folder.type === FolderType.TEMPLATE
+                  folder.type === FolderType.TEMPLATE || folder.type === FolderType.CHAT
                     ? folder._count.templates
                     : folder._count.documents,
                   folder.type === FolderType.TEMPLATE ? 'template' : 'document',

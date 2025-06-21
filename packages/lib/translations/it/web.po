@@ -53,6 +53,7 @@ msgstr "“{documentName}” è stato firmato"
 msgid "“{documentName}” was signed by all signers"
 msgstr "“{documentName}” è stato firmato da tutti i firmatari"
 
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "\"{documentTitle}\" has been successfully deleted"
 msgstr "\"{documentTitle}\" è stato eliminato con successo"
@@ -142,6 +143,7 @@ msgstr "{0} ti ha invitato a {recipientActionVerb} un documento"
 
 #. placeholder {0}: remaining.documents
 #. placeholder {1}: quota.documents
+#: apps/remix/app/components/general/files/files-document-upload.tsx
 #: apps/remix/app/components/general/document/document-upload.tsx
 #: apps/remix/app/components/general/chatspace/chatspace-document-upload.tsx
 msgid "{0} of {1} documents remaining this month."
@@ -654,6 +656,7 @@ msgstr "Riconoscimento"
 #: apps/remix/app/components/tables/settings-security-activity-table.tsx
 #: apps/remix/app/components/tables/settings-public-profile-templates-table.tsx
 #: apps/remix/app/components/tables/internal-audit-log-table.tsx
+#: apps/remix/app/components/tables/files-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/documents-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/document-logs-table.tsx
 #: apps/remix/app/components/tables/chat-table-action-dropdown.tsx
@@ -666,6 +669,7 @@ msgstr "Azione"
 #: apps/remix/app/components/tables/team-settings-members-table.tsx
 #: apps/remix/app/components/tables/team-settings-member-invites-table.tsx
 #: apps/remix/app/components/tables/team-settings-member-invites-table.tsx
+#: apps/remix/app/components/tables/files-table.tsx
 #: apps/remix/app/components/tables/documents-table.tsx
 #: apps/remix/app/components/tables/documents-chatspace-table.tsx
 #: apps/remix/app/components/general/template/template-page-view-documents-table.tsx
@@ -887,10 +891,12 @@ msgstr "Tutti i documenti relativi al processo di firma elettronica ti saranno f
 msgid "All Folders"
 msgstr ""
 
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "All inserted signatures will be voided"
 msgstr "Tutte le firme inserite saranno annullate"
 
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "All recipients will be notified"
 msgstr "Tutti i destinatari saranno notificati"
@@ -1001,6 +1007,7 @@ msgstr "Si è verificato un errore durante la disabilitazione della firma tramit
 msgid "An error occurred while disabling the user."
 msgstr "Si è verificato un errore durante la disabilitazione dell'utente."
 
+#: apps/remix/app/components/tables/files-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/documents-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/documents-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/documents-table-action-button.tsx
@@ -1034,6 +1041,7 @@ msgid "An error occurred while loading the document."
 msgstr "Si è verificato un errore durante il caricamento del documento."
 
 #: apps/remix/app/components/dialogs/move-to-folder-dialog.tsx
+#: apps/remix/app/components/dialogs/files-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/document-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/document-move-dialog.tsx
 #: apps/remix/app/components/dialogs/chat-move-to-folder-dialog.tsx
@@ -1120,6 +1128,11 @@ msgstr "Si è verificato un errore durante l'aggiornamento del tuo profilo."
 #: apps/remix/app/components/general/chatspace/chatspace-document-upload.tsx
 msgid "An error occurred while uploading your document."
 msgstr "Si è verificato un errore durante il caricamento del tuo documento."
+
+#: apps/remix/app/components/general/files/files-drop-zone-wrapper.tsx
+#: apps/remix/app/components/general/files/files-document-upload.tsx
+msgid "An error occurred while uploading your file."
+msgstr ""
 
 #: apps/remix/app/components/dialogs/advanced-filter-drawer.tsx
 #: apps/remix/app/components/dialogs/advanced-filter-drawer.tsx
@@ -1257,6 +1270,7 @@ msgstr "Sei sicuro di voler eliminare questo team?"
 #: apps/remix/app/components/dialogs/team-leave-dialog.tsx
 #: apps/remix/app/components/dialogs/team-email-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/public-profile-template-manage-dialog.tsx
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "Are you sure?"
 msgstr "Sei sicuro?"
@@ -1459,6 +1473,7 @@ msgstr "Invio Massivo via CSV"
 msgid "By accepting this request, you will take responsibility for any billing items associated with this team."
 msgstr "Accettando questa richiesta, ti assumerai la responsabilità di qualsiasi voce di fatturazione associata a questo team."
 
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "By deleting this document, the following will occur:"
 msgstr "Eliminando questo documento, si verificherà quanto segue:"
@@ -1530,6 +1545,8 @@ msgstr "Può preparare"
 #: apps/remix/app/components/dialogs/public-profile-template-manage-dialog.tsx
 #: apps/remix/app/components/dialogs/passkey-create-dialog.tsx
 #: apps/remix/app/components/dialogs/move-to-folder-dialog.tsx
+#: apps/remix/app/components/dialogs/files-move-to-folder-dialog.tsx
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-resend-dialog.tsx
 #: apps/remix/app/components/dialogs/document-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/document-move-dialog.tsx
@@ -1599,6 +1616,10 @@ msgstr "Grafici"
 #: apps/remix/app/components/general/app-nav-desktop-team.tsx
 #: apps/remix/app/components/general/template/template-page-view-documents-table.tsx
 msgid "Chat"
+msgstr ""
+
+#: apps/remix/app/routes/_authenticated+/chatspace._index.tsx
+msgid "Chat with documents"
 msgstr ""
 
 #: packages/ui/primitives/document-flow/types.ts
@@ -2169,6 +2190,7 @@ msgid "Created on {0}"
 msgstr "Creato il {0}"
 
 #: apps/remix/app/components/tables/tustreams-table.tsx
+#: apps/remix/app/components/tables/files-table.tsx
 msgid "CreatedAt"
 msgstr ""
 
@@ -2247,6 +2269,7 @@ msgstr "Visibilità predefinita del documento"
 msgid "Default Signature Settings"
 msgstr "Impostazioni predefinite della firma"
 
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "delete"
 msgstr "elimina"
@@ -2257,6 +2280,7 @@ msgstr "elimina"
 #: apps/remix/app/components/tables/templates-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/settings-security-passkey-table-actions.tsx
 #: apps/remix/app/components/tables/settings-security-passkey-table-actions.tsx
+#: apps/remix/app/components/tables/files-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/documents-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/chat-table-action-dropdown.tsx
 #: apps/remix/app/components/general/document/document-page-view-dropdown.tsx
@@ -2265,6 +2289,7 @@ msgstr "elimina"
 #: apps/remix/app/components/dialogs/template-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/team-member-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/team-delete-dialog.tsx
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 #: packages/ui/primitives/expandable-card.tsx
 msgid "Delete"
@@ -2646,6 +2671,7 @@ msgid "Document metrics"
 msgstr "Metriche del documento"
 
 #: apps/remix/app/components/dialogs/move-to-folder-dialog.tsx
+#: apps/remix/app/components/dialogs/files-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/document-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/document-move-dialog.tsx
 #: apps/remix/app/components/dialogs/chat-move-to-folder-dialog.tsx
@@ -2709,6 +2735,7 @@ msgstr "Documento firmato"
 msgid "Document signing auth updated"
 msgstr "Autenticazione firma documento aggiornata"
 
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "Document signing process will be cancelled"
 msgstr "Il processo di firma del documento sarà annullato"
@@ -2739,6 +2766,7 @@ msgstr "Documento aggiornato"
 msgid "Document updated successfully"
 msgstr ""
 
+#: apps/remix/app/components/general/files/files-document-upload.tsx
 #: apps/remix/app/components/general/document/document-upload.tsx
 #: apps/remix/app/components/general/chatspace/chatspace-document-upload.tsx
 msgid "Document upload disabled due to unpaid invoices"
@@ -2759,6 +2787,7 @@ msgstr "Documento visualizzato"
 msgid "Document visibility updated"
 msgstr "Visibilità del documento aggiornata"
 
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "Document will be permanently deleted"
 msgstr "Il documento sarà eliminato definitivamente"
@@ -2797,10 +2826,6 @@ msgstr "Documenti creati da modello"
 msgid "Documents Received"
 msgstr "Documenti ricevuti"
 
-#: apps/remix/app/routes/_authenticated+/chatspace._index.tsx
-msgid "Documents To Chat"
-msgstr ""
-
 #: apps/remix/app/routes/_authenticated+/admin+/stats.tsx
 msgid "Documents Viewed"
 msgstr "Documenti visualizzati"
@@ -2811,6 +2836,7 @@ msgid "Don't have an account? <0>Sign up</0>"
 msgstr "Non hai un account? <0>Registrati</0>"
 
 #: apps/remix/app/components/tables/team-settings-billing-invoices-table.tsx
+#: apps/remix/app/components/tables/files-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/documents-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/documents-table-action-button.tsx
 #: apps/remix/app/components/tables/chat-table-action-dropdown.tsx
@@ -2861,6 +2887,10 @@ msgstr "Trascina e rilascia il tuo PDF qui."
 
 #: apps/remix/app/components/embed/authoring/configure-document-upload.tsx
 msgid "Drag and drop or click to upload"
+msgstr ""
+
+#: apps/remix/app/components/general/files/files-drop-zone-wrapper.tsx
+msgid "Drag and drop your file here"
 msgstr ""
 
 #: apps/remix/app/components/general/document/document-drop-zone-wrapper.tsx
@@ -3123,6 +3153,8 @@ msgstr ""
 #: apps/remix/app/components/general/template/template-edit-form.tsx
 #: apps/remix/app/components/general/template/template-edit-form.tsx
 #: apps/remix/app/components/general/template/template-edit-form.tsx
+#: apps/remix/app/components/general/files/files-drop-zone-wrapper.tsx
+#: apps/remix/app/components/general/files/files-document-upload.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-text-field.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-text-field.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-signature-field.tsx
@@ -3163,6 +3195,8 @@ msgstr ""
 #: apps/remix/app/components/dialogs/template-duplicate-dialog.tsx
 #: apps/remix/app/components/dialogs/move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/move-to-folder-dialog.tsx
+#: apps/remix/app/components/dialogs/files-move-to-folder-dialog.tsx
+#: apps/remix/app/components/dialogs/files-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/document-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/document-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/document-move-dialog.tsx
@@ -3320,6 +3354,8 @@ msgstr "Campi"
 msgid "Fields updated"
 msgstr ""
 
+#: apps/remix/app/components/general/files/files-drop-zone-wrapper.tsx
+#: apps/remix/app/components/general/files/files-document-upload.tsx
 #: apps/remix/app/components/general/document/document-upload.tsx
 #: apps/remix/app/components/general/document/document-drop-zone-wrapper.tsx
 #: apps/remix/app/components/general/document/chatspace-drop-zone-wrapper.tsx
@@ -3328,9 +3364,27 @@ msgstr ""
 msgid "File cannot be larger than {APP_DOCUMENT_UPLOAD_SIZE_LIMIT}MB"
 msgstr "Il file non può essere più grande di {APP_DOCUMENT_UPLOAD_SIZE_LIMIT} MB"
 
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
+msgid "File deleted"
+msgstr ""
+
 #: apps/remix/app/components/dialogs/template-use-dialog.tsx
 msgid "File size exceeds the limit of {APP_DOCUMENT_UPLOAD_SIZE_LIMIT} MB"
 msgstr "La dimensione del file supera il limite di {APP_DOCUMENT_UPLOAD_SIZE_LIMIT} MB"
+
+#: apps/remix/app/components/general/files/files-document-upload.tsx
+msgid "File uploaded"
+msgstr ""
+
+#: apps/remix/app/routes/_authenticated+/files._index.tsx
+#: apps/remix/app/routes/_authenticated+/files.f.$folderId._index.tsx
+#: apps/remix/app/components/general/app-nav-desktop-team.tsx
+msgid "Files"
+msgstr ""
+
+#: apps/remix/app/components/general/files/files-drop-zone-wrapper.tsx
+msgid "Files uploaded"
+msgstr ""
 
 #: apps/remix/app/components/general/task/contracts-status.tsx
 #: apps/remix/app/components/general/task/contracts-status.tsx
@@ -3339,6 +3393,7 @@ msgstr ""
 
 #: apps/remix/app/components/dialogs/template-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/move-to-folder-dialog.tsx
+#: apps/remix/app/components/dialogs/files-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/document-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/chat-move-to-folder-dialog.tsx
 msgid "Folder"
@@ -3500,8 +3555,10 @@ msgid "Here's how it works:"
 msgstr "Ecco come funziona:"
 
 #: apps/remix/app/routes/_authenticated+/settings+/public-profile.tsx
+#: apps/remix/app/components/tables/files-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/documents-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/chat-table-action-dropdown.tsx
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "Hide"
 msgstr "Nascondi"
@@ -4031,6 +4088,7 @@ msgstr "Utenti attivi mensili: Utenti con almeno uno dei loro documenti completa
 #: apps/remix/app/components/dialogs/template-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/template-move-dialog.tsx
 #: apps/remix/app/components/dialogs/move-to-folder-dialog.tsx
+#: apps/remix/app/components/dialogs/files-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/document-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/document-move-dialog.tsx
 #: apps/remix/app/components/dialogs/chat-move-to-folder-dialog.tsx
@@ -4051,6 +4109,10 @@ msgstr ""
 msgid "Move Document to Team"
 msgstr "Sposta documento al team"
 
+#: apps/remix/app/components/dialogs/files-move-to-folder-dialog.tsx
+msgid "Move File to Folder"
+msgstr ""
+
 #: apps/remix/app/components/dialogs/template-move-to-folder-dialog.tsx
 msgid "Move Template to Folder"
 msgstr ""
@@ -4060,6 +4122,7 @@ msgid "Move Template to Team"
 msgstr "Sposta modello al team"
 
 #: apps/remix/app/components/tables/templates-table-action-dropdown.tsx
+#: apps/remix/app/components/tables/files-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/documents-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/chat-table-action-dropdown.tsx
 msgid "Move to Folder"
@@ -4344,6 +4407,7 @@ msgstr "In questa pagina, puoi creare nuovi Webhook e gestire quelli esistenti."
 msgid "On this page, you can edit the webhook and its settings."
 msgstr "In questa pagina, puoi modificare il webhook e le sue impostazioni."
 
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "Once confirmed, the following will occur:"
 msgstr "Una volta confermato, si verificherà quanto segue:"
@@ -4603,6 +4667,7 @@ msgstr ""
 msgid "Please confirm your email"
 msgstr "Per favore conferma la tua email"
 
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "Please contact support if you would like to revert this action."
 msgstr "Si prega di contattare il supporto se si desidera annullare questa azione."
@@ -4625,10 +4690,12 @@ msgstr "Si prega di segnare come visualizzato per completare"
 msgid "Please note that proceeding will remove direct linking recipient and turn it into a placeholder."
 msgstr "Si prega di notare che procedendo si rimuoverà il destinatario del link diretto e si trasformerà in un segnaposto."
 
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "Please note that this action is <0>irreversible</0>."
 msgstr "Si prega di notare che questa azione è <0>irreversibile</0>."
 
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "Please note that this action is <0>irreversible</0>. Once confirmed, this document will be permanently deleted."
 msgstr "Si prega di notare che questa azione è <0>irreversibile</0>. Una volta confermato, questo documento sarà eliminato permanentemente."
@@ -4685,6 +4752,7 @@ msgid "Please try again or contact our support."
 msgstr "Per favore, riprova o contatta il nostro supporto."
 
 #. placeholder {0}: `'${_(deleteMessage)}'`
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "Please type {0} to confirm"
 msgstr "Per favore, digita {0} per confermare"
@@ -4957,6 +5025,7 @@ msgstr "Destinatari"
 msgid "Recipients metrics"
 msgstr "Metriche dei destinatari"
 
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "Recipients will still retain their copy of the document"
 msgstr "I destinatari conserveranno comunque la loro copia del documento"
@@ -5144,6 +5213,7 @@ msgstr "Stai tranquillo, il tuo documento è strettamente confidenziale e non sa
 msgid "Retention of Documents"
 msgstr "Conservazione dei documenti"
 
+#: apps/remix/app/components/tables/files-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/chat-table-action-dropdown.tsx
 #: apps/remix/app/components/general/document-signing/document-signing-auth-passkey.tsx
 #: packages/ui/primitives/document-flow/add-subject.tsx
@@ -5196,6 +5266,7 @@ msgstr "Ruoli"
 
 #: apps/remix/app/components/dialogs/template-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/move-to-folder-dialog.tsx
+#: apps/remix/app/components/dialogs/files-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/document-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/chat-move-to-folder-dialog.tsx
 msgid "Root (No Folder)"
@@ -5279,6 +5350,10 @@ msgstr "Seleziona"
 #: apps/remix/app/components/dialogs/document-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/chat-move-to-folder-dialog.tsx
 msgid "Select a folder to move this document to."
+msgstr ""
+
+#: apps/remix/app/components/dialogs/files-move-to-folder-dialog.tsx
+msgid "Select a folder to move this file to."
 msgstr ""
 
 #: apps/remix/app/components/dialogs/template-move-dialog.tsx
@@ -5686,6 +5761,7 @@ msgstr "Alcuni firmatari non hanno un campo firma assegnato. Assegna almeno 1 ca
 #: apps/remix/app/components/tables/team-settings-member-invites-table.tsx
 #: apps/remix/app/components/tables/settings-security-passkey-table-actions.tsx
 #: apps/remix/app/components/tables/settings-security-passkey-table-actions.tsx
+#: apps/remix/app/components/tables/files-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/documents-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/documents-table-action-dropdown.tsx
 #: apps/remix/app/components/tables/documents-table-action-button.tsx
@@ -5722,6 +5798,7 @@ msgstr "Alcuni firmatari non hanno un campo firma assegnato. Assegna almeno 1 ca
 #: apps/remix/app/components/dialogs/team-email-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/team-checkout-create-dialog.tsx
 #: apps/remix/app/components/dialogs/team-checkout-create-dialog.tsx
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-resend-dialog.tsx
 #: apps/remix/app/components/dialogs/document-duplicate-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
@@ -6184,6 +6261,7 @@ msgid "The direct link has been copied to your clipboard"
 msgstr "Il link diretto è stato copiato negli appunti"
 
 #: apps/remix/app/components/dialogs/move-to-folder-dialog.tsx
+#: apps/remix/app/components/dialogs/files-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/document-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/chat-move-to-folder-dialog.tsx
 msgid "The document has been moved successfully."
@@ -6214,6 +6292,7 @@ msgstr "Il proprietario del documento è stato informato della tua decisione. Po
 msgid "The document was created but could not be sent to recipients."
 msgstr "Il documento è stato creato ma non è stato possibile inviarlo ai destinatari."
 
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "The document will be hidden from your account"
 msgstr "Il documento verrà nascosto dal tuo account"
@@ -6250,6 +6329,7 @@ msgid "The folder you are trying to move does not exist."
 msgstr ""
 
 #: apps/remix/app/components/dialogs/move-to-folder-dialog.tsx
+#: apps/remix/app/components/dialogs/files-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/document-move-to-folder-dialog.tsx
 #: apps/remix/app/components/dialogs/chat-move-to-folder-dialog.tsx
 msgid "The folder you are trying to move the document to does not exist."
@@ -6459,6 +6539,8 @@ msgstr "Questo account è stato disabilitato. Contatta il supporto."
 msgid "This account has not been verified. Please verify your account before signing in."
 msgstr "Questo account non è stato verificato. Verifica il tuo account prima di accedere."
 
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "This action is <0>irreversible</0>. Once confirmed, this document will be permanently deleted."
@@ -6486,6 +6568,7 @@ msgstr "Questo documento non può essere recuperato, se vuoi contestare la ragio
 msgid "This document cannot be changed"
 msgstr ""
 
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "This document could not be deleted at this time. Please try again."
 msgstr "Questo documento non può essere eliminato in questo momento. Riprova."
@@ -6706,6 +6789,7 @@ msgstr ""
 #: apps/remix/app/routes/_authenticated+/admin+/documents._index.tsx
 #: apps/remix/app/components/tables/tustreams-table.tsx
 #: apps/remix/app/components/tables/templates-table.tsx
+#: apps/remix/app/components/tables/files-table.tsx
 #: apps/remix/app/components/tables/documents-table.tsx
 #: apps/remix/app/components/tables/documents-chatspace-table.tsx
 #: apps/remix/app/components/general/template/template-page-view-documents-table.tsx
@@ -7165,6 +7249,10 @@ msgstr "Aggiorna"
 msgid "Upgrade your plan to upload more documents"
 msgstr ""
 
+#: apps/remix/app/components/general/files/files-drop-zone-wrapper.tsx
+msgid "Upgrade your plan to upload more files"
+msgstr ""
+
 #: packages/lib/constants/document.ts
 msgid "Upload"
 msgstr "Carica"
@@ -7198,6 +7286,10 @@ msgstr "Carica documento personalizzato"
 #: apps/remix/app/components/embed/authoring/configure-document-upload.tsx
 #: packages/ui/primitives/document-upload.tsx
 msgid "Upload Document"
+msgstr ""
+
+#: apps/remix/app/components/general/files/files-drop-zone-wrapper.tsx
+msgid "Upload File"
 msgstr ""
 
 #: packages/ui/primitives/signature-pad/signature-pad-upload.tsx
@@ -7234,6 +7326,7 @@ msgstr "Il file caricato è troppo piccolo"
 msgid "Uploaded file not an allowed file type"
 msgstr "Il file caricato non è di un tipo di file consentito"
 
+#: apps/remix/app/components/tables/files-table.tsx
 #: apps/remix/app/components/tables/documents-chatspace-table.tsx
 msgid "uploader"
 msgstr ""
@@ -7241,6 +7334,10 @@ msgstr ""
 #: apps/remix/app/components/general/document/document-drop-zone-wrapper.tsx
 #: apps/remix/app/components/general/document/chatspace-drop-zone-wrapper.tsx
 msgid "Uploading document..."
+msgstr ""
+
+#: apps/remix/app/components/general/files/files-drop-zone-wrapper.tsx
+msgid "Uploading File..."
 msgstr ""
 
 #: apps/remix/app/routes/_authenticated+/templates.f.$folderId.$id._index.tsx
@@ -7348,6 +7445,7 @@ msgstr "Verifica il tuo indirizzo email"
 msgid "Verify your email address to unlock all features."
 msgstr "Verifica il tuo indirizzo email per sbloccare tutte le funzionalità."
 
+#: apps/remix/app/components/general/files/files-document-upload.tsx
 #: apps/remix/app/components/general/document/document-upload.tsx
 #: apps/remix/app/components/general/chatspace/chatspace-document-upload.tsx
 msgid "Verify your email to upload documents."
@@ -7840,6 +7938,7 @@ msgstr "Annuale"
 msgid "You"
 msgstr "Tu"
 
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "You are about to delete <0>\"{documentTitle}\"</0>"
 msgstr "Stai per eliminare <0>\"{documentTitle}\"</0>"
@@ -7848,6 +7947,7 @@ msgstr "Stai per eliminare <0>\"{documentTitle}\"</0>"
 msgid "You are about to delete the following team email from <0>{teamName}</0>."
 msgstr "Stai per eliminare la seguente email del team da <0>{teamName}</0>."
 
+#: apps/remix/app/components/dialogs/files-delete-dialog.tsx
 #: apps/remix/app/components/dialogs/document-delete-dialog.tsx
 msgid "You are about to hide <0>\"{documentTitle}\"</0>"
 msgstr "Stai per nascondere <0>\"{documentTitle}\"</0>"
@@ -8036,6 +8136,7 @@ msgstr "Hai raggiunto il limite massimo di {0} modelli diretti. <0>Aggiorna il t
 msgid "You have reached your document limit for this month. Please upgrade your plan."
 msgstr "Hai raggiunto il limite dei documenti per questo mese. Si prega di aggiornare il proprio piano."
 
+#: apps/remix/app/components/general/files/files-document-upload.tsx
 #: apps/remix/app/components/general/document/document-upload.tsx
 #: apps/remix/app/components/general/chatspace/chatspace-document-upload.tsx
 #: packages/ui/primitives/document-dropzone.tsx
@@ -8045,6 +8146,11 @@ msgstr "Hai raggiunto il tuo limite di documenti."
 #: apps/remix/app/components/tables/templates-table.tsx
 msgid "You have reached your document limit. <0>Upgrade your account to continue!</0>"
 msgstr "Hai raggiunto il tuo limite di documenti. <0>Aggiorna il tuo account per continuare!</0>"
+
+#: apps/remix/app/components/general/files/files-drop-zone-wrapper.tsx
+#: apps/remix/app/components/general/files/files-document-upload.tsx
+msgid "You have reached your file limit for this month. Please upgrade your plan."
+msgstr ""
 
 #: packages/email/templates/document-rejection-confirmed.tsx
 msgid "You have rejected the document '{documentName}'"
@@ -8244,6 +8350,19 @@ msgstr "La tua email è attualmente utilizzata dal team <0>{0}</0> ({1})."
 #: apps/remix/app/routes/_authenticated+/settings+/tokens.tsx
 msgid "Your existing tokens"
 msgstr "I tuoi token esistenti"
+
+#: apps/remix/app/components/general/files/files-drop-zone-wrapper.tsx
+#: apps/remix/app/components/general/files/files-document-upload.tsx
+msgid "Your file failed to upload."
+msgstr ""
+
+#: apps/remix/app/components/general/files/files-document-upload.tsx
+msgid "Your file has been uploaded successfully."
+msgstr ""
+
+#: apps/remix/app/components/general/files/files-drop-zone-wrapper.tsx
+msgid "Your files have been uploaded successfully."
+msgstr ""
 
 #: apps/remix/app/components/forms/reset-password.tsx
 #: apps/remix/app/components/forms/password.tsx

@@ -8,6 +8,9 @@ export const NEXT_CHAT_URL = () => env('NEXT_PUBLIC_CHAT_URL') ?? 'http://localh
 export const NEXT_PUBLIC_WEBAPP_URL = () =>
   env('NEXT_PUBLIC_WEBAPP_URL') ?? 'http://localhost:3000';
 
+export const NEXT_PUBLIC_POSTHOG_HOST = () =>
+  env('NEXT_PUBLIC_POSTHOG_HOST') ?? `${NEXT_PUBLIC_WEBAPP_URL()}`;
+
 export const NEXT_PRIVATE_INTERNAL_WEBAPP_URL =
   env('NEXT_PRIVATE_INTERNAL_WEBAPP_URL') ?? NEXT_PUBLIC_WEBAPP_URL();
 

@@ -6,7 +6,7 @@ import { findFolders } from '@documenso/lib/server-only/folder/find-folders';
 import { getFolderBreadcrumbs } from '@documenso/lib/server-only/folder/get-folder-breadcrumbs';
 import { getFolderById } from '@documenso/lib/server-only/folder/get-folder-by-id';
 import { moveChatToFolder } from '@documenso/lib/server-only/folder/move-chat-to-folder';
-import { moveDocumentToFolder } from '@documenso/lib/server-only/folder/move-document-to-folder';
+import { moveDocumentToFolder } from '@documenso/lib/server-only/folder/move-files-to-folder';
 import { moveFolder } from '@documenso/lib/server-only/folder/move-folder';
 import { moveTemplateToFolder } from '@documenso/lib/server-only/folder/move-template-to-folder';
 import { moveToFolder } from '@documenso/lib/server-only/folder/move-to-folder';
@@ -268,6 +268,43 @@ export const folderRouter = router({
       return {
         ...result,
         type: FolderType.DOCUMENT,
+      };
+    }),
+
+  moveFileToFolder: authenticatedProcedure
+    .input(ZMoveDocumentToFolderSchema)
+    .mutation(async ({ input, ctx }) => {
+      const { teamId, user } = ctx;
+      const { documentId, folderId } = input;
+
+      if (folderId !== null) {
+        try {
+          const folder = await getFolderById({
+            userId: user.id,
+            teamId,
+            folderId,
+            type: FolderType.FILE,
+          });
+          console.log('Folder found:', folder);
+        } catch (error) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Folder not found',
+          });
+        }
+      }
+
+      const result = await moveDocumentToFolder({
+        userId: user.id,
+        teamId,
+        documentId,
+        folderId,
+        requestMetadata: ctx.metadata,
+      });
+
+      return {
+        ...result,
+        type: FolderType.FILE,
       };
     }),
 

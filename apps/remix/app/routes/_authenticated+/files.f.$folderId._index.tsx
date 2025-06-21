@@ -2,61 +2,97 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { Trans } from '@lingui/react/macro';
 import { FolderIcon, HomeIcon, Loader2 } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router';
-import { Link } from 'react-router';
+import { useNavigate, useParams, useSearchParams } from 'react-router';
 import { z } from 'zod';
 
 import { FolderType } from '@documenso/lib/types/folder-type';
 import { formatAvatarUrl } from '@documenso/lib/utils/avatars';
-import { parseToIntegerArray } from '@documenso/lib/utils/params';
-import { formatChatPath } from '@documenso/lib/utils/teams';
-import { ExtendedDocumentStatus } from '@documenso/prisma/types/extended-document-status';
+import { formatFilesPath } from '@documenso/lib/utils/teams';
 import { trpc } from '@documenso/trpc/react';
-import {
-  type TFindDocumentsInternalResponseChat,
-  ZFindDocumentsInternalRequestSchema,
-} from '@documenso/trpc/server/document-router/schema';
+import { ZFindContractsInternalRequestSchema } from '@documenso/trpc/server/contracts-router/schema';
 import { type TFolderWithSubfolders } from '@documenso/trpc/server/folder-router/schema';
 import { Avatar, AvatarFallback, AvatarImage } from '@documenso/ui/primitives/avatar';
 import { Button } from '@documenso/ui/primitives/button';
-import { Tabs, TabsList, TabsTrigger } from '@documenso/ui/primitives/tabs';
-import { useToast } from '@documenso/ui/primitives/use-toast';
 
-import { ChatMoveToFolderDialog } from '~/components/dialogs/chat-move-to-folder-dialog';
-import { CreateFolderDialogChat } from '~/components/dialogs/folder-create-dialog-chat';
+import { MoveToFolderDialog } from '~/components/dialogs/files-move-to-folder-dialog';
+import { CreateFolderDialog } from '~/components/dialogs/folder-create-dialog';
 import { FolderDeleteDialog } from '~/components/dialogs/folder-delete-dialog';
 import { FolderMoveDialog } from '~/components/dialogs/folder-move-dialog';
 import { FolderSettingsDialog } from '~/components/dialogs/folder-settings-dialog';
-import { ChatspaceDocumentUploadDropzone } from '~/components/general/chatspace/chatspace-document-upload';
-import { DocumentDropZoneWrapper } from '~/components/general/document/chatspace-drop-zone-wrapper';
 import { DocumentSearch } from '~/components/general/document/document-search';
-import { DocumentStatus } from '~/components/general/document/document-status';
+import { UploadDropzone } from '~/components/general/files/files-document-upload';
+import { FileDropZoneWrapper } from '~/components/general/files/files-drop-zone-wrapper';
 import { FolderCard } from '~/components/general/folder/folder-card';
-import { PeriodSelector } from '~/components/general/period-selector';
-import { DocumentsChatSpaceTable } from '~/components/tables/documents-chatspace-table';
-import { DocumentsTableEmptyState } from '~/components/tables/documents-table-empty-state';
-import { DocumentsTableSenderFilter } from '~/components/tables/documents-table-sender-filter';
+import { FilesTable } from '~/components/tables/files-table';
+import { GeneralTableEmptyState } from '~/components/tables/general-table-empty-state';
 import { useOptionalCurrentTeam } from '~/providers/team';
 import { appMetaTags } from '~/utils/meta';
 
 export function meta() {
-  return appMetaTags('Documents');
+  return appMetaTags('Files');
 }
 
-const ZSearchParamsSchema = ZFindDocumentsInternalRequestSchema.pick({
-  status: true,
+const ZSearchParamsSchema = ZFindContractsInternalRequestSchema.pick({
   period: true,
   page: true,
   perPage: true,
+  status: true,
   query: true,
-}).extend({
-  senderIds: z.string().transform(parseToIntegerArray).optional().catch([]),
 });
 
-export default function DocumentsPage() {
+const sortColumns = z.enum(['id', 'title', 'createdAt']).optional();
+
+export const TypeSearchParams = z.record(
+  z.string(),
+  z.union([z.string(), z.array(z.string()), z.undefined()]),
+);
+
+export default function FilesPage() {
   const [searchParams] = useSearchParams();
+  const { folderId } = useParams();
+
   const navigate = useNavigate();
-  const { toast } = useToast();
+
+  const sort = useMemo(
+    () => TypeSearchParams.safeParse(Object.fromEntries(searchParams.entries())).data || {},
+    [searchParams],
+  );
+
+  const columnOrder = useMemo(() => {
+    if (sort.sort) {
+      try {
+        const parsedSort = JSON.parse(sort.sort as string);
+        if (Array.isArray(parsedSort) && parsedSort.length > 0) {
+          const { id } = parsedSort[0];
+          const isValidColumn = sortColumns.safeParse(id);
+          return isValidColumn.success ? id : undefined;
+        }
+      } catch (error) {
+        console.error('Error parsing sort parameter:', error);
+        return 'id';
+      }
+    }
+    return 'id';
+  }, [sort]);
+
+  const columnDirection = useMemo(() => {
+    if (sort.sort) {
+      try {
+        const parsedSort = JSON.parse(sort.sort as string);
+        if (Array.isArray(parsedSort) && parsedSort.length > 0) {
+          const { desc } = parsedSort[0];
+          return desc ? 'desc' : 'asc';
+        }
+      } catch (error) {
+        console.error('Error parsing sort parameter:', error);
+        return 'asc';
+      }
+    }
+    return 'asc';
+  }, [sort]);
+
+  const team = useOptionalCurrentTeam();
+
   const [isMovingDocument, setIsMovingDocument] = useState(false);
   const [documentToMove, setDocumentToMove] = useState<number | null>(null);
   const [isMovingFolder, setIsMovingFolder] = useState(false);
@@ -66,39 +102,31 @@ export default function DocumentsPage() {
   const [isSettingsFolderOpen, setIsSettingsFolderOpen] = useState(false);
   const [folderToSettings, setFolderToSettings] = useState<TFolderWithSubfolders | null>(null);
 
-  const team = useOptionalCurrentTeam();
   const { mutateAsync: pinFolder } = trpc.folder.pinFolder.useMutation();
   const { mutateAsync: unpinFolder } = trpc.folder.unpinFolder.useMutation();
-
-  const [stats, setStats] = useState<TFindDocumentsInternalResponseChat['stats']>({
-    [ExtendedDocumentStatus.DRAFT]: 0,
-    [ExtendedDocumentStatus.PENDING]: 0,
-    [ExtendedDocumentStatus.COMPLETED]: 0,
-    [ExtendedDocumentStatus.REJECTED]: 0,
-    [ExtendedDocumentStatus.ERROR]: 0,
-    [ExtendedDocumentStatus.INBOX]: 0,
-    [ExtendedDocumentStatus.ALL]: 0,
-  });
 
   const findDocumentSearchParams = useMemo(
     () => ZSearchParamsSchema.safeParse(Object.fromEntries(searchParams.entries())).data || {},
     [searchParams],
   );
 
-  const { data, isLoading, isLoadingError, refetch } =
-    trpc.document.findDocumentsInternalUseToChat.useQuery({
-      ...findDocumentSearchParams,
-    });
-
-  const retryDocument = trpc.document.retryChatDocument.useMutation();
+  const { data, isLoading, isLoadingError, refetch } = trpc.files.findFilesInternal.useQuery({
+    query: findDocumentSearchParams.query,
+    period: findDocumentSearchParams.period,
+    page: findDocumentSearchParams.page,
+    perPage: findDocumentSearchParams.perPage,
+    folderId: folderId,
+    orderByColumn: columnOrder,
+    orderByDirection: columnDirection,
+  });
 
   const {
     data: foldersData,
     isLoading: isFoldersLoading,
     refetch: refetchFolders,
   } = trpc.folder.getFolders.useQuery({
-    type: FolderType.CHAT,
-    parentId: null,
+    parentId: folderId,
+    type: FolderType.FILE,
   });
 
   useEffect(() => {
@@ -106,63 +134,18 @@ export default function DocumentsPage() {
     void refetchFolders();
   }, [team?.url]);
 
-  const getTabHref = (value: keyof typeof ExtendedDocumentStatus) => {
-    const params = new URLSearchParams(searchParams);
-
-    params.set('status', value);
-
-    if (value === ExtendedDocumentStatus.ALL) {
-      params.delete('status');
-    }
-
-    if (params.has('page')) {
-      params.delete('page');
-    }
-
-    return `${formatChatPath(team?.url)}?${params.toString()}`;
-  };
-
-  useEffect(() => {
-    if (data?.stats) {
-      setStats(data.stats);
-    }
-  }, [data?.stats]);
-
   const navigateToFolder = (folderId?: string | null) => {
-    const documentsPath = formatChatPath(team?.url);
+    const documentsPath = formatFilesPath(team?.url);
 
     if (folderId) {
-      void navigate(`${formatChatPath(team?.url)}/f/${folderId}`);
+      void navigate(`${formatFilesPath(team?.url)}/f/${folderId}`);
     } else {
       void navigate(documentsPath);
     }
   };
 
-  const handleRetry = async (documenDataId: string, documentId: number) => {
-    try {
-      const result = await retryDocument.mutateAsync({
-        documenDataId: documenDataId,
-        documentId: documentId,
-      });
-
-      toast({
-        description: 'Attempting to retry',
-      });
-    } catch (error) {
-      toast({
-        variant: 'destructive',
-        description: 'Error',
-      });
-      console.error('Error:', error);
-    }
-  };
-
-  const handleViewAllFolders = () => {
-    void navigate(`${formatChatPath(team?.url)}/folders`);
-  };
-
   return (
-    <DocumentDropZoneWrapper>
+    <FileDropZoneWrapper>
       <div className="mx-auto w-full max-w-screen-xl px-4 md:px-8">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-1 items-center">
@@ -193,8 +176,8 @@ export default function DocumentsPage() {
           </div>
 
           <div className="flex gap-4 sm:flex-row sm:justify-end">
-            <ChatspaceDocumentUploadDropzone />
-            <CreateFolderDialogChat />
+            <UploadDropzone />
+            <CreateFolderDialog createFrom={FolderType.FILE} />
           </div>
         </div>
 
@@ -204,7 +187,7 @@ export default function DocumentsPage() {
           </div>
         ) : (
           <>
-            {foldersData?.folders?.some((folder) => folder.pinned) && (
+            {foldersData?.folders && foldersData.folders.some((folder) => folder.pinned) && (
               <div className="mt-6">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                   {foldersData.folders
@@ -237,8 +220,7 @@ export default function DocumentsPage() {
             <div className="mt-6">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {foldersData?.folders
-                  ?.filter((folder) => !folder.pinned)
-                  .slice(0, 12)
+                  .filter((folder) => !folder.pinned)
                   .map((folder) => (
                     <FolderCard
                       key={folder.id}
@@ -261,19 +243,6 @@ export default function DocumentsPage() {
                     />
                   ))}
               </div>
-
-              <div className="mt-6 flex items-center justify-center">
-                {foldersData && foldersData.folders?.length > 12 && (
-                  <Button
-                    variant="link"
-                    size="sm"
-                    className="text-muted-foreground hover:text-foreground"
-                    onClick={() => void handleViewAllFolders()}
-                  >
-                    View all folders
-                  </Button>
-                )}
-              </div>
             </div>
           </>
         )}
@@ -290,75 +259,44 @@ export default function DocumentsPage() {
             )}
 
             <h2 className="text-4xl font-semibold">
-              <Trans>Chat with documents</Trans>
+              <Trans>Files</Trans>
             </h2>
           </div>
 
           <div className="-m-1 flex flex-wrap gap-x-4 gap-y-6 overflow-hidden p-1">
-            <Tabs value={findDocumentSearchParams.status || 'ALL'} className="overflow-x-auto">
-              <TabsList>
-                {[
-                  ExtendedDocumentStatus.PENDING,
-                  ExtendedDocumentStatus.COMPLETED,
-                  ExtendedDocumentStatus.ERROR,
-                  ExtendedDocumentStatus.ALL,
-                ].map((value) => (
-                  <TabsTrigger
-                    key={value}
-                    className="hover:text-foreground min-w-[60px]"
-                    value={value}
-                    asChild
-                  >
-                    <Link to={getTabHref(value)} preventScrollReset>
-                      <DocumentStatus status={value} />
-
-                      {value !== ExtendedDocumentStatus.ALL && (
-                        <span className="ml-1 inline-block opacity-50">{stats[value]}</span>
-                      )}
-                    </Link>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
-
-            {team && <DocumentsTableSenderFilter teamId={team.id} />}
-
-            <div className="flex w-48 flex-wrap items-center justify-between gap-x-2 gap-y-4">
-              <PeriodSelector />
-            </div>
-            <div className="flex w-48 flex-wrap items-center justify-between gap-x-2 gap-y-4">
-              <DocumentSearch initialValue={findDocumentSearchParams.query} />
+            <div className="flex w-full flex-wrap items-center justify-between gap-x-2 gap-y-4">
+              <div className="flex w-48 flex-wrap items-center justify-between gap-x-2 gap-y-4">
+                <DocumentSearch initialValue={findDocumentSearchParams.query} />
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-8">
-          <div>
-            {data &&
-            data.count === 0 &&
-            (!foldersData?.folders.length || foldersData.folders.length === 0) ? (
-              <DocumentsTableEmptyState
-                status={findDocumentSearchParams.status || ExtendedDocumentStatus.ALL}
-              />
-            ) : (
-              <DocumentsChatSpaceTable
-                data={data as TFindDocumentsInternalResponseChat}
-                isLoading={isLoading}
-                isLoadingError={isLoadingError}
-                onHandleRetry={async (documentDataId: string, documentId: number) =>
-                  handleRetry(documentDataId, documentId)
-                }
-                onMoveDocument={(documentId: number) => {
-                  setDocumentToMove(documentId);
-                  setIsMovingDocument(true);
-                }}
-              />
-            )}
-          </div>
+        <div className="mt-8 flex flex-col gap-4">
+          {data && (!data?.data.length || data?.data.length === 0) ? (
+            <GeneralTableEmptyState status={'ALL'} />
+          ) : (
+            <FilesTable
+              data={data}
+              isLoading={isLoading}
+              isLoadingError={isLoadingError}
+              onMoveDocument={(documentId) => {
+                setDocumentToMove(documentId);
+                setIsMovingDocument(true);
+              }}
+              // onMultipleDelete={handleMultipleDelete}
+              // isMultipleDelete={isMultipleDelete}
+              // setIsMultipleDelete={setIsMultipleDelete}
+
+              // onAdd={openCreateDialog}
+              // onEdit={handleEdit}
+              // onDelete={handleDelete}
+            />
+          )}
         </div>
 
         {documentToMove && (
-          <ChatMoveToFolderDialog
+          <MoveToFolderDialog
             documentId={documentToMove}
             open={isMovingDocument}
             onOpenChange={(open) => {
@@ -408,6 +346,6 @@ export default function DocumentsPage() {
           }}
         />
       </div>
-    </DocumentDropZoneWrapper>
+    </FileDropZoneWrapper>
   );
 }
